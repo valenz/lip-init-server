@@ -12,24 +12,29 @@ block content
 	
 	.grid
 		ul
-			each item in grid.image
+			each item, index in grid.image
 				li
-					img(src=item)
+					#place
+						img#pic(src=item)
+						.name
+							span= index + 1
+			li
+				#place
 
-	.pics
-		#place1(ondrop="dropIt(event);" ondragover="event.preventDefault();")
-			img#pic1(src="/uploads/art.jpg" width="195" height="130" draggable="true" ondragstart="dragIt(event);")
-		#place2(ondrop="dropIt(event);" ondragover="event.preventDefault();")
-			img#pic2(src="/uploads/batman.jpg" width="195" height="130" draggable="true" ondragstart="dragIt(event);")
-		#place3(ondrop="dropIt(event);" ondragover="event.preventDefault();")
-		#place4(ondrop="dropIt(event);" ondragover="event.preventDefault();")
-		#place5(ondrop="dropIt(event);" ondragover="event.preventDefault();")
-	.nums
-		span 1
-		span 2
-		span 3
-		span 4
-		span 5
+	//.pics
+		//#place1(ondrop="dropIt(event);" ondragover="event.preventDefault();")
+			//img#pic1(src="/uploads/art.jpg" width="195" height="130" draggable="true" ondragstart="dragIt(event);")
+		//#place2(ondrop="dropIt(event);" ondragover="event.preventDefault();")
+			//img#pic2(src="/uploads/batman.jpg" width="195" height="130" draggable="true" ondragstart="dragIt(event);")
+		//#place3(ondrop="dropIt(event);" ondragover="event.preventDefault();")
+		//#place4(ondrop="dropIt(event);" ondragover="event.preventDefault();")
+		//#place5(ondrop="dropIt(event);" ondragover="event.preventDefault();")
+	//.nums
+		//span 1
+		//span 2
+		//span 3
+		//span 4
+		//span 5
 	
 	#foot
 		a(href='/test') TEST
