@@ -1,0 +1,18 @@
+extends header
+
+block content
+	#head
+	
+	#form
+		form#uploadForm(enctype='multipart/form-data' action='/api/photos' method='post')
+			input#userPhotoInput(type='file', name='userPhoto')
+			input#userPhotoName(type='text', name='userPhotoName')
+			input#submit(type='button', value='Upload')
+		span#status
+	
+	#grid
+		each item in grid.image
+			img(src=item)
+	
+	#foot
+		a(href='/test') TEST
