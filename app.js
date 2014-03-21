@@ -47,12 +47,17 @@ app.post('/api/photos', function(req, res) {
 				var fileExt = '.' + files.userPhoto.name.split('.')[1];
 				var serverPath = fields.userPhotoName ? '/uploads/' + fields.userPhotoName + fileExt : '/uploads/' + files.userPhoto.name;
 				
-				mv(files.userPhoto.path, __dirname + '/public' + serverPath, {mkdirp:true}, function(error) {
-					if(error) {
+				// mv('source/dir', 'dest/dir', function(err) {});
+				// it first created all the necessary directories (mkdirp: true), and then
+  				// tried fs.rename, then falls back to using ncp to copy the dir
+  				// to dest and then rimraf to remove the source dir
+  				// If 'dest/file' exists (clobber: false), an error is returned with err.code === 'EEXIST'.
+				mv(files.userPhoto.path, __dirname + '/public' + serverPath, {mkdirp:true, clobber: false}, function(err) {
+					if(err) {
 						res.send({
-							error: 'Ah crap! ' + error
+							error: 'Something went wrong! ' + err
 						});
-						return;
+						return false;
 					}
 			 
 					res.send({

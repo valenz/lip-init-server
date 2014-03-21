@@ -1,9 +1,9 @@
 doctype html 
-html
+html(lang='en')
 	head
 		meta(charset='utf-8')
 		
-		title=title
+		title= title
 		
 		link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
 		link(rel='shortcut icon', type='favicon', href='/images/favicon.ico')
@@ -13,5 +13,5 @@ html
 		script(type='text/javascript' src='/javascripts/upload.js')
 		script(type='text/javascript' src='/javascripts/grid.js')
 		
-	body
+	body!= body
 		block content

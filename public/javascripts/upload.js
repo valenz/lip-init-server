@@ -2,7 +2,9 @@ $(document).ready(function() {
     
     $('input:text').focus(function() {
 		var fileName = $('#userPhotoInput').val() !== '' ? $('#userPhotoInput')[0].files[0].name.split('.')[0] : '';
-		$('#userPhotoName').val(fileName);
+		if(!$(this).val()) {
+			$('#userPhotoName').val(fileName);
+		}
 	});
  
     $('#submit').click(function() {
@@ -24,11 +26,7 @@ $(document).ready(function() {
 					status(response.error);
 					return;
 				}
-		 
-				var imageUrlOnServer = response.path;
-		 
-				status('Success, file uploaded to:' + imageUrlOnServer);
-				//$('<img/>').attr('src', imageUrlOnServer).appendTo($('body'));
+			 	status('Success, file uploaded to: ' + response.path);
 			}
 		});
  
