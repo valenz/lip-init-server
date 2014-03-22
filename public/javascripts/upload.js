@@ -1,14 +1,14 @@
 $(document).ready(function() {
     
-    $('input:text').focus(function() {
-		var fileName = $('#userPhotoInput').val() !== '' ? $('#userPhotoInput')[0].files[0].name.split('.')[0] : '';
+    $('#tabName').focus(function() {
+		var fileName = $('#tabImage').val() !== '' ? $('#tabImage')[0].files[0].name.split('.')[0] : '';
 		if(!$(this).val()) {
-			$('#userPhotoName').val(fileName);
+			$('#tabName').val(fileName);
 		}
 	});
  
     $('#submit').click(function() {
-		if($('#userPhotoInput').val() !== '') {
+		if($('#tabImage').val() !== '' && $('#tabName').val() !== '') {
 			$('#uploadForm').submit();
 		}
 	});

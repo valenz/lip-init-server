@@ -5,30 +5,35 @@ block content
 	
 	#form
 		form#uploadForm(enctype='multipart/form-data' action='/api/photos' method='post')
-			input#userPhotoInput(type='file', name='userPhoto')
-			input#userPhotoName(type='text', name='userPhotoName')
+			input#tabImage(type='file' name='tabImage')
+			br
+			input#tabName(type='text' name='tabName' placeholder='Name')
+			br
+			input#tabUrl(type='text' name='tabUrl' placeholder='Address')
+			br
+			textarea#tabDesc(name='tabDesc' rows='5' cols='80' placeholder='Description')
+			br
 			input#submit(type='button', value='Upload')
 		span#status
 	
-	.grid
+	#grid
 		ul
-			each item, index in grid.image
-				li
-					div(id= 'place' + index)
-						#desc
-							p text
-						img#pic(src=item)
-						.name
-							span #{index + 1}
+			each item, index in grid.tabs
+				li.tabs
+					a(href=item.url)
+						img#pic(src=item.img)
+						div
+							if item.name
+								h5!= item.name
+							if item.desc
+								p!= item.desc
 
 	#foot
-		p
-			a(href='/test') TEST
-
 		p STEPHAN WEGNER 2014
 		p
 			a(href='http://intra/en') Intranet
 			//&nbsp;|&nbsp;
+			
 			a(href='http://www.mpib-berlin.mpg.de') Max Planck Institut for Human Development
 			
 			a(href='mailto:lipsupport@mpib-berlin.mpg.de') LIP Support

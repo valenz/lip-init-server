@@ -1,12 +1,9 @@
 var fs = require('fs');
 exports.index = function(req, res) {
-	fs.readdir('public/uploads', function(err, files) {
-		var arr = {'grid': {'image': []}};
-		for(file in files) {
-			if(files[file].charAt(0) != '.') {
-				arr.grid.image.push('/uploads/' + files[file]);
-			}
-		}
+	fs.readFile('public/data/data.json', 'utf8', function(err, data) {
+		if(err) throw err;
+		
+		var arr = {'grid': {'tabs': JSON.parse('[' + data + ']')}}
 		res.render('index', arr);
 	});
 };
