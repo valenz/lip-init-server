@@ -1,4 +1,3 @@
-{"name":"a","desc":"test","url":"","img":"images/default-tab-bg.jpg"},
-{"name":"b","desc":"test","url":"","img":"images/default-tab-bg.jpg"},
-{"name":"c","desc":"test","url":"","img":"images/default-tab-bg.jpg"},
-{"name":"d","desc":"test","url":"","img":"images/default-tab-bg.jpg"}
+{"name":"OTRS","desc":"Das <strong>Open Ticket Request System</strong> ist ein Ticket- oder Kommunikationssystem, dass oft als Help-Desk- bzw. Issue-Tracking-System eingesetzt wird.","url":"http://lip-ts","img":"images/default-tab-bg.jpg"},
+{"name":"Lagerregal","desc":"<strong>Lagerregal (&#946;)</strong> ist eine Datenbank zur Inventarisierung von LIP-Gerätschaften.","url":"http://lip-inventar","img":"images/default-tab-bg.jpg"},
+{"name":"Etherpad","desc":"<strong>Etherpad Lite</strong> ist ein kollaborativer Echtzeit-Editor, hervorgebracht aus dem Feuer der Hölle von Etherpad. Für eine adminstrative Liste aller Pads, klicke <a href=http://lip-pad/admin/padlist>hier</a>.","url":"http://lip-pad","img":"images/default-tab-bg.jpg"}

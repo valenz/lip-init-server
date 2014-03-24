@@ -31,14 +31,14 @@ app.configure('development', function(){
 
 
 app.post('/api/upload', function(req, res) {
-	var name = replaceAll(req.body.tabName, { s: ['_'], r: [' '] }),
+	var name = replaceAll(req.body.tabName, { s: ['_','.'], r: [' '] }),
 		url = req.body.tabUrl,
 		desc = req.body.tabDesc,
 		file = req.files.tabFile,
 		extension = file.size != 0 ? '.' + file.name.split('.')[1] : '',
 		uploadPath = '/public/uploads/' + name + extension,
 		data = { "name": name, "desc": desc, "url": url,
-				 "img": file.size != 0 ? "uploads/" + name + extension : 'images/default-tab-bg.jpg' };
+			"img": file.size != 0 ? "uploads/" + name + extension : 'images/default-tab-bg.jpg' };
 		
 	fs.readFile('public/data/data', 'utf8', function(err, getData) {
 		if(err) { res.send({ error: "Can't read file. " + err + '.'	});	return; }
@@ -81,8 +81,10 @@ function addToGrid(res, data) {
 }
 
 function replaceAll(str, obj) {
-	for(var i in obj.s) {
-		str = str.replace(new RegExp(obj.s[i], 'g'), obj.r[i]);
+	if(obj.s.length === obj.r.length) {
+		for(var i in obj.s) {
+			str = str.replace(new RegExp(obj.s[i], 'g'), obj.r[i]);
+		}
 	}
 	return str;
 }

@@ -5,6 +5,18 @@ $(document).ready(function() {
 		}
 	});
 	
+	$('#field8').focusin(function() {
+		if(!$(this).val()) {
+			$(this).val('http://');
+		}
+	});
+	
+	$('#field8').focusout(function() {
+		if($(this).val() == 'http://') {
+			$(this).val('');
+		}
+	});
+	
 	
 	
 	

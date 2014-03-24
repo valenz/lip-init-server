@@ -1,6 +1,6 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
+  "name": "lip-init",
+  "version": "0.1.5",
   "private": true,
   "scripts": {
     "start": "node app"
@@ -8,7 +8,6 @@
   "dependencies": {
     "express": "3.0.0",
     "jade": "*",
-    "mv": "*",
-    "formidable": "*"
+    "mv": "*"
   }
 }
