@@ -3,37 +3,55 @@ extends header
 block content
 	#head
 	
-	#form
-		form#uploadForm(enctype='multipart/form-data' action='/api/photos' method='post')
-			input#tabImage(type='file' name='tabImage')
-			br
-			input#tabName(type='text' name='tabName' placeholder='Name')
-			br
-			input#tabUrl(type='text' name='tabUrl' placeholder='Address')
-			br
-			textarea#tabDesc(name='tabDesc' rows='5' cols='80' placeholder='Description')
-			br
-			input#submit(type='button', value='Upload')
-		span#status
+	.TTWForm-container
+		form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
+			#field2-container.field.f_100
+				input#field2(type='text' name='tabName' required='required' placeholder='Name')
+				
+			#field8-container.field.f_100
+				input#field8(type='url' name='tabUrl' placeholder='http://')
+				
+			#field7-container.field.f_100
+				textarea#field7(rows='5', cols='20' name='tabDesc' placeholder='Description')
+				
+			#field10-container.field.f_100
+				input#field10(type='file' name='tabFile')
+				
+			#form-submit.field.f_100.clearfix.submit
+				input(type='submit' value='Upload')
+			
+			if error
+				#field20-container.status.f_50
+					= error
+			else
+				#field20-container.status.f_50
 	
 	#grid
 		ul
-			each item, index in grid.tabs
-				li.tabs
-					a(href=item.url)
-						img#pic(src=item.img)
-						div
-							if item.name
-								h5!= item.name
-							if item.desc
-								p!= item.desc
+			if !error
+				each item, index in grid.tabs
+					li.tabs
+						a(href=item.url)
+							img#pic(src=item.img)
+							.cnt
+								if item.name
+									h5!= item.name
+								if item.desc
+									p!= item.desc
+						.opt-open
+							img.btn-open(src='images/arrow-8-888.ico')
+						.opt
+							img.btn-del(src='images/delete-16-888.ico')
+							img.btn-edit(src='images/edit-16-888.ico')
 
 	#foot
 		p STEPHAN WEGNER 2014
 		p
-			a(href='http://intra/en') Intranet
-			//&nbsp;|&nbsp;
-			
-			a(href='http://www.mpib-berlin.mpg.de') Max Planck Institut for Human Development
-			
-			a(href='mailto:lipsupport@mpib-berlin.mpg.de') LIP Support
+			a(href='http://intra/en')
+				|Intranet
+			|&nbsp;| 
+			a(href='http://www.mpib-berlin.mpg.de')
+				|Max Planck Institut for Human Development
+			|&nbsp;|&nbsp;
+			a(href='mailto:lipsupport@mpib-berlin.mpg.de')
+				|LIP Support

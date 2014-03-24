@@ -1,41 +1,38 @@
 $(document).ready(function() {
-    
-    $('#tabName').focus(function() {
-		var fileName = $('#tabImage').val() !== '' ? $('#tabImage')[0].files[0].name.split('.')[0] : '';
-		if(!$(this).val()) {
-			$('#tabName').val(fileName);
-		}
-	});
- 
-    $('#submit').click(function() {
-		if($('#tabImage').val() !== '' && $('#tabName').val() !== '') {
-			$('#uploadForm').submit();
+    $('#field10').change(function() {
+		if(!$('#field2').val()) {
+			$('#field2').val($('#field10')[0].files[0].name.split('.')[0]);
 		}
 	});
 	
-    $('#uploadForm').submit(function() {
-		$(this).ajaxSubmit({
-			beforeSend: function() {
-				status('uploading the file ...');
-			},
-			error: function(xhr) {
-				status('Error: ' + xhr.status);
-			},
-			success: function(response) {
-				if(response.error) {
-					status(response.error);
-					return;
-				}
-			 	status('Success, file uploaded to: ' + response.path);
+	
+	
+	
+	$('.TTWForm').submit(function(e) {
+		e.preventDefault();
+		var fd = new FormData($(this)[0]);
+		$.ajax({
+			type: 'POST',
+			url: '/api/upload',
+			data: fd,
+			processData: false,
+			contentType: false,
+			error: function(xhr, text, desc) { status(text +' '+ xhr.status +' '+ desc); },
+			success: function(data) {
+				if(data.message) {
+					status(data.message);
+					$('[id^=field]').each(function() {
+						$(this).val('');
+					});
+				} else { status(data.error); }
 			}
 		});
- 
-		// Have to stop the form from submitting and causing                                                                                                       
-		// a page refresh - don't forget this                                                                                                                      
-		return false;
-    });
- 
+	});
+	
+	
+	
+	
     function status(message) {
-		$('#status').text(message);
+		$('.status').text(message);
     }
 });

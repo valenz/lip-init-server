@@ -1,0 +1,228 @@
+/** Basic Styling **/
+.TTWForm{
+ 	width: 500px;
+ 	margin: 0 auto;
+}
+
+
+
+
+.TTWForm-container {
+    font-size: 12px;
+    color: #798e94;
+    background: transparent;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+
+
+
+.TTWForm-container h2 {
+    font-size: 2em;
+    margin-bottom: 0.75em;
+    color: #65777c;
+    font-weight: normal;
+}
+
+
+
+
+/** Field Styles **/
+.TTWForm .field, #form-title.field {
+    padding-bottom: 12px;
+    padding-top: 12px;
+    position: relative;
+    clear: both;
+}
+
+.TTWForm .status {
+	clear: both;
+	position: relative;
+}
+
+.TTWForm .field:first-child{
+    padding-top:0;
+}
+
+.TTWForm .field:last-child{
+    padding-bottom:0;
+}
+
+
+
+
+/** Field Widths */
+.f_25 {
+    width: 21%;
+    display: inline;
+    float: left;
+    margin-left: 2%;
+    margin-right: 2%; /* jquery ui resize grid hack - not sure why */
+}
+
+.f_50 {
+    width: 46%;
+    display: inline;
+    margin-left: 2%;
+    margin-right: 2%; /* jquery ui resize grid hack - not sure why */
+}
+
+.f_75 {
+    width: 71%;
+    display: inline;
+    float: left;
+    margin-left: 2%;
+    margin-right: 2%; /* jquery ui resize grid hack - not sure why */
+}
+
+.f_100 {
+    width: 96%;
+    display: inline;
+    float: left;
+    margin-left: 2%;
+    margin-right: 2%; /* jquery ui resize grid hack - not sure why */
+}
+
+
+.TTWForm input, .TTWForm textarea, .TTWForm select, div.selector, div.uploader  {
+    width:100%;
+    font: 16px/18px Helvetica Neue, "Arial", Helvetica, Verdana, sans-serif;
+    padding: 6px 0 5px 4px;
+    color: #798e94;
+    border: 1px solid #17313A;
+    outline: none;
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 0 0 1px #f2f7f9;
+    -moz-box-shadow: 0 0 0 1px #f2f7f9;
+    -webkit-box-shadow: 0 0 0 1px #f2f7f9;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-transition: .3s ease-in-out;
+    -moz-transition: .3s ease-in-out;
+}
+
+.TTWForm input[type=radio], .TTWForm input[type=checkbox] {
+    width: 12px;
+    margin: 8px 12px;
+    top: 3px;
+    position: relative;
+}
+
+.TTWForm .option{
+    margin:6px 0;
+}
+
+.TTWForm .option-title{
+    position:relative;
+    top:2px;
+    color: #798e94;
+}
+
+.TTWForm textarea {
+    overflow: hidden;
+}
+
+.TTWForm label {
+    color: #798e94;
+    text-align: left;
+    font: 14px/24px Helvetica Neue, "Arial", Helvetica, Verdana, sans-serif;
+    margin-bottom:5px;
+    display:inline-block;
+}
+
+.TTWForm .submit input {
+    text-align: center;
+    font-size: 16px;
+    text-decoration: none;
+    border-radius: 3px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    -ms-border-radius: 4px;
+    text-shadow: 1px 1px 0px #fff;
+    display: block;
+    margin: 0px -6px 0px 0;
+    text-align: center;
+    float: right;
+    padding:4px 12px;
+    height: 28px;
+    cursor: pointer;
+    min-width: 96px;
+    width: auto;
+    background: #ddedf3 url(../images/button-bg.jpg) repeat-x 0 0 scroll;
+    box-shadow: 0 0 0 1px #eef5f7;
+    -moz-box-shadow: 0 0 0 1px #eef5f7;
+    -webkit-box-shadow: 0 0 0 1px #eef5f7;
+    border: 1px solid #17313A;
+    font-weight: bold;
+    color: #17313A;
+}
+
+#form-title {
+    padding: 12px;
+}
+
+#form-title h2{
+    margin-bottom:0;
+    color: #798e94;
+}
+
+
+
+
+/**Error Messages **/
+.TTWForm .error {
+    height: 16px;
+    font: 11px/16px Helvetica Neue, "Arial", Helvetica, Verdana, sans-serif;
+    color: #ff0033;
+    padding-left: 12px;
+    z-index: 999;
+    position:relative;
+    top:-1px;
+}
+
+
+
+
+/** Loading Indicator **/
+.loading-text{
+    position:relative;
+    top:-3px;
+}
+
+
+
+
+/** IE Hacks **/
+.TTWForm input{
+    *height: 28px;
+}
+
+
+
+
+/** Clearfix */
+.clearfix:after {
+	clear: both;
+	content: ' ';
+	display: block;
+	font-size: 0;
+	line-height: 0;
+	visibility: hidden;
+	width: 0;
+	height: 0;
+}
+
+
+
+
+/*
+	The following zoom:1 rule is specifically for IE6 + IE7.
+	Move to separate stylesheet if invalid CSS is a problem.
+*/
+* html .clearfix,
+*:first-child+html .clearfix {
+	zoom: 1;
+}
