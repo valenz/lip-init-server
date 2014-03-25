@@ -31,27 +31,57 @@ app.configure('development', function(){
 
 
 app.post('/api/option', function(req, res) {
-	console.log(req.body);
-	/*fs.unlink('public/uploads/tmp.jpg', function(err) {
-		if(err) { res.send({ error: "Can't delete file. " + err + '.'	});	return; }
-		console.log('Successfully deleted public/uploads/tmp.jpg');
-	});*/
+	var data = { "name": "", "desc": "", "url": "", "img": "" };
+	fs.readFile('public/data/data', 'utf8', function(err, getData) {
+		if(err) { res.send({ error: "Can't read file. " + err + '.'	});	return; }
+		var tmp = JSON.parse(getData);
+		var tabId = '';
+		for(var i in req.body) { tabId = i; }
+		for(var tabs in tmp.grid) {
+			for(var item in tmp.grid[tabs]) {
+				if(item == tabId) {
+					data.name = tmp.grid[tabs][item].name;
+					data.desc = tmp.grid[tabs][item].desc;
+					data.url = tmp.grid[tabs][item].url;
+					data.img = tmp.grid[tabs][item].img;
+					delete tmp.grid[tabs][tabId];
+					break;
+				}
+			}
+		}
+		fs.writeFile('public/data/data', replaceAll(JSON.stringify(tmp), { s: [',{}'], r: [''] }), function(err) {
+			if(err) { res.send({ error: "Can't write file. " + err + '.' }); return; }			
+			if(data.img.split('/')[0] == 'uploads') {
+				fs.unlink('public/' + data.img, function(err) {
+					if(err) { res.send({ error: "Can't delete file. " + err + '.'	});	return; }
+				});
+			}
+			res.send({
+				message: 'Successfully deleted tab ' + data.name + '.'
+			});
+		});
+	});
 });
+
 app.post('/api/upload', function(req, res) {
-	console.log(req.body);
-	var name = replaceAll(req.body.tabName, { s: ['_','.'], r: [' '] }),
+	var name = replaceAll(req.body.tabName, { s: ['_'], r: [' '] }),
 		url = req.body.tabUrl,
 		desc = req.body.tabDesc,
 		file = req.files.tabFile,
 		extension = file.size != 0 ? '.' + file.name.split('.')[1] : '',
-		uploadPath = '/public/uploads/' + name + extension,
-		data = { "name": name, "desc": desc, "url": url,
-			"img": file.size != 0 ? "uploads/" + name + extension : 'images/default-tab-bg.jpg' };
+		uploadPath = '/public/uploads/' + name + extension;
 	
 	fs.readFile('public/data/data', 'utf8', function(err, getData) {
 		if(err) { res.send({ error: "Can't read file. " + err + '.'	});	return; }
-		var tmp = getData + JSON.stringify(data),
-			tmp = replaceAll(tmp, { s: ['}\n{','}{','{},','{}'], r: ['},\n{','},\n{','',''] });
+		var tmp = JSON.parse(replaceAll(getData, { s: [',{}'], r: [''] })),
+		
+		data = new Object(), tab = new Object();
+		data["name"] = name,
+		data["desc"] = desc,
+		data["url"] = url,
+		data["img"] = file.size != 0 ? "uploads/" + name + extension : 'images/default-tab-bg.jpg',
+		tab["tab"+tmp.grid.length] = data;
+		tmp.grid.push(tab);
 		
 		if(file.size != 0) {
 			// mv('source/dir', 'dest/dir', function(err) {});
@@ -67,14 +97,14 @@ app.post('/api/upload', function(req, res) {
 					return;
 				}
 				
-				addToGrid(res, tmp);
+				addToGrid(res, JSON.stringify(tmp));
 				
 				res.send({
 					message: 'Tab has been successfully added to grid and file has been uploaded to ' + uploadPath + '.'
 				});
 			});
 		} else {
-			addToGrid(res, tmp);
+			addToGrid(res, JSON.stringify(tmp));
 		}
 	});
 });

@@ -31,23 +31,22 @@ block content
 	#grid
 		ul
 			if !error
-				each item, index in grid.tabs
-					form.form-test(action='/api/option' method='post' enctype='multipart/form-data')
-						li.tabs
-							a(href=item.url)
-								img#pic(src=item.img)
-								.cnt
-									if item.name
-										h5(name=item.name)= item.name
-										input(type='text' name='testName')
-									if item.desc
-										p= item.desc
-							.opt-open
-								img.btn-open(src='images/arrow-8-888.ico')
-							.opt
-								img.btn-del(src='images/delete-16-888.ico')
-								img.btn-edit(src='images/edit-16-888.ico')
-							input(type='submit' value='delete')
+				each tabs, i in grid
+					each item, j in tabs
+						form.TABForm(action='/api/option' method='post' enctype='multipart/form-data')
+							li.tabs
+								a(href=item.url)
+									img#pic(src=item.img)
+									.cnt
+										if item.name
+											input(type='text' name=j value=item.name)
+										if item.desc
+											p= item.desc
+								.opt-open
+									img.btn-open(src='images/arrow-8-888.ico')
+								.opt
+									img.btn-del(src='images/delete-16-888.ico')
+									img.btn-edit(src='images/edit-16-888.ico')
 
 	#foot
 		p STEPHAN WEGNER 2014

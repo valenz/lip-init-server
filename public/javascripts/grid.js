@@ -41,13 +41,13 @@ $(document).ready(function() {
 		$(this).attr('src', '../images/delete-16-E65C00.ico');
 	});
 	
-	$('.form-test').submit(function(e) {
-		//TODO
+	$('.btn-del').click(function(e) {
+		$(this.parentElement.parentElement.parentElement).submit();
+	});
+	
+	$('.TABForm').submit(function(e) {
 		e.preventDefault();
 		var fd = new FormData($(this)[0]);
-		//var fd = new FormData($(this.parentElement.previousSibling.previousSibling.lastChild.firstChild).text());
-		console.log(e);
-		console.log(fd);
 		$.ajax({
 			type: 'POST',
 			url: '/api/option',
