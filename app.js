@@ -30,7 +30,15 @@ app.configure('development', function(){
 
 
 
+app.post('/api/option', function(req, res) {
+	console.log(req.body);
+	/*fs.unlink('public/uploads/tmp.jpg', function(err) {
+		if(err) { res.send({ error: "Can't delete file. " + err + '.'	});	return; }
+		console.log('Successfully deleted public/uploads/tmp.jpg');
+	});*/
+});
 app.post('/api/upload', function(req, res) {
+	console.log(req.body);
 	var name = replaceAll(req.body.tabName, { s: ['_','.'], r: [' '] }),
 		url = req.body.tabUrl,
 		desc = req.body.tabDesc,
@@ -39,7 +47,7 @@ app.post('/api/upload', function(req, res) {
 		uploadPath = '/public/uploads/' + name + extension,
 		data = { "name": name, "desc": desc, "url": url,
 			"img": file.size != 0 ? "uploads/" + name + extension : 'images/default-tab-bg.jpg' };
-		
+	
 	fs.readFile('public/data/data', 'utf8', function(err, getData) {
 		if(err) { res.send({ error: "Can't read file. " + err + '.'	});	return; }
 		var tmp = getData + JSON.stringify(data),
