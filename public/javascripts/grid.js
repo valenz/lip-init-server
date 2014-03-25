@@ -41,8 +41,32 @@ $(document).ready(function() {
 		$(this).attr('src', '../images/delete-16-E65C00.ico');
 	});
 	
-	$('.btn-del').click(function() {
-		// TODO
-		console.log('delete');
+	$('.form-test').submit(function(e) {
+		//TODO
+		e.preventDefault();
+		var fd = new FormData($(this)[0]);
+		//var fd = new FormData($(this.parentElement.previousSibling.previousSibling.lastChild.firstChild).text());
+		console.log(e);
+		console.log(fd);
+		$.ajax({
+			type: 'POST',
+			url: '/api/option',
+			data: fd,
+			processData: false,
+			contentType: false,
+			error: function(xhr, text, desc) { status(text +' '+ xhr.status +' '+ desc); },
+			success: function(data) {
+				if(data.message) {
+					status(data.message);
+				} else { status(data.error); }
+			}
+		});
 	});
+	
+	
+	
+	
+	function status(message) {
+		    $('.message').text(message);
+	}
 });

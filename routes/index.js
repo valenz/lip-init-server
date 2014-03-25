@@ -7,7 +7,7 @@ exports.index = function(req, res) {
 			var arr = {'grid': {'tabs': JSON.parse('[' + data + ']')}}
 			res.render('index', arr);
 		} catch(e) {
-			res.render('index', {'error': e + ' in data: [' + data + ']'})
+			res.render('index', {'error': e + '.'})
 		}
 	});
 };

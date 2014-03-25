@@ -1,4 +1,15 @@
 $(document).ready(function() {
+    $('#tab-add').click(function() {
+	if($('.TTWForm-container').css('display') == 'none') {
+	    $('.TTWForm-container').css('display', 'block');
+	} else {
+	    $('.TTWForm-container').css('display', 'none');
+	}
+    });
+    
+    
+    
+    
     $('#field10').change(function() {
 		if(!$('#field2').val()) {
 			$('#field2').val($('#field10')[0].files[0].name.split('.')[0]);
@@ -45,6 +56,6 @@ $(document).ready(function() {
 	
 	
     function status(message) {
-		$('.status').text(message);
+		$('.message').text(message);
     }
 });

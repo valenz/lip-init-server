@@ -3,6 +3,10 @@ extends header
 block content
 	#head
 	
+	.TTWForm
+		#tab-add
+			input(type='button' value='Add a tab')
+
 	.TTWForm-container
 		form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
 			#field2-container.field.f_100
@@ -12,37 +16,38 @@ block content
 				input#field8(type='url' name='tabUrl' placeholder='http://')
 				
 			#field7-container.field.f_100
-				textarea#field7(rows='5', cols='20' name='tabDesc' placeholder='Description')
+				textarea#field7(name='tabDesc' placeholder='Description')
 				
 			#field10-container.field.f_100
 				input#field10(type='file' name='tabFile')
 				
 			#form-submit.field.f_100.clearfix.submit
 				input(type='submit' value='Upload')
-			
-			if error
-				#field20-container.status.f_50
-					= error
-			else
-				#field20-container.status.f_50
 	
+	p.message
+		if error
+			= error
+
 	#grid
 		ul
 			if !error
 				each item, index in grid.tabs
-					li.tabs
-						a(href=item.url)
-							img#pic(src=item.img)
-							.cnt
-								if item.name
-									h5= item.name
-								if item.desc
-									p!= item.desc
-						.opt-open
-							img.btn-open(src='images/arrow-8-888.ico')
-						.opt
-							img.btn-del(src='images/delete-16-888.ico')
-							img.btn-edit(src='images/edit-16-888.ico')
+					form.form-test(action='/api/option' method='post' enctype='multipart/form-data')
+						li.tabs
+							a(href=item.url)
+								img#pic(src=item.img)
+								.cnt
+									if item.name
+										h5(name=item.name)= item.name
+										input(type='text' name='testName')
+									if item.desc
+										p= item.desc
+							.opt-open
+								img.btn-open(src='images/arrow-8-888.ico')
+							.opt
+								img.btn-del(src='images/delete-16-888.ico')
+								img.btn-edit(src='images/edit-16-888.ico')
+							input(type='submit' value='delete')
 
 	#foot
 		p STEPHAN WEGNER 2014

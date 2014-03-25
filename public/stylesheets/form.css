@@ -12,6 +12,9 @@
     color: #798e94;
     background: transparent;
     font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+    height: 380px;
+    margin: 25px 0 25px 0;
+    display: none;
 }
 
 
