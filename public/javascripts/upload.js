@@ -1,11 +1,22 @@
 $(document).ready(function() {
     $('#tab-add').click(function() {
-	if($('.TTWForm-container').css('display') == 'none') {
-	    $('.TTWForm-container').css('display', 'block');
-	} else {
-	    $('.TTWForm-container').css('display', 'none');
-	}
+		if($('.TTWForm-container').css('display') == 'none') {
+			$('.TTWForm-container').css('display', 'block');
+		} else {
+			$('.TTWForm-container').css('display', 'none');
+		}
     });
+    
+    /* Cancel Form */
+    $('#form-submit').find('[type=button]', '[value=cancel]').click(function() {
+		if($(this).parents('#form-submit').find('[type=submit]').attr('value') == 'Edit') {
+			$(this).parents('#form-submit').find('[type=submit]').attr('value', 'Upload');
+		}
+		$('[id^=field]').each(function() {
+			$(this).val('');
+		});
+		$('.TTWForm-container').css('display', 'none');
+	});
     
     
     
@@ -44,6 +55,7 @@ $(document).ready(function() {
 			success: function(data) {
 				if(data.message) {
 					status(data.message);
+					$('#form-submit').find('[type=submit]').attr('value', 'Upload');
 					$('[id^=field]').each(function() {
 						$(this).val('');
 					});

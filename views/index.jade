@@ -10,19 +10,20 @@ block content
 	.TTWForm-container
 		form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
 			#field2-container.field.f_100
-				input#field2(type='text' name='tabName' required='required' placeholder='Name')
+				input#field2(type='text' name='tabTextName' required='required' placeholder='Name')
 				
 			#field8-container.field.f_100
-				input#field8(type='url' name='tabUrl' placeholder='http://')
+				input#field8(type='url' name='tabTextUrl' placeholder='http://')
 				
 			#field7-container.field.f_100
-				textarea#field7(name='tabDesc' placeholder='Description')
+				textarea#field7(name='tabTextDesc' placeholder='Description')
 				
 			#field10-container.field.f_100
 				input#field10(type='file' name='tabFile')
 				
 			#form-submit.field.f_100.clearfix.submit
 				input(type='submit' value='Upload')
+				input(type='button' value='Cancel')
 	
 	p.message
 		if error

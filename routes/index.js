@@ -8,6 +8,10 @@ exports.index = function(req, res) {
 		} catch(e) {
 			res.render('index', {'error': e + '.'})
 		}
+		var d = new Object();
+		d["tab2"] = "OTRS";
+		var h = new String();
+		
+		//console.log(randomString(2));
 	});
 };
-

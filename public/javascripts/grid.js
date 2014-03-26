@@ -1,17 +1,12 @@
 $(document).ready(function() {
 	$('.opt-open').mouseenter(function(e) {
-		$(this).nextAll('.opt').first().show();
-		$(this.previousSibling).nextAll('.opt-open').first().hide();
-	});
-	
-	$('.opt-open').mouseleave(function() {
-		$(this).css('background', 'transparent');
-		$(this.firstChild).attr('src', '../images/arrow-8-888.ico');
+		$(this).hide();
+		$(this).nextAll().first().show();
 	});
 	
 	$('.tabs').mouseleave(function(e) {
-		$(this.firstChild.nextSibling).nextAll('.opt').first().hide();
-		$(this.firstChild).nextAll('.opt-open').first().show();
+		$(this).find('.opt-open').nextAll().first().hide();
+		$(this).find('a').nextAll().first().show();
 	});
 	
 	
@@ -26,8 +21,16 @@ $(document).ready(function() {
 	});
 	
 	$('.btn-edit').click(function() {
-		// TODO
-		console.log('edit');
+		var arr = new Array();
+		arr[0] = $(this).parents('.tabs').find('input').attr('value');
+		arr[1] = $(this).parents('.tabs').find('a').attr('href');
+		arr[2] = $(this).parents('.tabs').find('p').text();
+		$('.TTWForm-container').css('display', 'block');
+		$('[name^=tabText]', '[id^=field]').each(function(key) {
+			$(this).val(arr[key]);
+		});
+		$('#form-submit').find('[type=submit]').attr('value', 'Edit');
+		$('#form-submit').find('[type=submit]').attr('name', $(this).parents('.tabs').find('input').attr('name'));
 	});
 	
 	
@@ -42,7 +45,9 @@ $(document).ready(function() {
 	});
 	
 	$('.btn-del').click(function(e) {
-		$(this.parentElement.parentElement.parentElement).submit();
+		if(confirm('You are going to delete the tab '+$(this).parents('.tabs').find('input').first().attr('value')+'.\nAre you sure with that?')) {
+			$(this).parents('form').submit();
+		}
 	});
 	
 	$('.TABForm').submit(function(e) {
