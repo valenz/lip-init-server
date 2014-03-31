@@ -5,21 +5,21 @@ block content
 	
 	.TTWForm
 		#tab-add
-			input(type='button' value='Add a tab')
+			input(type='button' value='New tab')
 
 	.TTWForm-container
 		form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
-			#field2-container.field.f_100
-				input#field2(type='text' name='tabTextName' required='required' placeholder='Name')
-				
 			#field8-container.field.f_100
-				input#field8(type='url' name='tabTextUrl' placeholder='http://')
+				input#field8(type='url' name='tabTextUrl' required='required' placeholder='http://')
+			
+			#field2-container.field.f_100
+				input#field2(type='text' name='tabTextName' placeholder='Name (optional)')
 				
 			#field7-container.field.f_100
-				textarea#field7(name='tabTextDesc' placeholder='Description')
+				textarea#field7(name='tabTextDesc' placeholder='Description (optional)')
 				
-			#field10-container.field.f_100
-				input#field10(type='file' name='tabFile')
+			//#field10-container.field.f_100
+				//input#field10(type='file' name='tabFile')
 				
 			#form-submit.field.f_100.clearfix.submit
 				input(type='submit' value='Upload')

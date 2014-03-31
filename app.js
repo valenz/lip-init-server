@@ -5,9 +5,9 @@
 var express = require('express')
   , routes = require('./routes')
   , test = require('./routes/test') // test route
+  , phantom = require('phantom'), _page
   , http = require('http')
   , fs = require('fs')
-  , mv = require('mv')
   , path = require('path')
   , app = express();
 
@@ -32,7 +32,7 @@ app.configure('development', function(){
 
 app.post('/api/option', function(req, res) {
 	var data = { "name": "", "desc": "", "url": "", "img": "" };
-	fs.readFile('public/data/data', 'utf8', function(err, getData) {
+	fs.readFile('public/data/data.json', 'utf8', function(err, getData) {
 		if(err) { res.send({ error: "Can't read file. " + err + '.'	});	return; }
 		var tmp = JSON.parse(getData);
 		var tabId = '';
@@ -49,7 +49,8 @@ app.post('/api/option', function(req, res) {
 				}
 			}
 		}
-		fs.writeFile('public/data/data', replaceAll(JSON.stringify(tmp), { s: [',{}'], r: [''] }), function(err) {
+		
+		fs.writeFile('public/data/data.json', replaceAll(JSON.stringify(tmp), { s: [',{}'], r: [''] }), function(err) {
 			if(err) { res.send({ error: "Can't write file. " + err + '.' }); return; }			
 			if(data.img.split('/')[0] == 'uploads') {
 				fs.unlink('public/' + data.img, function(err) {
@@ -64,87 +65,76 @@ app.post('/api/option', function(req, res) {
 });
 
 app.post('/api/upload', function(req, res) {
-	console.log(Object.keys(req.body).length);
-	var name = replaceAll(req.body.tabTextName, { s: ['_'], r: [' '] }),
-		url = req.body.tabTextUrl,
+	var url = req.body.tabTextUrl,
+		name = req.body.tabTextName != '' ? req.body.tabTextName : url.split('/')[2].split('.')[0] == 'www' ? url.split('/')[2].split('.')[1] : url.split('/')[2].split('.')[0],
 		desc = req.body.tabTextDesc,
-		file = req.files.tabFile,
-		tabId = randomString(5);
+		tabId;
 	
 	if(Object.keys(req.body).length > 3) {
 		for(var i in req.body) { tabId = i; }
-	}
+	} else { tabId = randomString(5); }
 	
-	var extension = file.size != 0 ? '.' + file.name.split('.')[1] : '',
-		uploadPath = '/public/uploads/' + tabId + extension;
+	console.log(req.body);
 	console.log(tabId);
 	
-	fs.readFile('public/data/data', 'utf8', function(err, getData) {
+	var filePath = 'public/data/data.json',
+		imageDefaultPath = 'images/default-tab-bg.jpg',
+		imagePath = 'uploads/'+tabId+'.png',
+		uploadPath = 'public/'+imagePath;
+	
+	fs.readFile(filePath, 'utf8', function(err, getData) {
 		if(err) { res.send({ error: "Can't read file. " + err + '.'	});	return; }
 		var tmp = JSON.parse(replaceAll(getData, { s: [',{}'], r: [''] }));
-		if (req.body[tabId] == 'Edit') {
-			var data = new Object(), tabName = '', tabImg = '';
-			data["name"] = name,
-			data["desc"] = desc,
-			data["url"] = url,
-			data["img"] = file.size != 0 ? "uploads/" + tabId + extension : 'images/default-tab-bg.jpg';
-			for(var tabs in tmp.grid) {
-				for(var item in tmp.grid[tabs]) {
-					if(item == tabId) {
-						tabName = tmp.grid[tabs][item].name;
-						tabImg = tmp.grid[tabs][item].img;
-						tmp.grid[tabs][item].name = data.name;
-						tmp.grid[tabs][item].desc = data.desc;
-						tmp.grid[tabs][item].url = data.url;
-						tmp.grid[tabs][item].img = data.img;
-						break;
+		
+		_page.open(url, function(status) {
+			console.log(status);
+			if (req.body[tabId] == 'Edit') {
+				var data = new Object(), tabName = '', tabImg = '';
+				data["name"] = name,
+				data["desc"] = desc,
+				data["url"] = url,
+				data["img"] = url != '' && status == 'success' ? imagePath : imageDefaultPath;
+				for(var tabs in tmp.grid) {
+					for(var item in tmp.grid[tabs]) {
+						if(item == tabId) {
+							tabName = tmp.grid[tabs][item].name;
+							tabImg = tmp.grid[tabs][item].img;
+							tmp.grid[tabs][item].name = data.name;
+							tmp.grid[tabs][item].desc = data.desc;
+							tmp.grid[tabs][item].url = data.url;
+							tmp.grid[tabs][item].img = data.img;
+							break;
+						}
 					}
 				}
-			}
-			if(tabImg.split('/')[0] == 'uploads') {
-				fs.unlink('public/' + tabImg, function(err) {
-					if(err) { res.send({ error: "Can't delete file. " + err + '.'	});	return; }
-				});
-			}
-			updateGrid(res, JSON.stringify(tmp), 'Successfully updated tab ' + tabName + '.');
-		} else {
-			var data = new Object(), tab = new Object();
-			data["name"] = name,
-			data["desc"] = desc,
-			data["url"] = url,
-			data["img"] = file.size != 0 ? "uploads/" + tabId + extension : 'images/default-tab-bg.jpg',
-			tab[tabId] = data;
-			tmp.grid.push(tab);
-		}
-		
-		if(file.size != 0) {
-			// mv('source/dir', 'dest/dir', function(err) {});
-			// it first created all the necessary directories (mkdirp: true), and then
-			// tried fs.rename, then falls back to using ncp to copy the dir
-			// to dest and then rimraf to remove the source dir
-			// If 'dest/file' exists (clobber: false), an error is returned with err.code === 'EEXIST'.
-			mv(file.path, __dirname + uploadPath, {mkdirp:true, clobber: false}, function(err) {
-				if(err) {
-					res.send({
-						error: 'Something went wrong! ' + err + '.'
+				if(tabImg.split('/')[0] == 'uploads') {
+					fs.unlink('public/' + tabImg, function(err) {
+						if(err) { res.send({ error: "Can't delete file. " + err + '.'	});	return; }
 					});
-					return;
 				}
-				
-				updateGrid(res, JSON.stringify(tmp), '');
-				
-				res.send({
-					message: 'Tab has been successfully added to grid and file has been uploaded to ' + uploadPath + '.'
-				});
-			});
-		} else if (req.body[tabId] != 'Edit') {
-			updateGrid(res, JSON.stringify(tmp), 'Tab has been successfully added to grid.');
-		}
+				updateGrid(res, filePath, JSON.stringify(tmp), 'Successfully updated tab ' + tabName + '.');
+			} else {
+				var data = new Object(), tab = new Object();
+				data["name"] = name,
+				data["desc"] = desc,
+				data["url"] = url,
+				data["img"] = url != '' && status == 'success' ? imagePath : imageDefaultPath,
+				tab[tabId] = data;
+				tmp.grid.push(tab);
+				updateGrid(res, filePath, JSON.stringify(tmp), 'Tab has been successfully added to grid.');
+			}
+			
+			if(status == 'success') {
+				_page.set('viewportSize', {width:1024,height:576});
+				_page.set('clipRect', {top:0,left:0,width:1024,height:576});
+				_page.render(uploadPath);
+			}
+		});
 	});
 });
 
-function updateGrid(res, data, msg) {	
-	fs.writeFile('public/data/data', data, function(err) {
+function updateGrid(res, filePath, data, msg) {	
+	fs.writeFile(filePath, data, function(err) {
 		if(err) { res.send({ error: "Can't write file. " + err + '.' }); return; }
 		res.send({
 			message: msg
@@ -182,4 +172,12 @@ app.get('/test', test.show); // test route
 
 http.createServer(app).listen(app.get('port'), function() {
 	console.log("Express server listening on port " + app.get('port') + ".");
+});
+
+phantom.create('--web-security=no', '--ignore-ssl-errors=yes', function(ph) {
+	console.log('Phantom Bridge Initiated');
+	ph.createPage(function(page) {
+		_page = page;
+		console.log('Page created!');
+	});
 });

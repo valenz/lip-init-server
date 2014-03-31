@@ -1,4 +1,4 @@
-lip-init-server
-===============
+lip-init
+========
 
 Jump page with Node.js

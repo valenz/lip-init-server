@@ -1,4 +1,9 @@
 $(document).ready(function() {
+	$('.tabs').mouseenter(function() {
+		$(this).find('img').first().css('visibility', 'hidden');
+		$(this).find('p').css('display', 'block');
+	});
+	
 	$('.opt-open').mouseenter(function(e) {
 		$(this).hide();
 		$(this).nextAll().first().show();
@@ -7,6 +12,8 @@ $(document).ready(function() {
 	$('.tabs').mouseleave(function(e) {
 		$(this).find('.opt-open').nextAll().first().hide();
 		$(this).find('a').nextAll().first().show();
+		$(this).find('img').first().css('visibility', 'visible');
+		$(this).find('p').css('display', 'none');
 	});
 	
 	
@@ -22,8 +29,8 @@ $(document).ready(function() {
 	
 	$('.btn-edit').click(function() {
 		var arr = new Array();
-		arr[0] = $(this).parents('.tabs').find('input').attr('value');
-		arr[1] = $(this).parents('.tabs').find('a').attr('href');
+		arr[0] = $(this).parents('.tabs').find('a').attr('href');
+		arr[1] = $(this).parents('.tabs').find('input').attr('value');
 		arr[2] = $(this).parents('.tabs').find('p').text();
 		$('.TTWForm-container').css('display', 'block');
 		$('[name^=tabText]', '[id^=field]').each(function(key) {
@@ -47,31 +54,7 @@ $(document).ready(function() {
 	$('.btn-del').click(function(e) {
 		if(confirm('You are going to delete the tab '+$(this).parents('.tabs').find('input').first().attr('value')+'.\nAre you sure with that?')) {
 			$(this).parents('form').submit();
+			$(this).parents('form').css('display', 'none');
 		}
 	});
-	
-	$('.TABForm').submit(function(e) {
-		e.preventDefault();
-		var fd = new FormData($(this)[0]);
-		$.ajax({
-			type: 'POST',
-			url: '/api/option',
-			data: fd,
-			processData: false,
-			contentType: false,
-			error: function(xhr, text, desc) { status(text +' '+ xhr.status +' '+ desc); },
-			success: function(data) {
-				if(data.message) {
-					status(data.message);
-				} else { status(data.error); }
-			}
-		});
-	});
-	
-	
-	
-	
-	function status(message) {
-		    $('.message').text(message);
-	}
 });
