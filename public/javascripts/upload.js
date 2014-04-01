@@ -23,13 +23,7 @@ $(document).ready(function() {
     
     
     
-    $('#field10').change(function() {
-		if(!$('#field2').val()) {
-			$('#field2').val($('#field10')[0].files[0].name.split('.')[0]);
-		}
-	});
-	
-	$('#field8').focusin(function() {
+    $('#field8').focusin(function() {
 		if(!$(this).val()) {
 			$(this).val('http://');
 		}
@@ -93,4 +87,32 @@ $(document).ready(function() {
 				$('.message').css('display', 'none');
 			}, 5000);
 	}
+	
+	var $loading = $('#loading').hide();
+	$(document).ajaxStart(function() {
+		$loading.show();
+	}).ajaxStop(function() {
+		$loading.hide();
+	});
+	
+	var opts = {
+		lines: 7, // The number of lines to draw
+		length: 0, // The length of each line
+		width: 6, // The line thickness
+		radius: 6, // The radius of the inner circle
+		corners: 1, // Corner roundness (0..1)
+		rotate: 0, // The rotation offset
+		direction: 1, // 1: clockwise, -1: counterclockwise
+		color: '#FFF9E5', // #rgb or #rrggbb or array of colors
+		speed: 1.4, // Rounds per second
+		trail: 60, // Afterglow percentage
+		shadow: false, // Whether to render a shadow
+		hwaccel: false, // Whether to use hardware acceleration
+		className: 'spinner', // The CSS class to assign to the spinner
+		zIndex: 2e9, // The z-index (defaults to 2000000000)
+		top: '26px', // Top position relative to parent in px
+		left: '245px' // Left position relative to parent in px
+	};
+	
+	var spinner = new Spinner(opts).spin($('#loading')[0]);
 });

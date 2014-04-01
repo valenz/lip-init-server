@@ -31,6 +31,7 @@ app.configure('development', function(){
 
 
 app.post('/api/option', function(req, res) {
+	console.log(req.body);
 	var data = { "name": "", "desc": "", "url": "", "img": "" };
 	fs.readFile('public/data/data.json', 'utf8', function(err, getData) {
 		if(err) { res.send({ error: "Can't read file. " + err + '.'	});	return; }
@@ -66,11 +67,14 @@ app.post('/api/option', function(req, res) {
 
 app.post('/api/upload', function(req, res) {
 	var url = req.body.tabTextUrl,
-		name = req.body.tabTextName != '' ? req.body.tabTextName : url.split('/')[2].split('.')[0] == 'www' ? url.split('/')[2].split('.')[1] : url.split('/')[2].split('.')[0],
+		str1 = url.split('/')[2].split('.')[0],
+		str2 = str1 == 'www' ? url.split('/')[2].split('.')[1] : '',
+		name = req.body.tabTextName != '' ? req.body.tabTextName.charAt(0).toUpperCase()+req.body.tabTextName.slice(1) : str1 == 'www' ? str2.charAt(0).toUpperCase()+str2.slice(1) : str1.charAt(0).toUpperCase()+str1.slice(1),
+		name = name.length > 20 ? name.substring(0, 20)+'...' : name;
 		desc = req.body.tabTextDesc,
-		tabId;
+		tabId = '';
 	
-	if(Object.keys(req.body).length > 3) {
+	if(Object.keys(req.body).length > 2) {
 		for(var i in req.body) { tabId = i; }
 	} else { tabId = randomString(5); }
 	

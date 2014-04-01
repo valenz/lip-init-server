@@ -15,13 +15,8 @@ block content
 			#field2-container.field.f_100
 				input#field2(type='text' name='tabTextName' placeholder='Name (optional)')
 				
-			#field7-container.field.f_100
-				textarea#field7(name='tabTextDesc' placeholder='Description (optional)')
-				
-			//#field10-container.field.f_100
-				//input#field10(type='file' name='tabFile')
-				
 			#form-submit.field.f_100.clearfix.submit
+				#loading
 				input(type='submit' value='Upload')
 				input(type='button' value='Cancel')
 	
@@ -29,25 +24,17 @@ block content
 		if error
 			= error
 
-	#grid
-		ul
-			if !error
-				each tabs, i in grid
-					each item, j in tabs
+	ul
+		each tabs, i in grid
+			each item, j in tabs
+				li.tabs
+					div
+						img.btn-edit(src='images/edit-16-888.ico')
+						img.btn-del(src='images/delete-16-888.ico')
 						form.TABForm(action='/api/option' method='post' enctype='multipart/form-data')
-							li.tabs
-								a(href=item.url)
-									img#pic(src=item.img)
-									.cnt
-										if item.name
-											input(type='text' name=j value=item.name)
-										if item.desc
-											p= item.desc
-								.opt-open
-									img.btn-open(src='images/arrow-8-888.ico')
-								.opt
-									img.btn-del(src='images/delete-16-888.ico')
-									img.btn-edit(src='images/edit-16-888.ico')
+							a(href=item.url)
+								img.pic(src=item.img width='144' height='81')
+								input(type='text' name=j value=item.name disabled)
 
 	#foot
 		p STEPHAN WEGNER 2014

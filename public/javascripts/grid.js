@@ -1,19 +1,10 @@
 $(document).ready(function() {
-	$('.tabs').mouseenter(function() {
-		$(this).find('img').first().css('visibility', 'hidden');
-		$(this).find('p').css('display', 'block');
-	});
-	
-	$('.opt-open').mouseenter(function(e) {
-		$(this).hide();
-		$(this).nextAll().first().show();
+	$('.tabs').mouseenter(function(e) {
+		$(this).find('[class^=btn]').css('visibility', 'visible');
 	});
 	
 	$('.tabs').mouseleave(function(e) {
-		$(this).find('.opt-open').nextAll().first().hide();
-		$(this).find('a').nextAll().first().show();
-		$(this).find('img').first().css('visibility', 'visible');
-		$(this).find('p').css('display', 'none');
+		$(this).find('[class^=btn]').css('visibility', 'hidden');
 	});
 	
 	
@@ -53,8 +44,8 @@ $(document).ready(function() {
 	
 	$('.btn-del').click(function(e) {
 		if(confirm('You are going to delete the tab '+$(this).parents('.tabs').find('input').first().attr('value')+'.\nAre you sure with that?')) {
+			//$(this).parents('.tabs').find('form').submit();
 			$(this).parents('form').submit();
-			$(this).parents('form').css('display', 'none');
 		}
 	});
 });
