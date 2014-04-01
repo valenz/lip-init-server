@@ -44,7 +44,6 @@ $(document).ready(function() {
 	
 	$('.btn-del').click(function(e) {
 		if(confirm('You are going to delete the tab '+$(this).parents('.tabs').find('input').first().attr('value')+'.\nAre you sure with that?')) {
-			//$(this).parents('.tabs').find('form').submit();
 			$(this).parents('form').submit();
 		}
 	});

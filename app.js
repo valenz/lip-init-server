@@ -51,7 +51,7 @@ app.post('/api/option', function(req, res) {
 			}
 		}
 		
-		fs.writeFile('public/data/data.json', replaceAll(JSON.stringify(tmp), { s: [',{}'], r: [''] }), function(err) {
+		fs.writeFile('public/data/data.json', replaceAll(JSON.stringify(tmp), { s: [',{}','{},','{}'], r: ['','',''] }), function(err) {
 			if(err) { res.send({ error: "Can't write file. " + err + '.' }); return; }			
 			if(data.img.split('/')[0] == 'uploads') {
 				fs.unlink('public/' + data.img, function(err) {

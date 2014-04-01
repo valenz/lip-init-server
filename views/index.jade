@@ -2,39 +2,40 @@ extends header
 
 block content
 	#head
-	
-	.TTWForm
-		#tab-add
-			input(type='button' value='New tab')
-
-	.TTWForm-container
-		form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
-			#field8-container.field.f_100
-				input#field8(type='url' name='tabTextUrl' required='required' placeholder='http://')
-			
-			#field2-container.field.f_100
-				input#field2(type='text' name='tabTextName' placeholder='Name (optional)')
+		#logo
+		.TTWForm
+			#tab-add
+				input(type='button' value='New tab')
+		.TTWForm-container
+			form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
+				#field8-container.field.f_100
+					input#field8(type='url' name='tabTextUrl' required='required' placeholder='http://')
 				
-			#form-submit.field.f_100.clearfix.submit
-				#loading
-				input(type='submit' value='Upload')
-				input(type='button' value='Cancel')
-	
-	p.message
-		if error
-			= error
+				#field2-container.field.f_100
+					input#field2(type='text' name='tabTextName' placeholder='Name (optional)')
+					
+				#form-submit.field.f_100.clearfix.submit
+					#loading
+					input(type='submit' value='Upload')
+					input(type='button' value='Cancel')
+		p.message
+			if error
+				= error
 
-	ul
-		each tabs, i in grid
-			each item, j in tabs
-				li.tabs
-					div
-						img.btn-edit(src='images/edit-16-888.ico')
-						img.btn-del(src='images/delete-16-888.ico')
+	ul#grid
+		if grid.length == 0
+			span No data available!
+		else
+			each tabs, i in grid
+				each item, j in tabs
+					li.tabs
 						form.TABForm(action='/api/option' method='post' enctype='multipart/form-data')
-							a(href=item.url)
-								img.pic(src=item.img width='144' height='81')
-								input(type='text' name=j value=item.name disabled)
+							div
+								a(href=item.url)
+									img.pic(src=item.img width='144' height='81')
+									input(type='text' name=j value=item.name)
+								img.btn-edit(src='images/edit-16-888.ico')
+								img.btn-del(src='images/delete-16-888.ico')
 
 	#foot
 		p STEPHAN WEGNER 2014

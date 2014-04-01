@@ -1,10 +1,10 @@
 $(document).ready(function() {
     $('#tab-add').click(function() {
 		if($('.TTWForm-container').css('display') == 'none') {
-			$('.TTWForm-container').css('display', 'block');
+			$('.TTWForm-container').show();
 			$('#field8').focus();
 		} else {
-			$('.TTWForm-container').css('display', 'none');
+			$('.TTWForm-container').hide();
 		}
     });
     
@@ -16,8 +16,8 @@ $(document).ready(function() {
 		$('[id^=field]').each(function() {
 			$(this).val('');
 		});
-		$('.TTWForm-container').css('display', 'none');
-		$('.message').css('display', 'none');
+		$('.TTWForm-container').hide();
+		$('.message').hide();
 	});
     
     
@@ -40,40 +40,91 @@ $(document).ready(function() {
 	
 	$('.TTWForm').submit(function(e) {
 		e.preventDefault();
-		var fd = new FormData($(this)[0]);
+		var fd = $(this);
 		$.ajax({
 			type: 'POST',
-			url: '/api/upload',
-			data: fd,
+			url: fd.attr('action'),
+			data: new FormData(fd[0]),
 			processData: false,
 			contentType: false,
 			error: function(xhr, text, desc) { status(text +' '+ xhr.status +' '+ desc); },
 			success: function(data) {
 				if(data.message) {
-					status(data.message);
-					$('#form-submit').find('[type=submit]').attr('value', 'Upload');
+					$.getJSON('data/data.json', function(data) {
+						if(fd.find('[type=submit]').attr('value') == 'Upload') {
+							setTimeout(function() {
+								for(var i=data.grid.length-1; i<data.grid.length; i++) {
+									for(var j in data.grid[i]) {
+										$('#grid').append('<li class="tabs">'+
+											'<form action="/api/option" method="post" enctype="multipart/form-data" class="TABForm">'+
+												'<div>'+
+													'<a href="'+data.grid[i][j].url+'">'+
+														'<img src="'+data.grid[i][j].img+'" width="144" height="81" class="pic"/>'+
+														'<input type="text" name="'+j+'" value="'+data.grid[i][j].name+'"/>'+
+													'</a>'+
+													'<img src="images/edit-16-888.ico" class="btn-edit"/>'+
+													'<img src="images/delete-16-888.ico" class="btn-del"/>'+
+												'</div></form></li>');
+									}
+								}
+							}, 1000);
+						} else {
+							setTimeout(function() {
+								$('#form-submit').find('[type=submit]').attr('value', 'Upload');
+								var tabId = fd.find('[type=submit]').attr('name');
+								for(var i in data.grid) {
+									for(var j in data.grid[i]) {
+										if(j == tabId) {
+											$('.tabs').find('[name='+tabId+']').attr('value', data.grid[i][j].name);
+											$('.tabs').find('[name='+tabId+']').parent('a').attr('href', data.grid[i][j].url);
+											$('.tabs').find('[name='+tabId+']').prev('img').attr('src', data.grid[i][j].img);
+										}
+									}
+								}
+							}, 1000);
+						}
+						if(data.grid.length != 0) {
+							$('#grid').find('span').hide();
+						}
+					});
 					$('[id^=field]').each(function() {
 						$(this).val('');
 					});
-				} else { status(data.error); }
+					status(data.message);
+				} else {
+					status(data.error);
+				}
+			},
+			complete: function() {
+				$('.TTWForm-container').hide();
 			}
 		});
 	});
 	
 	$('.TABForm').submit(function(e) {
 		e.preventDefault();
-		var fd = new FormData($(this)[0]);
+		var fd = $(this);
 		$.ajax({
 			type: 'POST',
-			url: '/api/option',
-			data: fd,
+			url: fd.attr('action'),
+			data: new FormData(fd[0]),
 			processData: false,
 			contentType: false,
 			error: function(xhr, text, desc) { status(text +' '+ xhr.status +' '+ desc); },
 			success: function(data) {
 				if(data.message) {
 					status(data.message);
-				} else { status(data.error); }
+					fd.parents('.tabs').hide();
+				} else {
+					status(data.error);
+				}
+			},
+			complete: function() {
+				$.getJSON('data/data.json', function(data) {
+					if(data.grid.length == 0) {
+						$('#grid').html('<span>No data available!</span>');
+					}
+				});
 			}
 		});
 	});
@@ -82,9 +133,9 @@ $(document).ready(function() {
 	
 	
 	function status(message) {
-		    $('.message').text(message).css('display', 'block');
+		    $('.message').text(message).show();
 		    setTimeout(function() {
-				$('.message').css('display', 'none');
+				$('.message').hide();
 			}, 5000);
 	}
 	
@@ -110,8 +161,8 @@ $(document).ready(function() {
 		hwaccel: false, // Whether to use hardware acceleration
 		className: 'spinner', // The CSS class to assign to the spinner
 		zIndex: 2e9, // The z-index (defaults to 2000000000)
-		top: '26px', // Top position relative to parent in px
-		left: '245px' // Left position relative to parent in px
+		top: '27px', // Top position relative to parent in px
+		left: '240px' // Left position relative to parent in px
 	};
 	
 	var spinner = new Spinner(opts).spin($('#loading')[0]);
