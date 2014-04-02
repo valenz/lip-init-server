@@ -12,7 +12,7 @@
     color: #798e94;
     background: transparent;
     font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-    height: 150px;
+    height: 165px;
     margin: 25px 0 5px 0;
     display: none;
 }
@@ -93,7 +93,8 @@
 
 .TTWForm input, .TTWForm textarea, .TTWForm select, div.selector, div.uploader  {
     width:100%;
-    font: 16px/18px Helvetica Neue, "Arial", Helvetica, Verdana, sans-serif;
+    height: 31px;
+    font: 20px/22px Helvetica Neue, "Arial", Helvetica, Verdana, sans-serif;
     padding: 6px 0 5px 4px;
     color: #798e94;
     border: 1px solid #17313A;
