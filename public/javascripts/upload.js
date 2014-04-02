@@ -60,13 +60,15 @@ $(document).ready(function() {
 												'<div>'+
 													'<a href="'+data.grid[i][j].url+'">'+
 														'<img src="'+data.grid[i][j].img+'" width="144" height="81" class="pic"/>'+
-														'<input type="text" name="'+j+'" value="'+data.grid[i][j].name+'"/>'+
+														'<h5>'+data.grid[i][j].name+'<h5>'+
+														'<input type="hidden" name="'+j+'" value="'+data.grid[i][j].name+'"/>'+
 													'</a>'+
 													'<img src="images/edit-16-888.ico" class="btn-edit"/>'+
 													'<img src="images/delete-16-888.ico" class="btn-del"/>'+
 												'</div></form></li>');
 									}
 								}
+								$('#form-submit').find('[type=submit]').attr('name', '');
 							}, 1000);
 						} else {
 							setTimeout(function() {
@@ -77,10 +79,12 @@ $(document).ready(function() {
 										if(j == tabId) {
 											$('.tabs').find('[name='+tabId+']').attr('value', data.grid[i][j].name);
 											$('.tabs').find('[name='+tabId+']').parent('a').attr('href', data.grid[i][j].url);
-											$('.tabs').find('[name='+tabId+']').prev('img').attr('src', data.grid[i][j].img);
+											$('.tabs').find('[name='+tabId+']').parent('a').find('h5').text(data.grid[i][j].name);
+											$('.tabs').find('[name='+tabId+']').parent('a').find('img').attr('src', data.grid[i][j].img);
 										}
 									}
 								}
+								$('#form-submit').find('[type=submit]').attr('name', '');
 							}, 1000);
 						}
 						if(data.grid.length != 0) {

@@ -33,7 +33,8 @@ block content
 							div
 								a(href=item.url)
 									img.pic(src=item.img width='144' height='81')
-									input(type='text' name=j value=item.name)
+									h5= item.name
+									input(type='hidden' name=j value=item.name)
 								img.btn-edit(src='images/edit-16-888.ico')
 								img.btn-del(src='images/delete-16-888.ico')
 

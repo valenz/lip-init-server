@@ -31,6 +31,7 @@ app.configure('development', function(){
 
 
 app.post('/api/option', function(req, res) {
+	console.log('delete >');
 	console.log(req.body);
 	var data = { "name": "", "desc": "", "url": "", "img": "" };
 	fs.readFile('public/data/data.json', 'utf8', function(err, getData) {
@@ -77,9 +78,9 @@ app.post('/api/upload', function(req, res) {
 	if(Object.keys(req.body).length > 2) {
 		for(var i in req.body) { tabId = i; }
 	} else { tabId = randomString(5); }
-	
+		
+	console.log('upload >');
 	console.log(req.body);
-	console.log(tabId);
 	
 	var filePath = 'public/data/data.json',
 		imageDefaultPath = 'images/default-tab-bg.jpg',
@@ -90,8 +91,8 @@ app.post('/api/upload', function(req, res) {
 		if(err) { res.send({ error: "Can't read file. " + err + '.'	});	return; }
 		var tmp = JSON.parse(replaceAll(getData, { s: [',{}'], r: [''] }));
 		
-		_page.open(url, function(status) {
-			console.log(status);
+		_page.open(url, function(status) {	
+			console.log('url_status > '+status);
 			if (req.body[tabId] == 'Edit') {
 				var data = new Object(), tabName = '', tabImg = '';
 				data["name"] = name,
