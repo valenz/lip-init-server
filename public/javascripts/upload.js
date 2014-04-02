@@ -68,7 +68,7 @@ $(document).ready(function() {
 									}
 								}
 								$('#form-submit').find('[type=submit]').attr('name', '');
-								setTimeout(function() {location.reload();}, 5000);
+								setTimeout(function() {location.reload();}, 3000);
 							}, 1000);
 						} else {
 							setTimeout(function() {
@@ -85,7 +85,7 @@ $(document).ready(function() {
 									}
 								}
 								$('#form-submit').find('[type=submit]').attr('name', '');
-								setTimeout(function() {location.reload();}, 5000);
+								setTimeout(function() {location.reload();}, 3000);
 							}, 1000);
 						}
 						if(data.grid.length != 0) {

@@ -5,36 +5,33 @@ block content
 		#logo
 		
 		p
-			a#tab-add(rel='leanModal' name='signup' href='#signup')
-				|Create Tab
-			|&nbsp;|&nbsp;
+			a#tab-add(rel='leanModal' name='createtab' href='#createtab')
+				|+
 			a(href='http://intra/en')
 				|Intranet
-			|&nbsp;|&nbsp;
 			a(href='http://www.mpib-berlin.mpg.de')
 				|Max Planck Institut for Human Development
-			|&nbsp;|&nbsp;
 			a(href='mailto:lipsupport@mpib-berlin.mpg.de')
 				|LIP Support
 
 
-		p.message
-			if error
-				= error
+	p.message
+		if error
+			= error
 		
-		.TTWForm-container#signup
-			#signup-header
-				h2 Create a new Tab
+		.TTWForm-container#createtab
+			#createtab-header
+				h2 Create new Tab
 				a.modal_close(href='#')
 			form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
 				
 				#field8-container.field.f_100
-					label Address:
-					input#field8(type='url' name='tabTextUrl' required='required' placeholder='http://')
+					label Address (required):
+					input#field8(type='url' name='tabTextUrl' title='Address' required='required' placeholder='http://')
 				
 				#field2-container.field.f_100
 					label Name (optional):
-					input#field2(type='text' name='tabTextName' placeholder='Name')
+					input#field2(type='text' name='tabTextName' title='Name' placeholder='Name')
 					
 				#form-submit.field.f_100.clearfix.submit
 					#loading
@@ -49,7 +46,7 @@ block content
 					li.tabs
 						form.TABForm(action='/api/option' method='post' enctype='multipart/form-data')
 							div
-								a(href=item.url)
+								a(href=item.url title=item.name)
 									img.pic(src=item.img width='144' height='81')
 									h5= item.name
 									input(type='hidden' name=j value=item.name)

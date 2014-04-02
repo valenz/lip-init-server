@@ -50,9 +50,8 @@ $(document).ready(function() {
 	
 	
 	
-	$('#tab-add').leanModal({ top : 200, overlay : 0.4, closeButton: ".modal_close" });
+	$('#tab-add').leanModal({ top : 180, overlay : 0.7, closeButton: ".modal_close" });
 	$('#lean_overlay').click(function() {
-		//$('#form-submit').find('[type=submit]').attr('value', 'Upload');
 		$('.modal_close').click();
 	});
 });
