@@ -3,24 +3,42 @@ extends header
 block content
 	#head
 		#logo
-		.TTWForm
-			#tab-add
-				input(type='button' value='New tab')
-		.TTWForm-container
+		
+		p
+			a#tab-add(rel='leanModal' name='signup' href='#signup')
+				|Create Tab
+			|&nbsp;|&nbsp;
+			a(href='http://intra/en')
+				|Intranet
+			|&nbsp;|&nbsp;
+			a(href='http://www.mpib-berlin.mpg.de')
+				|Max Planck Institut for Human Development
+			|&nbsp;|&nbsp;
+			a(href='mailto:lipsupport@mpib-berlin.mpg.de')
+				|LIP Support
+
+
+		p.message
+			if error
+				= error
+		
+		.TTWForm-container#signup
+			#signup-header
+				h2 Create a new Tab
+				a.modal_close(href='#')
 			form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
+				
 				#field8-container.field.f_100
+					label Address:
 					input#field8(type='url' name='tabTextUrl' required='required' placeholder='http://')
 				
 				#field2-container.field.f_100
-					input#field2(type='text' name='tabTextName' placeholder='Name (optional)')
+					label Name (optional):
+					input#field2(type='text' name='tabTextName' placeholder='Name')
 					
 				#form-submit.field.f_100.clearfix.submit
 					#loading
 					input(type='submit' value='Upload')
-					input(type='button' value='Cancel')
-		p.message
-			if error
-				= error
 
 	ul#grid
 		if grid.length == 0
@@ -40,12 +58,3 @@ block content
 
 	#foot
 		p STEPHAN WEGNER 2014
-		p
-			a(href='http://intra/en')
-				|Intranet
-			|&nbsp;| 
-			a(href='http://www.mpib-berlin.mpg.de')
-				|Max Planck Institut for Human Development
-			|&nbsp;|&nbsp;
-			a(href='mailto:lipsupport@mpib-berlin.mpg.de')
-				|LIP Support

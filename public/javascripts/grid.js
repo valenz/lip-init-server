@@ -22,13 +22,12 @@ $(document).ready(function() {
 		var arr = new Array();
 		arr[0] = $(this).parents('.tabs').find('a').attr('href');
 		arr[1] = $(this).parents('.tabs').find('input').attr('value');
-		arr[2] = $(this).parents('.tabs').find('p').text();
-		$('.TTWForm-container').css('display', 'block');
 		$('[name^=tabText]', '[id^=field]').each(function(key) {
 			$(this).val(arr[key]);
 		});
 		$('#form-submit').find('[type=submit]').attr('value', 'Edit');
 		$('#form-submit').find('[type=submit]').attr('name', $(this).parents('.tabs').find('input').attr('name'));
+		$('#tab-add').click();
 	});
 	
 	
@@ -46,5 +45,14 @@ $(document).ready(function() {
 		if(confirm('You are going to delete the tab '+$(this).parents('.tabs').find('input').first().attr('value')+'.\nAre you sure with that?')) {
 			$(this).parents('form').submit();
 		}
+	});
+	
+	
+	
+	
+	$('#tab-add').leanModal({ top : 200, overlay : 0.4, closeButton: ".modal_close" });
+	$('#lean_overlay').click(function() {
+		//$('#form-submit').find('[type=submit]').attr('value', 'Upload');
+		$('.modal_close').click();
 	});
 });

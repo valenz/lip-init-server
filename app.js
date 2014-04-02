@@ -180,9 +180,8 @@ http.createServer(app).listen(app.get('port'), function() {
 });
 
 phantom.create('--web-security=no', '--ignore-ssl-errors=yes', function(ph) {
-	console.log('Phantom Bridge Initiated');
 	ph.createPage(function(page) {
 		_page = page;
-		console.log('Page created!');
+		console.log('Phantom bridge initiated and page created.');
 	});
 });

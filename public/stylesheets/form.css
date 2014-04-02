@@ -8,23 +8,56 @@
 
 
 .TTWForm-container {
+    position: fixed;
+    z-index: 11000;
+    left: 50%;
+    opacity: 1;
+    height: auto;
+    width: 550px;
+    background: #17313A;
+    display: none;
     font-size: 12px;
-    color: #798e94;
-    background: transparent;
-    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
-    height: 165px;
-    margin: 25px 0 5px 0;
+    padding: 0px 0px 40px 0;
+	border: 1px solid #FFF9E5;
+	border-radius: 3px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	-ms-border-radius: 4px;
+	box-shadow: 0 0 0 1px #17313A;
+	-moz-box-shadow: 0 0 0 1px #17313A;
+	-webkit-box-shadow: 0 0 0 1px #17313A;
+}
+
+#lean_overlay {
+    position: fixed;
+    z-index:10000;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
     display: none;
 }
 
+#signup-header {
+	padding: 7px 18px 5px 34px;
+	background-color: #12282F;
+	border-bottom: 1px solid #FFF9E5;
+	border-radius: 3px;
+	-webkit-border-radius: 4px 4px 0px 0px;
+	-moz-border-radius: 4px 4px 0px 0px;
+	-ms-border-radius: 4px 4px 0px 0px;
+}
 
-
-
-.TTWForm-container h2 {
-    font-size: 2em;
-    margin-bottom: 0.75em;
-    color: #65777c;
-    font-weight: normal;
+.modal_close {
+	background: #12282F url(../images/modal_close.png) no-repeat 0 0 scroll;
+	z-index: 2;
+	width: 14px;
+	height: 14px;
+	display: block;
+	position: absolute;
+	top: 12px;
+	right: 12px;
 }
 
 
@@ -32,8 +65,8 @@
 
 /** Field Styles **/
 .TTWForm .field, #form-title.field {
-    padding-bottom: 12px;
-    padding-top: 12px;
+    padding-bottom: 25px;
+    padding-top: 0;
     position: relative;
     clear: both;
 }
@@ -43,11 +76,11 @@
 	position: relative;
 }
 
-.TTWForm .field:first-child{
-    padding-top:0;
+.TTWForm .field:first-child {
+    padding-top:25px;
 }
 
-.TTWForm .field:last-child{
+.TTWForm .field:last-child {
     padding-bottom:0;
 }
 
@@ -134,11 +167,19 @@
 }
 
 .TTWForm label {
-    color: #798e94;
+    color: #FFF9E5;
     text-align: left;
-    font: 14px/24px Helvetica Neue, "Arial", Helvetica, Verdana, sans-serif;
+    font: 18px/24px Helvetica Neue, "Arial", Helvetica, Verdana, sans-serif;
     margin-bottom:5px;
     display:inline-block;
+}
+
+.TTWForm label:first-child {
+    padding-top:0;
+}
+
+.TTWForm label:last-child {
+    padding-bottom:0;
 }
 
 .TTWForm .submit input {

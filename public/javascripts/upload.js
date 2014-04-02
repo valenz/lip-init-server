@@ -1,23 +1,22 @@
 $(document).ready(function() {
     $('#tab-add').click(function() {
-		if($('.TTWForm-container').css('display') == 'none') {
-			$('.TTWForm-container').show();
-			$('#field8').focus();
-		} else {
-			$('.TTWForm-container').hide();
-		}
+		$('.TTWForm-container').show();
+		$('#field8').focus();
     });
     
     /* Cancel Form */
-    $('#form-submit').find('[type=button]', '[value=cancel]').click(function() {
-		if($(this).parents('#form-submit').find('[type=submit]').attr('value') == 'Edit') {
-			$(this).parents('#form-submit').find('[type=submit]').attr('value', 'Upload');
+	$('.modal_close').click(function() {
+		console.log($('#form-submit').find('[type=submit]').attr('value'));
+		if($('#form-submit').find('[type=submit]').attr('value') == 'Edit') {
+			$('#form-submit').find('[type=submit]').attr('value', 'Upload');
+			$('#form-submit').find('[type=submit]').attr('name', '');
 		}
 		$('[id^=field]').each(function() {
 			$(this).val('');
 		});
 		$('.TTWForm-container').hide();
 		$('.message').hide();
+		$('#lean_overlay').hide();
 	});
     
     
@@ -69,6 +68,7 @@ $(document).ready(function() {
 									}
 								}
 								$('#form-submit').find('[type=submit]').attr('name', '');
+								setTimeout(function() {location.reload();}, 5000);
 							}, 1000);
 						} else {
 							setTimeout(function() {
@@ -85,12 +85,14 @@ $(document).ready(function() {
 									}
 								}
 								$('#form-submit').find('[type=submit]').attr('name', '');
+								setTimeout(function() {location.reload();}, 5000);
 							}, 1000);
 						}
 						if(data.grid.length != 0) {
 							$('#grid').find('span').hide();
 						}
 					});
+					$('#lean_overlay').hide();
 					$('[id^=field]').each(function() {
 						$(this).val('');
 					});
@@ -165,8 +167,8 @@ $(document).ready(function() {
 		hwaccel: false, // Whether to use hardware acceleration
 		className: 'spinner', // The CSS class to assign to the spinner
 		zIndex: 2e9, // The z-index (defaults to 2000000000)
-		top: '27px', // Top position relative to parent in px
-		left: '240px' // Left position relative to parent in px
+		top: '16px', // Top position relative to parent in px
+		left: '360px' // Left position relative to parent in px
 	};
 	
 	var spinner = new Spinner(opts).spin($('#loading')[0]);
