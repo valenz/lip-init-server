@@ -5,7 +5,7 @@ block content
 		#logo
 		
 		p
-			a#tab-add(rel='leanModal' name='createtab' href='#createtab')
+			a#tab-add(href='#createtab')
 				|Create Tab
 			a(href='http://intra/en')
 				|Intranet
@@ -13,25 +13,25 @@ block content
 				|Max Planck Institut for Human Development
 			a(href='mailto:lipsupport@mpib-berlin.mpg.de')
 				|LIP Support
-
+			a#refresh(href='#refresh')
+				i.fa.fa-refresh.fa-lg
+	
 	p.message
-		if error
-			= error
 		
 		.TTWForm-container#createtab
 			#createtab-header
 				h2 Create new Tab
-				a.modal_close(href='#')
+				a.modal_close(href='#cancel')
+					i.fa.fa-times-circle.fa-lg
 			form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
-				
 				#field8-container.field.f_100
-					label Address (required):
+					label
+						|Address (required):
 					input#field8(type='url' name='tabTextUrl' title='Address' required='required' placeholder='http://')
-				
 				#field2-container.field.f_100
-					label Name (optional):
+					label
+						|Name (optional):
 					input#field2(type='text' name='tabTextName' title='Name' placeholder='Name')
-					
 				#form-submit.field.f_100.clearfix.submit
 					#loading
 					input(type='submit' value='Upload')
@@ -49,8 +49,8 @@ block content
 									img.pic(src=item.img width='144' height='81')
 									h5= item.name
 									input(type='hidden' name=j value=item.name)
-								img.btn-edit(src='images/edit-16-888.ico')
-								img.btn-del(src='images/delete-16-888.ico')
+								i.btn-edit.fa.fa-edit
+								i.btn-del.fa.fa-trash-o
 
 	#foot
 		p STEPHAN WEGNER 2014

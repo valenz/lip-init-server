@@ -12,7 +12,7 @@ var express = require('express')
   , app = express();
 
 app.configure(function(){
-	app.set('port', process.env.PORT || 8080);
+	app.set('port', process.env.PORT || 9090);
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
 	app.use(express.bodyParser());
@@ -35,7 +35,7 @@ app.post('/api/option', function(req, res) {
 	console.log(req.body);
 	var data = { "name": "", "desc": "", "url": "", "img": "" };
 	fs.readFile('public/data/data.json', 'utf8', function(err, getData) {
-		if(err) { res.send({ error: "Can't read file. " + err + '.'	});	return; }
+		if(err) {res.send({error: "Can't read file. " + err + '.'}); return;}
 		var tmp = JSON.parse(getData);
 		var tabId = '';
 		for(var i in req.body) { tabId = i; }
@@ -88,7 +88,7 @@ app.post('/api/upload', function(req, res) {
 		uploadPath = 'public/'+imagePath;
 	
 	fs.readFile(filePath, 'utf8', function(err, getData) {
-		if(err) { res.send({ error: "Can't read file. " + err + '.'	});	return; }
+		if(err) {res.send({error: "Can't read file. " + err + '.'}); return;}
 		var tmp = JSON.parse(replaceAll(getData, { s: [',{}'], r: [''] }));
 		
 		_page.open(url, function(status) {	
@@ -114,7 +114,7 @@ app.post('/api/upload', function(req, res) {
 				}
 				if(tabImg.split('/')[0] == 'uploads') {
 					fs.unlink('public/' + tabImg, function(err) {
-						if(err) { res.send({ error: "Can't delete file. " + err + '.'	});	return; }
+						if(err) {res.send({error: "Can't delete file. " + err + '.'}); return;}
 					});
 				}
 				updateGrid(res, filePath, JSON.stringify(tmp), 'Successfully updated tab ' + tabName + '.');
@@ -140,7 +140,7 @@ app.post('/api/upload', function(req, res) {
 
 function updateGrid(res, filePath, data, msg) {	
 	fs.writeFile(filePath, data, function(err) {
-		if(err) { res.send({ error: "Can't write file. " + err + '.' }); return; }
+		if(err) {res.send({error: "Can't write file. " + err + '.'}); return;}
 		res.send({
 			message: msg
 		});

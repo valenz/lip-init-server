@@ -50,7 +50,7 @@
 }
 
 .modal_close {
-	background: #12282F url(../images/modal_close.png) no-repeat 0 0 scroll;
+	color: #FFF9E5;
 	z-index: 2;
 	width: 14px;
 	height: 14px;
