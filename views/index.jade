@@ -5,24 +5,24 @@ block content
 		#logo
 		
 		p
-			a#tab-add(href='#createtab')
-				|Create Tab
+			a#tab-add(rel='leanModal' name='createtab' title='Create new tab' href='#createtab')
+				i.fa.fa-plus-circle
+				|Create
 			a(href='http://intra/en')
 				|Intranet
 			a(href='http://www.mpib-berlin.mpg.de')
 				|Max Planck Institut for Human Development
-			a(href='mailto:lipsupport@mpib-berlin.mpg.de')
+			a(title='Write a email' href='mailto:lipsupport@mpib-berlin.mpg.de')
 				|LIP Support
-			a#refresh(href='#refresh')
-				i.fa.fa-refresh.fa-lg
-	
-	p.message
+			a#reload(title='Reload grid' href='#reload')
+				i.fa.fa-refresh
+			a#note-add(rel='leanModal' name='note' href='#note')
 		
 		.TTWForm-container#createtab
 			#createtab-header
 				h2 Create new Tab
-				a.modal_close(href='#cancel')
-					i.fa.fa-times-circle.fa-lg
+				a.modal_close(href='#' title='Close')
+					i.fa.fa-times.fa-lg
 			form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
 				#field8-container.field.f_100
 					label
@@ -32,14 +32,20 @@ block content
 					label
 						|Name (optional):
 					input#field2(type='text' name='tabTextName' title='Name' placeholder='Name')
+					input#field2(type='hidden' name='upload')
 				#form-submit.field.f_100.clearfix.submit
 					#loading
-					input(type='submit' value='Upload')
+					input(type='submit')
+					i#submit.fa.fa-upload.fa-2x(title='Upload')
 
-	ul#grid
-		if grid.length == 0
-			span No data available!
-		else
+	.status#note
+		p.message
+		span
+		a.modal_close(href='#' title='Close')
+			i.fa.fa-times.fa-lg
+
+	if grid.length != 0
+		ul#grid
 			each tabs, i in grid
 				each item, j in tabs
 					li.tabs
@@ -49,8 +55,13 @@ block content
 									img.pic(src=item.img width='144' height='81')
 									h5= item.name
 									input(type='hidden' name=j value=item.name)
-								i.btn-edit.fa.fa-edit
-								i.btn-del.fa.fa-trash-o
+								i.btn-edit.fa.fa-edit(title='Edit tab')
+								i.btn-del.fa.fa-times(title='Delete tab')
+	else
+		p.no-data
+			if grid.length == 0
+				i.fa.fa-exclamation-circle
+				|No data available!
 
 	#foot
 		p STEPHAN WEGNER 2014

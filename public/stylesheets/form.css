@@ -12,8 +12,8 @@
     z-index: 11000;
     left: 50%;
     opacity: 1;
-    height: auto;
-    width: 550px;
+    height: 300px;
+    width: 500px;
     background: #17313A;
     display: none;
     font-size: 12px;
@@ -49,6 +49,9 @@
 	-ms-border-radius: 4px 4px 0px 0px;
 }
 
+
+
+
 .modal_close {
 	color: #FFF9E5;
 	z-index: 2;
@@ -71,21 +74,12 @@
     clear: both;
 }
 
-.TTWForm .status {
-	clear: both;
-	position: relative;
-}
-
 .TTWForm .field:first-child {
     padding-top:25px;
 }
 
 .TTWForm .field:last-child {
     padding-bottom:0;
-}
-
-#form-submit input[type=button] {
-	margin-right: 20px;
 }
 
 
@@ -116,11 +110,11 @@
 }
 
 .f_100 {
-    width: 96%;
+    width: 89%;
     display: inline;
     float: left;
-    margin-left: 2%;
-    margin-right: 2%; /* jquery ui resize grid hack - not sure why */
+    margin-left: 5%;
+    margin-right: 5%; /* jquery ui resize grid hack - not sure why */
 }
 
 
@@ -145,27 +139,6 @@
     -moz-transition: .3s ease-in-out;
 }
 
-.TTWForm input[type=radio], .TTWForm input[type=checkbox] {
-    width: 12px;
-    margin: 8px 12px;
-    top: 3px;
-    position: relative;
-}
-
-.TTWForm .option{
-    margin:6px 0;
-}
-
-.TTWForm .option-title{
-    position:relative;
-    top:2px;
-    color: #798e94;
-}
-
-.TTWForm textarea {
-    overflow: hidden;
-}
-
 .TTWForm label {
     color: #FFF9E5;
     text-align: left;
@@ -182,63 +155,20 @@
     padding-bottom:0;
 }
 
-.TTWForm .submit input {
-    text-align: center;
-    font-size: 16px;
-    text-decoration: none;
-    border-radius: 3px;
-    -webkit-border-radius: 4px;
-    -moz-border-radius: 4px;
-    -ms-border-radius: 4px;
-    text-shadow: 1px 1px 0px #fff;
+.TTWForm .submit i {
     display: block;
     margin: 0px -6px 0px 0;
     text-align: center;
     float: right;
-    padding:4px 12px;
+    padding:4px 0px 0px 0px;
     height: 28px;
     cursor: pointer;
-    min-width: 96px;
-    width: auto;
-    background: #ddedf3 url(../images/button-bg.jpg) repeat-x 0 0 scroll;
-    box-shadow: 0 0 0 1px #eef5f7;
-    -moz-box-shadow: 0 0 0 1px #eef5f7;
-    -webkit-box-shadow: 0 0 0 1px #eef5f7;
-    border: 1px solid #17313A;
-    font-weight: bold;
-    color: #17313A;
+    min-width: 36px;
+    color: #FFF9E5;
 }
 
-#form-title {
-    padding: 12px;
-}
-
-#form-title h2{
-    margin-bottom:0;
-    color: #798e94;
-}
-
-
-
-
-/**Error Messages **/
-.TTWForm .error {
-    height: 16px;
-    font: 11px/16px Helvetica Neue, "Arial", Helvetica, Verdana, sans-serif;
-    color: #ff0033;
-    padding-left: 12px;
-    z-index: 999;
-    position:relative;
-    top:-1px;
-}
-
-
-
-
-/** Loading Indicator **/
-.loading-text{
-    position:relative;
-    top:-3px;
+.TTWForm .submit input {
+	display: none;
 }
 
 

@@ -31,20 +31,20 @@ app.configure('development', function(){
 
 
 app.post('/api/option', function(req, res) {
+	
 	console.log('delete >');
 	console.log(req.body);
-	var data = { "name": "", "desc": "", "url": "", "img": "" };
+	
 	fs.readFile('public/data/data.json', 'utf8', function(err, getData) {
 		if(err) {res.send({error: "Can't read file. " + err + '.'}); return;}
 		var tmp = JSON.parse(getData);
-		var tabId = '';
+		var data = new Object();
+		data["name"] = '', data["img"] = '', tabId = '';
 		for(var i in req.body) { tabId = i; }
 		for(var tabs in tmp.grid) {
 			for(var item in tmp.grid[tabs]) {
 				if(item == tabId) {
 					data.name = tmp.grid[tabs][item].name;
-					data.desc = tmp.grid[tabs][item].desc;
-					data.url = tmp.grid[tabs][item].url;
 					data.img = tmp.grid[tabs][item].img;
 					delete tmp.grid[tabs][tabId];
 					break;
@@ -53,12 +53,10 @@ app.post('/api/option', function(req, res) {
 		}
 		
 		fs.writeFile('public/data/data.json', replaceAll(JSON.stringify(tmp), { s: [',{}','{},','{}'], r: ['','',''] }), function(err) {
-			if(err) { res.send({ error: "Can't write file. " + err + '.' }); return; }			
-			if(data.img.split('/')[0] == 'uploads') {
-				fs.unlink('public/' + data.img, function(err) {
-					if(err) { res.send({ error: "Can't delete file. " + err + '.'	});	return; }
-				});
-			}
+			if(err) { res.send({ error: "Can't write file. " + err + '.' }); return; }
+			fs.unlink('public/' + data.img, function(err) {
+				if(err) { res.send({ error: "Can't delete file. " + err + '.'	});	return; }
+			});
 			res.send({
 				message: 'Successfully deleted tab ' + data.name + '.'
 			});
@@ -72,69 +70,76 @@ app.post('/api/upload', function(req, res) {
 		str2 = str1 == 'www' ? url.split('/')[2].split('.')[1] : '',
 		name = req.body.tabTextName != '' ? req.body.tabTextName.charAt(0).toUpperCase()+req.body.tabTextName.slice(1) : str1 == 'www' ? str2.charAt(0).toUpperCase()+str2.slice(1) : str1.charAt(0).toUpperCase()+str1.slice(1),
 		name = name.length > 20 ? name.substring(0, 20)+'...' : name;
-		desc = req.body.tabTextDesc,
-		tabId = '';
-	
-	if(Object.keys(req.body).length > 2) {
-		for(var i in req.body) { tabId = i; }
-	} else { tabId = randomString(5); }
-		
-	console.log('upload >');
-	console.log(req.body);
+		tabId = req.body.edit ? req.body.edit : randomString(9);
 	
 	var filePath = 'public/data/data.json',
-		imageDefaultPath = 'images/default-tab-bg.jpg',
 		imagePath = 'uploads/'+tabId+'.png',
 		uploadPath = 'public/'+imagePath;
 	
+	console.log(req.body);
+	
 	fs.readFile(filePath, 'utf8', function(err, getData) {
 		if(err) {res.send({error: "Can't read file. " + err + '.'}); return;}
-		var tmp = JSON.parse(replaceAll(getData, { s: [',{}'], r: [''] }));
+		var tmp = JSON.parse(getData), change = false;
 		
-		_page.open(url, function(status) {	
-			console.log('url_status > '+status);
-			if (req.body[tabId] == 'Edit') {
-				var data = new Object(), tabName = '', tabImg = '';
-				data["name"] = name,
-				data["desc"] = desc,
-				data["url"] = url,
-				data["img"] = url != '' && status == 'success' ? imagePath : imageDefaultPath;
-				for(var tabs in tmp.grid) {
-					for(var item in tmp.grid[tabs]) {
-						if(item == tabId) {
-							tabName = tmp.grid[tabs][item].name;
-							tabImg = tmp.grid[tabs][item].img;
-							tmp.grid[tabs][item].name = data.name;
-							tmp.grid[tabs][item].desc = data.desc;
-							tmp.grid[tabs][item].url = data.url;
-							tmp.grid[tabs][item].img = data.img;
-							break;
-						}
+		if (req.body.edit) {
+			
+			console.log('edited > '+tabId);
+			
+			var data = new Object(), tabName = '', tabImg = '';
+			data["name"] = name,
+			data["url"] = url,
+			data["img"] = url != '' ? imagePath : '';
+			for(var tabs in tmp.grid) {
+				for(var item in tmp.grid[tabs]) {
+					if(item == tabId) {
+						if(tmp.grid[tabs][item].url != data.url) {change = true;}
+						tabName = tmp.grid[tabs][item].name;
+						tabImg = tmp.grid[tabs][item].img;
+						tmp.grid[tabs][item].name = data.name;
+						tmp.grid[tabs][item].url = data.url;
+						tmp.grid[tabs][item].img = data.img;
+						break;
 					}
 				}
-				if(tabImg.split('/')[0] == 'uploads') {
-					fs.unlink('public/' + tabImg, function(err) {
-						if(err) {res.send({error: "Can't delete file. " + err + '.'}); return;}
+			}
+			if(change) {
+				fs.unlink('public/' + tabImg, function(err) {
+					if(err) {res.send({error: "Can't delete file. " + err + '.'}); return;}
+					_page.open(url, function(status) {
+						
+						console.log('url_status > '+status);
+						
+						if(status == 'success') {
+							_page.set('viewportSize', {width:1024,height:576});
+							_page.set('clipRect', {top:0,left:0,width:1024,height:576});
+							_page.render(uploadPath);
+						}
 					});
-				}
-				updateGrid(res, filePath, JSON.stringify(tmp), 'Successfully updated tab ' + tabName + '.');
-			} else {
+				});
+			}
+			updateGrid(res, filePath, JSON.stringify(tmp), 'Successfully updated tab ' + tabName + '.');
+		} else {
+			_page.open(url, function(status) {
+				
+				console.log('uploaded > '+tabId);
+				console.log('url_status > '+status);
+				
 				var data = new Object(), tab = new Object();
 				data["name"] = name,
-				data["desc"] = desc,
 				data["url"] = url,
-				data["img"] = url != '' && status == 'success' ? imagePath : imageDefaultPath,
+				data["img"] = url != '' && status == 'success' ? imagePath : '',
 				tab[tabId] = data;
 				tmp.grid.push(tab);
 				updateGrid(res, filePath, JSON.stringify(tmp), 'Tab has been successfully added to grid.');
-			}
 			
-			if(status == 'success') {
-				_page.set('viewportSize', {width:1024,height:576});
-				_page.set('clipRect', {top:0,left:0,width:1024,height:576});
-				_page.render(uploadPath);
-			}
-		});
+				if(status == 'success') {
+					_page.set('viewportSize', {width:1024,height:576});
+					_page.set('clipRect', {top:0,left:0,width:1024,height:576});
+					_page.render(uploadPath);
+				}
+			});
+		}
 	});
 });
 
