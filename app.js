@@ -36,7 +36,7 @@ app.post('/api/option', function(req, res) {
 	console.log(req.body);
 	
 	fs.readFile('public/data/data.json', 'utf8', function(err, getData) {
-		if(err) {res.send({error: "Can't read file. " + err + '.'}); return;}
+		if(err) {res.send({error: 'Error No: ' + err.errno + "; Can't read file. " + err + '.'}); return;}
 		var tmp = JSON.parse(getData);
 		var data = new Object();
 		data["name"] = '', data["img"] = '', tabId = '';
@@ -53,9 +53,9 @@ app.post('/api/option', function(req, res) {
 		}
 		
 		fs.writeFile('public/data/data.json', replaceAll(JSON.stringify(tmp), { s: [',{}','{},','{}'], r: ['','',''] }), function(err) {
-			if(err) { res.send({ error: "Can't write file. " + err + '.' }); return; }
+			if(err) { res.send({ error: 'Error No: ' + err.errno + "; Can't write file. " + err + '.' }); return; }
 			fs.unlink('public/' + data.img, function(err) {
-				if(err) { res.send({ error: "Can't delete file. " + err + '.'	});	return; }
+				if(err) { res.send({ error: 'Error No: ' + err.errno + "; Can't delete file. " + err + '.'	});	return; }
 			});
 			res.send({
 				message: 'Successfully deleted tab ' + data.name + '.'
@@ -63,6 +63,9 @@ app.post('/api/option', function(req, res) {
 		});
 	});
 });
+
+
+
 
 app.post('/api/upload', function(req, res) {
 	var url = req.body.tabTextUrl,
@@ -79,7 +82,7 @@ app.post('/api/upload', function(req, res) {
 	console.log(req.body);
 	
 	fs.readFile(filePath, 'utf8', function(err, getData) {
-		if(err) {res.send({error: "Can't read file. " + err + '.'}); return;}
+		if(err) {res.send({error: 'Error No: ' + err.errno + "; Can't read file. " + err + '.'}); return;}
 		var tmp = JSON.parse(getData), change = false;
 		
 		/** Edit tab */
@@ -117,7 +120,6 @@ app.post('/api/upload', function(req, res) {
 						for(var tabs in tmp.grid) {
 							for(var item in tmp.grid[tabs]) {
 								if(item == tabId) {
-									if(tmp.grid[tabs][item].url != data.url) {change = true;}
 									tabName = tmp.grid[tabs][item].name;
 									tabImg = tmp.grid[tabs][item].img;
 									tmp.grid[tabs][item].name = data.name;
@@ -129,14 +131,18 @@ app.post('/api/upload', function(req, res) {
 								}
 							}
 						}
-						if(change) {
-							fs.unlink('public/' + tabImg, function(err) {
-								if(err) {res.send({error: "Can't delete file. " + err + '.'}); return;}
-								_page.set('viewportSize', {width:1024,height:576});
-								_page.set('clipRect', {top:0,left:0,width:1024,height:576});
-								_page.render(uploadPath);
-							});
-						}
+						
+						fs.exists('public/' + tabImg, function(exists) {
+							if(exists) {
+								fs.unlink('public/' + tabImg, function(err) {
+									if(err) {res.send({error: 'Error No: ' + err.errno + "; Can't delete file. " + err + '.'}); return;}
+								});
+							}
+							_page.set('viewportSize', {width:1024,height:576});
+							_page.set('clipRect', {top:0,left:0,width:1024,height:576});
+							_page.render(uploadPath);
+						});
+						
 						updateGrid(res, filePath, JSON.stringify(tmp), 'Successfully updated tab ' + tabName + '.');
 					}, "title");
 				/** Url is not valid */
@@ -169,7 +175,7 @@ app.post('/api/upload', function(req, res) {
 					}
 					if(change) {
 						fs.unlink('public/' + tabImg, function(err) {
-							if(err) {res.send({error: "Can't delete file. " + err + '.'}); return;}
+							if(err) {res.send({error: 'Error No: ' + err.errno + "; Can't delete file. " + err + '.'}); return;}
 							_page.set('viewportSize', {width:1024,height:576});
 							_page.set('clipRect', {top:0,left:0,width:1024,height:576});
 							_page.render(uploadPath);
@@ -239,7 +245,7 @@ app.post('/api/upload', function(req, res) {
 
 function updateGrid(res, filePath, data, msg) {	
 	fs.writeFile(filePath, data, function(err) {
-		if(err) {res.send({error: "Can't write file. " + err + '.'}); return;}
+		if(err) {res.send({error: 'Error No: ' + err.errno + "; Can't write file. " + err + '.'}); return;}
 		res.send({
 			message: msg
 		});

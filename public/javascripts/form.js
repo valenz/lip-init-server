@@ -2,6 +2,7 @@ $(document).ready(function() {
 	/** Create new tab */
     $('#tab-add').click(function() {
 		$('.TTWForm-container').show();
+		$('#submit').show();
 		$('#field8').focus();
     });
     /** Connect leanModal trigger to target ID */
@@ -43,10 +44,10 @@ $(document).ready(function() {
     /** Cancel form */
     $('.modal_close').click(function() {
 		$('.TTWForm').find('[type=hidden]').attr('name', 'upload');
-		//$('#form-submit').find('[type=submit]').attr('value', 'Upload');
 		$('[id^=field]').each(function() {
 			$(this).val('');
 		});
+		$('#submit').show();
 		$('.TTWForm-container').hide();
 		$('#lean_overlay').hide();
     });
@@ -83,6 +84,7 @@ $(document).ready(function() {
 			complete: function() {
 				$('#lean_overlay').hide();
 				$('.TTWForm-container').hide();
+				$('#submit').show();
 			}
 		});
     });

@@ -9,7 +9,7 @@ exports.index = function(req, res) {
 			getJson(filePath, res);
 		} else {
 			fs.writeFile(filePath, JSON.stringify(tmp), function(err) {
-				if(err) {res.send({error: err.errno+": Can't write file. " + err + '.'}); return;}
+				if(err) {res.send({error: 'Error No: ' + err.errno + "; Can't write file. " + err + '.'}); return;}
 				getJson(filePath, res);
 			});
 		}
@@ -18,7 +18,7 @@ exports.index = function(req, res) {
 
 function getJson(url, res) {
 	fs.readFile(url, 'utf8', function(err, data) {
-		if(err) {res.send({error: err.errno+": Can't read file. " + err + '.'}); return;}
+		if(err) {res.send({error: 'Error No: ' + err.errno + "; Can't read file. " + err + '.'}); return;}
 		try {
 			res.render('index', JSON.parse(data));
 		} catch(e) {
