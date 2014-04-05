@@ -32,4 +32,10 @@ $(document).ready(function() {
 			$(this).parents('form').submit();
 		}
 	});
+	
+	
+	
+	
+	/** Auto reload (1 minute = 60000) */
+	setTimeout(function() {location.reload();}, (60000*30));
 });

@@ -82,61 +82,155 @@ app.post('/api/upload', function(req, res) {
 		if(err) {res.send({error: "Can't read file. " + err + '.'}); return;}
 		var tmp = JSON.parse(getData), change = false;
 		
+		/** Edit tab */
 		if (req.body.edit) {
-			
-			console.log('edited > '+tabId);
-			
-			var data = new Object(), tabName = '', tabImg = '';
-			data["name"] = name,
-			data["url"] = url,
-			data["img"] = url != '' ? imagePath : '';
-			for(var tabs in tmp.grid) {
-				for(var item in tmp.grid[tabs]) {
-					if(item == tabId) {
-						if(tmp.grid[tabs][item].url != data.url) {change = true;}
-						tabName = tmp.grid[tabs][item].name;
-						tabImg = tmp.grid[tabs][item].img;
-						tmp.grid[tabs][item].name = data.name;
-						tmp.grid[tabs][item].url = data.url;
-						tmp.grid[tabs][item].img = data.img;
-						break;
-					}
-				}
-			}
-			if(change) {
-				fs.unlink('public/' + tabImg, function(err) {
-					if(err) {res.send({error: "Can't delete file. " + err + '.'}); return;}
-					_page.open(url, function(status) {
-						
+			_page.open(url, function(status) {
+				/** Url is valid */
+				if(status == 'success') {
+					_page.evaluate(function() {
+						var data = new Object();
+						data["title"] = document.title;
+						var icon = document.getElementsByTagName('link');
+						for(var i in icon) {
+							try {
+								if(icon[i].rel.toLowerCase().indexOf('icon') > -1) {
+									data["icon"] = icon[i].href;
+									return data;
+								}
+							} catch(e) {
+								return data;
+							}
+						}
+					}, function(result) {
+				
+						console.log('edited > '+tabId);
 						console.log('url_status > '+status);
+						console.log(result);
 						
-						if(status == 'success') {
+						var data = new Object(), tabName = '', tabImg = '';
+						data["name"] = req.body.tabTextName == '' ? result.title.length > 20 ? result.title.substring(0, 20)+'...' : result.title : name,
+						data["url"] = url,
+						data["title"] = result.title,
+						data["icon"] = result.icon,
+						data["img"] = url != '' ? imagePath : '';
+			
+						for(var tabs in tmp.grid) {
+							for(var item in tmp.grid[tabs]) {
+								if(item == tabId) {
+									if(tmp.grid[tabs][item].url != data.url) {change = true;}
+									tabName = tmp.grid[tabs][item].name;
+									tabImg = tmp.grid[tabs][item].img;
+									tmp.grid[tabs][item].name = data.name;
+									tmp.grid[tabs][item].url = data.url;
+									tmp.grid[tabs][item].title = data.title;
+									tmp.grid[tabs][item].icon = data.icon;
+									tmp.grid[tabs][item].img = data.img;
+									break;
+								}
+							}
+						}
+						if(change) {
+							fs.unlink('public/' + tabImg, function(err) {
+								if(err) {res.send({error: "Can't delete file. " + err + '.'}); return;}
+								_page.set('viewportSize', {width:1024,height:576});
+								_page.set('clipRect', {top:0,left:0,width:1024,height:576});
+								_page.render(uploadPath);
+							});
+						}
+						updateGrid(res, filePath, JSON.stringify(tmp), 'Successfully updated tab ' + tabName + '.');
+					}, "title");
+				/** Url is not valid */
+				} else {
+				
+					console.log('edited > '+tabId);
+					console.log('url_status > '+status);
+					
+					var data = new Object(), tabName = '', tabImg = '';
+					data["name"] = name,
+					data["url"] = url,
+					data["title"] = '',
+					data["icon"] = '',
+					data["img"] = url != '' ? imagePath : '';
+		
+					for(var tabs in tmp.grid) {
+						for(var item in tmp.grid[tabs]) {
+							if(item == tabId) {
+								if(tmp.grid[tabs][item].url != data.url) {change = true;}
+								tabName = tmp.grid[tabs][item].name;
+								tabImg = tmp.grid[tabs][item].img;
+								tmp.grid[tabs][item].name = data.name;
+								tmp.grid[tabs][item].url = data.url;
+								tmp.grid[tabs][item].title = data.title;
+								tmp.grid[tabs][item].icon = data.icon;
+								tmp.grid[tabs][item].img = data.img;
+								break;
+							}
+						}
+					}
+					if(change) {
+						fs.unlink('public/' + tabImg, function(err) {
+							if(err) {res.send({error: "Can't delete file. " + err + '.'}); return;}
 							_page.set('viewportSize', {width:1024,height:576});
 							_page.set('clipRect', {top:0,left:0,width:1024,height:576});
 							_page.render(uploadPath);
-						}
-					});
-				});
-			}
-			updateGrid(res, filePath, JSON.stringify(tmp), 'Successfully updated tab ' + tabName + '.');
+						});
+					}
+					updateGrid(res, filePath, JSON.stringify(tmp), 'Successfully updated tab ' + tabName + '.');
+				}
+			});
+		/** Upload tab */
 		} else {
 			_page.open(url, function(status) {
-				
-				console.log('uploaded > '+tabId);
-				console.log('url_status > '+status);
-				
-				var data = new Object(), tab = new Object();
-				data["name"] = name,
-				data["url"] = url,
-				data["img"] = url != '' && status == 'success' ? imagePath : '',
-				tab[tabId] = data;
-				tmp.grid.push(tab);
-				updateGrid(res, filePath, JSON.stringify(tmp), 'Tab has been successfully added to grid.');
-			
+				/** Url is valid */
 				if(status == 'success') {
-					_page.set('viewportSize', {width:1024,height:576});
-					_page.set('clipRect', {top:0,left:0,width:1024,height:576});
-					_page.render(uploadPath);
+					_page.evaluate(function() {
+						var data = new Object();
+						data["title"] = document.title;
+						var icon = document.getElementsByTagName('link');
+						for(var i in icon) {
+							try {
+								if(icon[i].rel.toLowerCase().indexOf('icon') > -1) {
+									data["icon"] = icon[i].href;
+									return data;
+								}
+							} catch(e) {
+								return data;
+							}
+						}
+					}, function(result) {
+				
+						console.log('uploaded > '+tabId);
+						console.log('url_status > '+status);
+						console.log(result);
+						
+						var data = new Object(), tab = new Object();
+						data["name"] = req.body.tabTextName == '' ? result.title.length > 20 ? result.title.substring(0, 20)+'...' : result.title : name,
+						data["url"] = url,
+						data["title"] = result.title,
+						data["icon"] = result.icon,
+						data["img"] = url != '' ? imagePath : '',
+						tab[tabId] = data;
+						tmp.grid.push(tab);
+						updateGrid(res, filePath, JSON.stringify(tmp), 'Tab has been successfully added to grid.');
+						
+						_page.set('viewportSize', {width:1024,height:576});
+						_page.set('clipRect', {top:0,left:0,width:1024,height:576});
+						_page.render(uploadPath);
+					}, "title");
+				/** Url is not valid */
+				} else {
+					console.log('uploaded > '+tabId);
+					console.log('url_status > '+status);
+					
+					var data = new Object(), tab = new Object();
+					data["name"] = name,
+					data["url"] = url,
+					data["title"] = '',
+					data["icon"] = '',
+					data["img"] = url != '' ? imagePath : '',
+					tab[tabId] = data;
+					tmp.grid.push(tab);
+					updateGrid(res, filePath, JSON.stringify(tmp), 'Tab has been successfully added to grid.');
 				}
 			});
 		}
@@ -188,5 +282,20 @@ phantom.create('--web-security=no', '--ignore-ssl-errors=yes', function(ph) {
 	ph.createPage(function(page) {
 		_page = page;
 		console.log('Phantom bridge initiated and page created.');
+		/*page.open('https://www.amazon.com', function(status) {
+			page.evaluate(function() {
+				var data = new Object();
+				data["title"] = document.title;
+				var icon = document.getElementsByTagName('link');
+				for(var i in icon) {
+					if(icon[i].rel.toLowerCase().indexOf('icon') > -1) {
+						data["icon"] = icon[i].href;
+						return data;
+					}
+				}
+			}, function(result) {
+				console.log(result);
+			}, "title");
+		});*/
 	});
 });

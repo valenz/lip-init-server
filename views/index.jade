@@ -51,8 +51,10 @@ block content
 					li.tabs
 						form.TABForm(action='/api/option' method='post' enctype='multipart/form-data')
 							div
-								a(href=item.url title=item.name)
-									img.pic(src=item.img width='144' height='81')
+								a(href=item.url title=item.title)
+									if item.icon
+										img.icon(src=item.icon)
+									img.pic(src=item.img)
 									h5= item.name
 									input(type='hidden' name=j value=item.name)
 								i.btn-edit.fa.fa-edit(title='Edit tab')
