@@ -129,7 +129,7 @@ $(document).ready(function() {
 			$('.message').html('<i class="fa fa-exclamation-circle fa-fw"></i>');
 			$('.message').append(message.error).show();
 		} else {
-			var counter = 5;
+			var counter = 3;
 			$('.message').html('<i class="fa fa-check-circle fa-fw"></i>');
 			$('.message').append(message.message).show();
 			setInterval(function() {
