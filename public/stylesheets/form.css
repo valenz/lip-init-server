@@ -12,9 +12,9 @@
     z-index: 11000;
     left: 50%;
     opacity: 1;
-    height: 300px;
+    height: 315px;
     width: 500px;
-    background: #17313A;
+    background: #FFF9E5;
     display: none;
     font-size: 12px;
     padding: 0px 0px 40px 0;
@@ -140,7 +140,7 @@
 }
 
 .TTWForm label {
-    color: #FFF9E5;
+    color: #17313A;
     text-align: left;
     font: 18px/24px Helvetica Neue, "Arial", Helvetica, Verdana, sans-serif;
     margin-bottom:5px;
@@ -155,16 +155,67 @@
     padding-bottom:0;
 }
 
-.TTWForm .submit i {
+.TTWForm .submit #submit {
     display: block;
     margin: 0px -6px 0px 0;
     text-align: center;
     float: right;
-    padding:4px 0px 0px 0px;
-    height: 28px;
+    width: 110px;
+    padding:8px 0px 0px 0px;
+    height: 30px;
     cursor: pointer;
     min-width: 36px;
-    color: #FFF9E5;
+	color: #FFF9E5;
+	background-color: #348371;
+	border: 1px solid #17313A;
+    box-shadow: 0 0 0 1px #FFF9E5;
+    -moz-box-shadow: 0 0 0 1px #FFF9E5;
+    -webkit-box-shadow: 0 0 0 1px #FFF9E5;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-transition: .1s ease-in-out;
+    -moz-transition: .1s ease-in-out;
+}
+
+.TTWForm .submit #submit:hover {
+	background-color: #265F52;
+	border: 1px solid #17313A;
+	box-shadow: 0 0 0 1px #FFF9E5;
+	-moz-box-shadow: 0 0 0 1px #FFF9E5;
+	-webkit-box-shadow: 0 0 0 1px #FFF9E5;
+}
+
+.TTWForm .submit #submit:active {
+	outline: 0;
+	box-shadow: inset 1px 3px 5px 0 #101010;
+	-moz-box-shadow: inset 1px 3px 5px 0 #101010;
+	-webkit-box-shadow: inset 1px 3px 5px 0 #101010;
+}
+
+.TTWForm .submit #loading {
+    display: block;
+    margin: 0px -6px 0px 0;
+    text-align: center;
+    float: right;
+    width: 110px;
+    padding:8px 0px 0px 0px;
+    height: 30px;
+    cursor: not-allowed;
+    min-width: 36px;
+	color: #FFF9E5;
+	background-color: #265F52;
+	border: 1px solid #17313A;
+    box-shadow: 0 0 0 1px #FFF9E5;
+    -moz-box-shadow: 0 0 0 1px #FFF9E5;
+    -webkit-box-shadow: 0 0 0 1px #FFF9E5;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+}
+
+.TTWForm .submit #loading {
+	cursor: not-allowed;
 }
 
 .TTWForm .submit input {

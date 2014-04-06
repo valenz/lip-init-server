@@ -54,8 +54,12 @@ app.post('/api/option', function(req, res) {
 		
 		fs.writeFile('public/data/data.json', replaceAll(JSON.stringify(tmp), { s: [',{}','{},','{}'], r: ['','',''] }), function(err) {
 			if(err) { res.send({ error: 'Error No: ' + err.errno + "; Can't write file. " + err + '.' }); return; }
-			fs.unlink('public/' + data.img, function(err) {
-				if(err) { res.send({ error: 'Error No: ' + err.errno + "; Can't delete file. " + err + '.'	});	return; }
+			fs.exists('public/' + data.img, function(exists) {
+				if(exists) {
+					fs.unlink('public/' + data.img, function(err) {
+						if(err) { res.send({ error: 'Error No: ' + err.errno + "; Can't delete file. " + err + '.'	});	return; }
+					});
+				}
 			});
 			res.send({
 				message: 'Successfully deleted tab ' + data.name + '.'
@@ -72,7 +76,7 @@ app.post('/api/upload', function(req, res) {
 		str1 = url.split('/')[2].split('.')[0],
 		str2 = str1 == 'www' ? url.split('/')[2].split('.')[1] : '',
 		name = req.body.tabTextName != '' ? req.body.tabTextName.charAt(0).toUpperCase()+req.body.tabTextName.slice(1) : str1 == 'www' ? str2.charAt(0).toUpperCase()+str2.slice(1) : str1.charAt(0).toUpperCase()+str1.slice(1),
-		name = name.length > 20 ? name.substring(0, 20)+'...' : name;
+		name = name.length > 17 ? name.substring(0, 17)+'...' : name;
 		tabId = req.body.edit ? req.body.edit : randomString(9);
 	
 	var filePath = 'public/data/data.json',
@@ -102,7 +106,7 @@ app.post('/api/upload', function(req, res) {
 									return data;
 								}
 							} catch(e) {
-								data["icon"] = 'https://plus.google.com/_/favicon?domain_url='+url;
+								data["icon"] = 'https://plus.google.com/_/favicon?domain_url='+window.location.origin;
 								return data;
 							}
 						}
@@ -113,7 +117,7 @@ app.post('/api/upload', function(req, res) {
 						console.log(result);
 						
 						var data = new Object(), tabName = '', tabImg = '';
-						data["name"] = req.body.tabTextName == '' ? result.title.length > 20 ? result.title.substring(0, 20)+'...' : result.title : name,
+						data["name"] = req.body.tabTextName == '' ? result.title.length > 17 ? result.title.substring(0, 17)+'...' : result.title : name,
 						data["url"] = url,
 						data["title"] = result.title,
 						data["icon"] = result.icon,
@@ -140,8 +144,9 @@ app.post('/api/upload', function(req, res) {
 									if(err) {res.send({error: 'Error No: ' + err.errno + "; Can't delete file. " + err + '.'}); return;}
 								});
 							}
-							_page.set('viewportSize', {width:1024,height:576});
-							_page.set('clipRect', {top:0,left:0,width:1024,height:576});
+							
+							_page.set('viewportSize', {width:960,height:540});
+							_page.set('clipRect', {top:0,left:0,width:960,height:540});
 							_page.render(uploadPath);
 						});
 						
@@ -182,8 +187,9 @@ app.post('/api/upload', function(req, res) {
 								if(err) {res.send({error: 'Error No: ' + err.errno + "; Can't delete file. " + err + '.'}); return;}
 							});
 						}
-						_page.set('viewportSize', {width:1024,height:576});
-						_page.set('clipRect', {top:0,left:0,width:1024,height:576});
+						
+						_page.set('viewportSize', {width:960,height:540});
+						_page.set('clipRect', {top:0,left:0,width:960,height:540});
 						_page.render(uploadPath);
 					});
 					
@@ -207,7 +213,7 @@ app.post('/api/upload', function(req, res) {
 									return data;
 								}
 							} catch(e) {
-								data["icon"] = 'https://plus.google.com/_/favicon?domain_url='+url;
+								data["icon"] = 'https://plus.google.com/_/favicon?domain_url='+window.location.origin;
 								return data;
 							}
 						}
@@ -218,7 +224,7 @@ app.post('/api/upload', function(req, res) {
 						console.log(result);
 						
 						var data = new Object(), tab = new Object();
-						data["name"] = req.body.tabTextName == '' ? result.title.length > 20 ? result.title.substring(0, 20)+'...' : result.title : name,
+						data["name"] = req.body.tabTextName == '' ? result.title.length > 17 ? result.title.substring(0, 17)+'...' : result.title : name,
 						data["url"] = url,
 						data["title"] = result.title,
 						data["icon"] = result.icon,
@@ -227,8 +233,8 @@ app.post('/api/upload', function(req, res) {
 						tmp.grid.push(tab);
 						updateGrid(res, filePath, JSON.stringify(tmp), 'Tab has been successfully added to grid.');
 						
-						_page.set('viewportSize', {width:1024,height:576});
-						_page.set('clipRect', {top:0,left:0,width:1024,height:576});
+						_page.set('viewportSize', {width:960,height:540});
+						_page.set('clipRect', {top:0,left:0,width:960,height:540});
 						_page.render(uploadPath);
 					}, "title");
 				/** Url is not valid */

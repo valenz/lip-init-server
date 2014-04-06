@@ -152,14 +152,15 @@ $(document).ready(function() {
 		$('#submit').hide();
 		$loading.show();
 	}).ajaxStop(function() {
+		$('#submit').show();
 		$loading.hide();
     });
     
     var opts = {
 		lines: 7, // The number of lines to draw
 		length: 0, // The length of each line
-		width: 5, // The line thickness
-		radius: 5, // The radius of the inner circle
+		width: 7, // The line thickness
+		radius: 7, // The radius of the inner circle
 		corners: 1, // Corner roundness (0..1)
 		rotate: 0, // The rotation offset
 		direction: 1, // 1: clockwise, -1: counterclockwise
@@ -170,8 +171,8 @@ $(document).ready(function() {
 		hwaccel: false, // Whether to use hardware acceleration
 		className: 'spinner', // The CSS class to assign to the spinner
 		zIndex: 2e9, // The z-index (defaults to 2000000000)
-		top: '16px', // Top position relative to parent in px
-		left: '432px' // Left position relative to parent in px
+		top: '19px', // Top position relative to parent in px
+		left: '395px' // Left position relative to parent in px
     };
     
     var spinner = new Spinner(opts).spin($('#loading')[0]);
