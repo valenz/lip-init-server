@@ -4,19 +4,24 @@ block content
 	#head
 		#logo
 		
-		p
-			a#tab-add(rel='leanModal' name='createtab' title='Create new tab' href='#createtab')
-				i.fa.fa-plus-circle
-				|Create
-			a(href='http://intra/en')
-				|Intranet
-			a(href='http://www.mpib-berlin.mpg.de')
-				|Max Planck Institut for Human Development
-			a(title='Write a email' href='mailto:lipsupport@mpib-berlin.mpg.de')
-				|LIP Support
-			a#reload(title='Reload grid' href='#reload')
-				i.fa.fa-refresh
-			a#note-add(rel='leanModal' name='note' href='#note')
+		ul.fa-ul
+			li
+				a#tab-add(rel='leanModal' name='createtab' title='Create new tab' href='#createtab')
+					i.fa.fa-plus-circle.fa-fw
+					|Create
+			li
+				a(href='http://intra/en')
+					|Intranet
+			li
+				a(href='http://www.mpib-berlin.mpg.de')
+					|Max Planck Institut for Human Development
+			li
+				a(title='Write a email' href='mailto:lipsupport@mpib-berlin.mpg.de')
+					|LIP Support
+			li
+				a#reload(title='Reload grid' href='#reload')
+					i.fa.fa-refresh
+				a#note-add(rel='leanModal' name='note' href='#note')
 		
 		.TTWForm-container#createtab
 			#createtab-header
@@ -62,7 +67,7 @@ block content
 	else
 		p.no-data
 			if grid.length == 0
-				i.fa.fa-exclamation-circle
+				i.fa.fa-exclamation-circle.fa-fw
 				|No data available!
 
 	#foot

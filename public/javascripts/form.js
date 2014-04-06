@@ -126,11 +126,11 @@ $(document).ready(function() {
     function status(message) {
 		$('#note-add').click();
 		if(message.error) {    
-			$('.message').html('<i class="fa fa-exclamation-circle"></i>');
+			$('.message').html('<i class="fa fa-exclamation-circle fa-fw"></i>');
 			$('.message').append(message.error).show();
 		} else {
 			var counter = 5;
-			$('.message').html('<i class="fa fa-check-circle"></i>');
+			$('.message').html('<i class="fa fa-check-circle fa-fw"></i>');
 			$('.message').append(message.message).show();
 			setInterval(function() {
 				$('.message+span').html('<p>Grid will be updated in few seconds. ('+counter+')</p>');

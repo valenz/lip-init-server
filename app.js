@@ -90,6 +90,7 @@ app.post('/api/upload', function(req, res) {
 			_page.open(url, function(status) {
 				/** Url is valid */
 				if(status == 'success') {
+					/** Get title and icon from a webpage */
 					_page.evaluate(function() {
 						var data = new Object();
 						data["title"] = document.title;
@@ -101,6 +102,7 @@ app.post('/api/upload', function(req, res) {
 									return data;
 								}
 							} catch(e) {
+								data["icon"] = 'https://plus.google.com/_/favicon?domain_url='+url;
 								return data;
 							}
 						}
@@ -173,14 +175,18 @@ app.post('/api/upload', function(req, res) {
 							}
 						}
 					}
-					if(change) {
-						fs.unlink('public/' + tabImg, function(err) {
-							if(err) {res.send({error: 'Error No: ' + err.errno + "; Can't delete file. " + err + '.'}); return;}
-							_page.set('viewportSize', {width:1024,height:576});
-							_page.set('clipRect', {top:0,left:0,width:1024,height:576});
-							_page.render(uploadPath);
-						});
-					}
+						
+					fs.exists('public/' + tabImg, function(exists) {
+						if(exists) {
+							fs.unlink('public/' + tabImg, function(err) {
+								if(err) {res.send({error: 'Error No: ' + err.errno + "; Can't delete file. " + err + '.'}); return;}
+							});
+						}
+						_page.set('viewportSize', {width:1024,height:576});
+						_page.set('clipRect', {top:0,left:0,width:1024,height:576});
+						_page.render(uploadPath);
+					});
+					
 					updateGrid(res, filePath, JSON.stringify(tmp), 'Successfully updated tab ' + tabName + '.');
 				}
 			});
@@ -189,6 +195,7 @@ app.post('/api/upload', function(req, res) {
 			_page.open(url, function(status) {
 				/** Url is valid */
 				if(status == 'success') {
+					/** Get title and icon from a webpage */
 					_page.evaluate(function() {
 						var data = new Object();
 						data["title"] = document.title;
@@ -200,6 +207,7 @@ app.post('/api/upload', function(req, res) {
 									return data;
 								}
 							} catch(e) {
+								data["icon"] = 'https://plus.google.com/_/favicon?domain_url='+url;
 								return data;
 							}
 						}
