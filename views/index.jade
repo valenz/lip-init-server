@@ -51,7 +51,7 @@ block content
 			i.fa.fa-times.fa-lg
 
 	if grid.length != 0
-		ul#grid
+		ul#grid(data-length=grid.length)
 			each tabs, i in grid
 				each item, j in tabs
 					li.tabs

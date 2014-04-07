@@ -1,24 +1,42 @@
 $(document).ready(function() {
-	
-	var data = new Object();
-	
-	$('li.tabs').each(function(key) {
-		//var item = JSON.parse(localStorage.getItem(tabId));
-		
-		data["id"] = $(this).find('input').attr('name');
-		data["name"] = $(this).find('input').attr('value');
-		data["url"] = $(this).find('a').attr('href');
-		data["title"] = $(this).find('a').attr('title');
-		data["icon"] = $(this).find('img.icon').attr('src');
-		data["img"] = $(this).find('img.pic').attr('src');
-		
-		console.log(data)
-		
-		localStorage.setItem(key, JSON.stringify(data));
+	/** Make tabs sortable */
+	$('#grid').sortable({
+		containment: $('#grid'),
+		start: handleDragStart,
+		stop: handleDragStop
 	});
 	
-	console.log(localStorage.length);
-	for(var i in localStorage) {
-		console.log(JSON.parse(localStorage[i]).id);
+	
+	
+	
+	function handleDragStart(event, ui) {
+		$('[class^=btn]').hide();
+		
 	}
+	function handleDragStop(event, ui) {
+		$('li.tabs').each(function(key, value) {
+			$(this).attr('id', key);
+			localStorage.setItem(key, value.outerHTML);
+		});
+	}
+	
+	
+	
+	
+	if(localStorage.length > 0) {
+		if(localStorage.length < $('#grid').attr('data-length')) {
+			$('li.tabs').each(function(key, value) {
+				if(key == $('#grid').attr('data-length')-1) {
+					localStorage.setItem(key, value.outerHTML);
+				}
+			});
+		}
+		var grid = '';
+		for(var i in localStorage) {
+			grid += localStorage.getItem(i);
+		}
+		$('#grid').html(grid);
+	}
+	
+	console.log(localStorage.getItem(0));
 });

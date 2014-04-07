@@ -1,10 +1,10 @@
 $(document).ready(function() {
 	/** Show option buttons on tabs */
-	$('.tabs').mouseenter(function(e) {
-		$(this).find('[class^=btn]').css('visibility', 'visible');
+	$('li.tabs').mouseenter(function(e) {
+		$(this).find('[class^=btn]').css('display', 'block');
 	});
-	$('.tabs').mouseleave(function(e) {
-		$(this).find('[class^=btn]').css('visibility', 'hidden');
+	$('li.tabs').mouseleave(function(e) {
+		$(this).find('[class^=btn]').css('display', 'none');
 	});
 	
 	
@@ -31,12 +31,14 @@ $(document).ready(function() {
 	$('.btn-del').click(function() {
 		if(confirm('You are going to delete the tab '+$(this).parents('.tabs').find('input').first().attr('value')+'.\nAre you sure with that?')) {
 			$(this).parents('form').submit();
+			/*if(localStorage.length == $('#grid').attr('data-length')) {
+				console.log('delete element from storage')
+				for(var i in localStorage) {
+					if($(this).parents('.tabs').attr('id') == i) {
+						localStorage.removeItem(i);
+					}
+				}
+			}*/
 		}
 	});
-	
-	
-	
-	
-	/** Make tabs sortable */
-	$('#grid').sortable();
 });
