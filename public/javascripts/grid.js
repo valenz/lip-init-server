@@ -37,6 +37,6 @@ $(document).ready(function() {
 	
 	
 	
-	/** Auto reload (1 minute = 60000) */
-	setTimeout(function() {location.reload();}, (60000*30));
+	/** Make tabs sortable */
+	$('#grid').sortable();
 });

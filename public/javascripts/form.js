@@ -42,17 +42,17 @@ $(document).ready(function() {
     
     
     /** Cancel form */
-    $('.modal_close').click(function() {
+    $('#lean_overlay').click(function() {
 		$('.TTWForm').find('[type=hidden]').attr('name', 'upload');
-		$('[id^=field]').each(function() {
-			$(this).val('');
-		});
 		$('#submit').show();
 		$('.TTWForm-container').hide();
 		$('#lean_overlay').hide();
     });
-    $('#lean_overlay').click(function() {
-		$('.modal_close').click();
+    $('.modal_close').click(function() {
+		$('#lean_overlay').click();
+		$('[id^=field]').each(function() {
+			$(this).val('');
+		});
 	});
 	
 	
