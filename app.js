@@ -9,6 +9,8 @@ var express = require('express')
   , http = require('http')
   , fs = require('fs')
   , path = require('path')
+  , mysql = require('mysql')
+  , connection = mysql.createConnection({host:'localhost',user:'bob',password:'secret',database:'test'})
   , app = express();
 
 app.configure(function(){
@@ -297,6 +299,14 @@ app.get('/test', test.show); // test route
 http.createServer(app).listen(app.get('port'), function() {
 	console.log("Express server listening on port " + app.get('port') + ".");
 });
+
+connection.connect();
+connection.query('SELECT * FROM tabs', function(err, result) {
+	if(err) throw err;
+	
+	console.log(result);
+});
+connection.end();
 
 phantom.create('--web-security=no', '--ignore-ssl-errors=yes', function(ph) {
 	ph.createPage(function(page) {
