@@ -1,5 +1,5 @@
 var fs = require('fs');
-exports.show = function(req, res){
+exports.index = function(req, res){
 	fs.readdir('public/uploads', function(err, files) {
 		var html = '';
 		for(file in files) {

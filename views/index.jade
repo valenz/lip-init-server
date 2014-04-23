@@ -49,22 +49,21 @@ block content
 		span
 		a.modal_close(href='#' title='Close')
 			i.fa.fa-times.fa-lg
-
+	
 	if grid.length != 0
 		ul#grid(data-length=grid.length)
-			each tabs, i in grid
-				each item, j in tabs
-					li.tabs
-						form.TABForm(action='/api/option' method='post' enctype='multipart/form-data')
-							div
-								a(href=item.url title=item.title?item.title:item.name)
-									if item.icon
-										img.icon(src=item.icon)
-									img.pic(src=item.img)
-									h5= item.name
-									input(type='hidden' name=j value=item.name)
-								i.btn-edit.fa.fa-pencil(title='Edit tab')
-								i.btn-del.fa.fa-times(title='Delete tab')
+			each item, i in grid
+				li.tabs
+					form.TABForm(action='/api/option' method='post' enctype='multipart/form-data')
+						div
+							a(href=item.url title=item.title?item.title:item.name)
+								if item.icon
+									img.icon(src=item.icon)
+								img.pic(src=item.img)
+								h5= item.name
+								input(type='hidden' name='tabId' value=item.tab)
+							i.btn-edit.fa.fa-pencil(title='Edit tab')
+							i.btn-del.fa.fa-times(title='Delete tab')
 	else
 		p.no-data
 			if grid.length == 0

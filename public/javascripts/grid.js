@@ -14,8 +14,8 @@ $(document).ready(function() {
 	$('.btn-edit').click(function() {
 		var arr = new Array();
 		arr[0] = $(this).parents('.tabs').find('a').attr('href');
-		arr[1] = $(this).parents('.tabs').find('input').attr('value');
-		$('.TTWForm').find('[type=hidden]').val($(this).parents('.tabs').find('input').attr('name'));
+		arr[1] = $(this).parents('.tabs').find('h5').text();
+		$('.TTWForm').find('[type=hidden]').val($(this).parents('.tabs').find('input').attr('value'));
 		$('[name^=tabText]', '[id^=field]').each(function(key) {
 			$(this).val(arr[key]);
 		});
