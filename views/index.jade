@@ -6,10 +6,6 @@ block content
 		
 		ul.fa-ul
 			li
-				a#tab-add(rel='leanModal' name='createtab' title='Create new tab' href='#createtab')
-					i.fa.fa-plus-circle.fa-fw
-					|Create
-			li
 				a(href='http://intra/en')
 					|Intranet
 			li
@@ -23,33 +19,6 @@ block content
 					i.fa.fa-refresh
 				a#note-add(rel='leanModal' name='note' href='#note')
 		
-		.TTWForm-container#createtab
-			#createtab-header
-				h2 Create new Tab
-				a.modal_close(href='#' title='Close')
-					i.fa.fa-times.fa-lg
-			form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
-				#field8-container.field.f_100
-					label
-						|Address (required):
-					input#field8(type='url' name='tabTextUrl' title='Address' required='required' placeholder='http://')
-				#field2-container.field.f_100
-					label
-						|Name (optional):
-					input#field2(type='text' name='tabTextName' title='Name' placeholder='Name')
-					input#field2(type='hidden' name='upload')
-				#form-submit.field.f_100.clearfix.submit
-					input(type='submit')
-					#loading
-					#submit
-						i.fa.fa-upload.fa-2x(title='Upload')
-
-	.status#note
-		p.message
-		span
-		a.modal_close(href='#' title='Close')
-			i.fa.fa-times.fa-lg
-	
 	if grid.length != 0
 		ul#grid(data-length=grid.length)
 			each item, i in grid
@@ -62,8 +31,6 @@ block content
 								img.pic(src=item.img)
 								h5= item.name
 								input(type='hidden' name='tabId' value=item.tab)
-							i.btn-edit.fa.fa-pencil(title='Edit tab')
-							i.btn-del.fa.fa-times(title='Delete tab')
 	else
 		p.no-data
 			if grid.length == 0

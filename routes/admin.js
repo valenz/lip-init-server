@@ -1,10 +1,15 @@
-var fs = require('fs');
-exports.index = function(req, res){
-	fs.readdir('public/uploads', function(err, files) {
-		var html = '';
-		for(file in files) {
-			html += '<img src="/uploads/'+files[file]+'" />';
-		}
-		res.send(html);
+var db = require('./db');
+
+exports.index = function(req, res) {
+	var tmp = new Object();
+
+	db.getConnection(function(err, connection) {
+		if(err) throw err;
+		connection.query('SELECT * FROM tabs', function(err, rows, fields) {
+			if(err) throw err;
+			tmp["grid"] = rows;
+			res.render('admin', tmp);
+			connection.destroy();
+		});
 	});
 };
