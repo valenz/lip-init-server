@@ -5,6 +5,11 @@ block content
 		#logo
 		
 		ul.fa-ul
+			if user
+				li
+					a#tab-add(rel='leanModal' name='createtab' title='Create new tab' href='#createtab')
+						i.fa.fa-plus-circle.fa-fw
+						|Create
 			li
 				a(href='http://intra/en')
 					|Intranet
@@ -12,13 +17,54 @@ block content
 				a(href='http://www.mpib-berlin.mpg.de')
 					|Max Planck Institut for Human Development
 			li
-				a(title='Write a email' href='mailto:lipsupport@mpib-berlin.mpg.de')
+				a(title='Write a email' href=user?'mailto:'+user.email:'mailto:lipsupport@mpib-berlin.mpg.de')
 					i.fa.fa-envelope
+			li
+				a(href=user?'logout':'login')
+					if user
+						i.fa.fa-sign-out
+					else
+						i.fa.fa-cog
 			li
 				a#reload(title='Reload grid' href='#reload')
 					i.fa.fa-refresh
 				a#note-add(rel='leanModal' name='note' href='#note')
-		
+
+		if user
+			.TTWForm-container#createtab
+				#createtab-header
+					h2 Create new Tab
+					a.modal_close(href='#' title='Close')
+						i.fa.fa-times.fa-lg
+				form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
+					#field8-container.field.f_100
+						label
+							|Address (required):
+						input#field8(type='url' name='tabTextUrl' title='Address' required='required' placeholder='http://')
+					#field2-container.field.f_100
+						label
+							|Name (optional):
+						input#field2(type='text' name='tabTextName' title='Name' placeholder='Name')
+						input#field2(type='hidden' name='upload')
+					#form-submit.field.f_100.clearfix.submit
+						input(type='submit')
+						#loading
+						#submit
+							i.fa.fa-upload.fa-2x(title='Upload')
+
+	if user
+		.status#note
+			p.message
+			span
+			a.modal_close(href='#' title='Close')
+				i.fa.fa-times.fa-lg
+
+	if user
+		p.logged
+			| You are now logged in as
+			=' '+user.username
+			| !
+
 	if grid.length != 0
 		ul#grid(data-length=grid.length)
 			each item, i in grid
@@ -31,6 +77,9 @@ block content
 								img.pic(src=item.img)
 								h5= item.name
 								input(type='hidden' name='tabId' value=item.tab)
+							if user
+								i.btn-edit.fa.fa-pencil(title='Edit tab')
+								i.btn-del.fa.fa-times(title='Delete tab')
 	else
 		p.no-data
 			if grid.length == 0
