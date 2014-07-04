@@ -1,14 +1,17 @@
 {
-  "name": "lip-init",
-  "version": "0.1.5",
+  "name": "lip-init-server",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "start": "node app"
   },
   "dependencies": {
-    "express": "3.0.0",
     "jade": "1.3.0",
     "mysql": "2.1.1",
-    "phantom": "0.5.7"
+    "express": "3.0.0",
+    "phantom": "0.5.7",
+    "passport": "0.2.0",
+    "passport-local": "1.0.0",
+    "connect-flash": "0.1.1"
   }
 }
