@@ -9,16 +9,9 @@ exports.index = function(req, res) {
 			if(err) throw err;
 			tmp["grid"] = rows;
 			tmp["user"] = req.user;
+			tmp["message"] = req.flash('error');
 			res.render('index', tmp);
 			connection.destroy();
 		});
 	});
-};
-
-exports.login = function(req, res) {
-	var tmp = new Object();
-	
-	tmp["user"] = req.user;
-	tmp["message"] = req.flash('error');
-	res.render('login', tmp);
 };

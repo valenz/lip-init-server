@@ -17,14 +17,15 @@ block content
 				a(href='http://www.mpib-berlin.mpg.de')
 					|Max Planck Institut for Human Development
 			li
-				a(title='Write a email' href=user?'mailto:'+user.email:'mailto:lipsupport@mpib-berlin.mpg.de')
+				a(title='Write a email' href='mailto:')
 					i.fa.fa-envelope
 			li
-				a(href=user?'logout':'login')
-					if user
+				if user
+					a(title='Log off' href='api/logout')
 						i.fa.fa-sign-out
-					else
-						i.fa.fa-cog
+				else
+					a#log-in(rel='leanModal' name='login' title='Log in' href='#login')
+						i.fa.fa-sign-in
 			li
 				a#reload(title='Reload grid' href='#reload')
 					i.fa.fa-refresh
@@ -51,19 +52,38 @@ block content
 						#loading
 						#submit
 							i.fa.fa-upload.fa-2x(title='Upload')
+		
+		if !user
+			.TTWForm-container#login
+				#login-header
+					h2 Login
+					a.modal_close(href='#' title='Close')
+						i.fa.fa-times.fa-lg
+				form.LOGForm(action='/api/login' method='post' enctype='multipart/form-data')
+					#field2-container.field.f_100
+						label
+							|Username:
+						input#field2(type='text' name='username' title='Username' required='required')
+					#field2-container.field.f_100
+						label
+							|Password:
+						input#field2(type='password' name='password' title='Password' required='required')
+					#form-submit.field.f_100.clearfix.submit
+						input(type='submit')
+						#loading
+						#submit
+							i.fa.fa-sign-in.fa-2x(title='Login')
 
-	if user
+	if message.length != 0
+		p.login
+			i.fa.fa-exclamation-circle.fa-fw
+			= ' ' + message
+	else
 		.status#note
 			p.message
 			span
 			a.modal_close(href='#' title='Close')
 				i.fa.fa-times.fa-lg
-
-	if user
-		p.logged
-			| You are now logged in as
-			=' '+user.username
-			| !
 
 	if grid.length != 0
 		ul#grid(data-length=grid.length)
@@ -81,8 +101,8 @@ block content
 								i.btn-edit.fa.fa-pencil(title='Edit tab')
 								i.btn-del.fa.fa-times(title='Delete tab')
 	else
-		p.no-data
-			if grid.length == 0
+		if grid.length == 0
+			p.no-data
 				i.fa.fa-exclamation-circle.fa-fw
 				|No data available!
 

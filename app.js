@@ -24,7 +24,7 @@ function findById(id, fn) {
 	if (users[idx]) {
 		fn(null, users[idx]);
 	} else {
-		fn(new Error('User ' + id + ' does not exist'));
+		fn(new Error('User does not exist'));
 	}
 }
 
@@ -71,8 +71,9 @@ passport.use(new LocalStrategy(
 			// authenticated `user`.
 			findByUsername(username, function(err, user) {
 				if (err) { return done(err); }
-				if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-				if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
+				if (!user || user.password != password) {
+					return done(null, false, { message: 'Unknown user or invalid password' });
+				}
 				return done(null, user);
 			})
 		});
@@ -89,7 +90,6 @@ app.configure(function() {
 	app.set('port', process.env.PORT || 9090);
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
-//	app.set('view engine', 'ejs');
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
 	app.use(express.methodOverride());
@@ -111,14 +111,14 @@ app.configure('development', function() {
 
 
 app.get('/', routes.index);
-app.get('/login', routes.login);
-app.post('/login', passport.authenticate('local', { failureRedirect: '/login',
-						    failureFlash: true
-						  }), function(req, res) {
-							res.redirect('/');
+app.post('/api/login', passport.authenticate('local', { 
+	failureRedirect: '/',
+	failureFlash: true
+}), function(req, res) {
+	res.redirect('/');
 });
 
-app.get('/logout', function(req, res) {
+app.get('/api/logout', function(req, res) {
 	req.logout();
 	res.redirect('/');
 });
@@ -130,7 +130,7 @@ app.get('/logout', function(req, res) {
 // login page.
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) { return next(); }
-	res.redirect('/login');
+	res.redirect('/');
 }
 
 

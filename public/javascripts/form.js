@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	/** Create new tab */
+    /** Create new tab */
     $('#tab-add').click(function() {
 		$('.TTWForm-container').show();
 		$('#submit').show();
@@ -7,6 +7,7 @@ $(document).ready(function() {
     });
     /** Connect leanModal trigger to target ID */
     $('#tab-add').leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
+    $('#log-in').leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
     $('#note-add').leanModal({ top : 190, overlay : 0.0, closeButton: ".modal_close" });
 	
     
@@ -23,6 +24,16 @@ $(document).ready(function() {
 			$(this).val('');
 		}
     });
+    
+    
+    
+    
+    /** Log in screen */
+    $('#log-in').click(function() {
+		$('.LOGForm').show();
+		$('#submit').show();
+		$('#field2').focus();
+	});
     
     
     
@@ -53,6 +64,15 @@ $(document).ready(function() {
 		$('[id^=field]').each(function() {
 			$(this).val('');
 		});
+	});
+	
+	
+	
+	
+	/** Submit to log in */
+	$('.LOGForm').submit(function(e) {
+		$('#submit').hide();
+		$loading.show();
 	});
 	
 	
