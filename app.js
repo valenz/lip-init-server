@@ -80,9 +80,9 @@ passport.deserializeUser(Account.deserializeUser());
 /** 
  * The passport-local-mongoose package automatically takes care of salting and hashing the password. 
  */
-// Account.register(new Account({ username : "bob" }), "secret", function(err, account) {
-//	if(err) return console.error(err);
-// });
+Account.register(new Account({ username : "bob" }), "secret", function(err, account) {
+	if(err) return console.error(err);
+});
 
 
 
@@ -90,7 +90,7 @@ passport.deserializeUser(Account.deserializeUser());
 /**
  * Connect mongoose
  */
-mongoose.connect('mongodb://localhost/password_local_mongoose');
+mongoose.connect('mongodb://localhost/passport_local_mongoose');
 
 
 
