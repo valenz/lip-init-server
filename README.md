@@ -1,4 +1,4 @@
-lip-init
-========
+# lip-init-server
+Save pages into a grid with nodejs.
 
-Jump page with Node.js
+[![Build Status](https://travis-ci.org/valenz/lip-init-server.png?branch=master)](https://travis-ci.org/valenz/lip-init-server)
