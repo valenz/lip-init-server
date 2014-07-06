@@ -8,3 +8,8 @@
 *.js text
 *.json text
 *.css text
+
+# Declare binary files
+*.jpg binary
+*.jpeg binary
+*.png binary
