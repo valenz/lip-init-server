@@ -10,6 +10,6 @@
 *.css text
 
 # Declare binary files
-*.jpg crlf
-*.jpeg crlf
-*.png crlf
+*.jpg binary
+*.jpeg binary
+*.png binary
