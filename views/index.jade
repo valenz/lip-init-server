@@ -99,7 +99,7 @@ block content
 							a(href=item.url title=item.title?item.title:item.name)
 								if item.icon
 									img.icon(src=item.icon)
-								img.pic(src='uploads/' + item.img)
+								img.pic(src='uploads/' + item.tab+'.png')
 								h5= item.name
 								input(type='hidden' name='tabId' value=item.tab)
 							if user

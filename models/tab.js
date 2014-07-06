@@ -7,7 +7,6 @@ var Tab = new Schema({
       , url: String
       , title: String
       , icon: String
-      , img: String
 });
 
 module.exports = mongoose.model('tabs', Tab);

@@ -7,6 +7,6 @@ var Account = new Schema({
       , password: String
 });
 
-Account.plugin(plm);
+Account.plugin(plm, {usernameLowerCase:true, incorrectPasswordError:'Incorrect username or password', incorrectUsernameError:'Incorrect username or password'});
 
 module.exports = mongoose.model('accounts', Account);
