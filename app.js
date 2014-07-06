@@ -23,36 +23,40 @@ var Account = require('./models/account');
  * Configure Express
  */
 var app = express();
-app.configure(function() {
-	app.set('port', process.env.PORT || 9090);
-	app.set('views', __dirname + '/views');
-	app.set('view engine', 'jade');
-	app.set('view options', { layout: false });
+app.set('port', process.env.PORT || 9090);
+app.set('env', process.argv[2] || process.env.NODE_ENV || 'development');
 
-	app.use(express.favicon());
-	app.use(express.logger('dev'));
-	app.use(express.bodyParser());
-	app.use(express.methodOverride());
+app.set('views', __dirname + '/views');
+app.set('view engine', 'jade');
+app.set('view options', { layout: false });
 
-	app.use(express.cookieParser());
-	app.use(express.session({ secret: 'keyboard cat' }));
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.methodOverride());
 
-	app.use(passport.initialize());
-	app.use(passport.session());
+app.use(express.cookieParser());
+app.use(express.session({
+	resave: false, // don't save session if unmodified
+	saveUninitialized: false, // don't create session until something stored
+	secret: 'keyboard cat'
+}));
 
-	app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
 
-	app.use(app.router);
-	app.use(express.static(path.join(__dirname, 'public')));	
-});
+app.use(flash());
 
-app.configure('development', function(){
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
+app.use(app.router);
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.configure('production', function(){
+if('development' == app.get('env')) {
+	app.use(express.errorHandler({showStack: true, dumpExceptions: true}));
+};
+
+if('production' == app.get('env')) {
 	app.use(express.errorHandler());
-});
+};
 
 
 
@@ -114,6 +118,6 @@ app.post('/api/upload', routes.ensureAuthenticated, routes.upload);
 /**
  * Fires the server.
  */
-http.createServer(app).listen(app.get('port'), function() {
-	console.log("Express server listening on %s:%d in %s mode", '127.0.0.1', app.get('port'), app.settings.env);
+http.createServer(app).listen(9090, '127.0.0.1', function() {
+	console.log("Express server listening on %s:%d in %s mode.", '127.0.0.1', 9090, app.settings.env);
 });
