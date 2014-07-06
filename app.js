@@ -118,6 +118,6 @@ app.post('/api/upload', routes.ensureAuthenticated, routes.upload);
 /**
  * Fires the server.
  */
-http.createServer(app).listen(9090, '127.0.0.1', function() {
-	console.log("Express server listening on %s:%d in %s mode.", '127.0.0.1', 9090, app.settings.env);
+http.createServer(app).listen(app.get('port'), function() {
+	console.log("Express server listening on %s:%d in %s mode.", '127.0.0.1', app.get('port'), app.settings.env);
 });
