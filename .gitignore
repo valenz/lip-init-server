@@ -1,3 +1,18 @@
-logs/
-node_modules/
+# test related
 public/uploads/
+
+# osx
+.DS_Store
+
+# npm
+node_modules/
+
+# ide
+*.swp
+*~
+
+# misc
+README.html
+*.tgz
+logs/
+docs/
