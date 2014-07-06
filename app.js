@@ -1,84 +1,46 @@
 /**
  * Module dependencies.
  */
-
 var flash = require('connect-flash')
   , express = require('express')
   , passport = require('passport')
   , util = require('util')
   , LocalStrategy = require('passport-local').Strategy
+  , mongoose = require('mongoose').connect('mongodb://localhost/tabs')
   , phantom = require('phantom'), _page
   , http = require('http')
   , fs = require('fs')
   , path = require('path');
-  
-var routes = require('./routes/routes')
-  , db = require('./config/db')
-  , users = require('./config/user');
+
+/**
+ * Routes dependencies
+ */
+var routes = require('./routes/routes');
+
+/**
+ * Modules dependencies
+ */
+var Tab = require('./models/tab');
+var Account = require('./models/account');
 
 
 
 
-function findById(id, fn) {
-	var idx = id - 1;
-	if (users[idx]) {
-		fn(null, users[idx]);
-	} else {
-		fn(new Error('User does not exist'));
-	}
-}
+// use static authenticate method of model in LocalStrategy
+passport.use(Account.createStrategy());
+//passport.use(new LocalStrategy(Account.authenticate()));
 
-function findByUsername(username, fn) {
-	for (var i = 0, len = users.length; i < len; i++) {
-		var user = users[i];
-		if (user.username === username) {
-			return fn(null, user);
-		}
-	}
-	return fn(null, null);
-}
+// use static serialize and deserialize of model for passport session support
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
 
 
-// Passport session setup.
-// To support persistent login sessions, Passport needs to be able to
-// serialize users into and deserialize users out of the session.  Typically,
-// this will be as simple as storing the user ID when serializing, and finding
-// the user by ID when deserializing.
-passport.serializeUser(function(user, done) {
-	done(null, user.id);
+
+
+// The passport-local-mongoose package automatically takes care of salting and hashing the password. 
+Account.register(new Account({ username : "bob" }), "secret", function(err, account) {
+	if(err) return console.error(err);
 });
-
-passport.deserializeUser(function(id, done) {
-	findById(id, function (err, user) {
-		done(err, user);
-	});
-});
-
-
-// Use the LocalStrategy within Passport.
-// Strategies in passport require a `verify` function, which accept
-// credentials (in this case, a username and password), and invoke a callback
-// with a user object.  In the real world, this would query a database;
-// however, in this example we are using a baked-in set of users.
-passport.use(new LocalStrategy(
-	function(username, password, done) {
-		// asynchronous verification, for effect...
-		process.nextTick(function () {
-
-			// Find the user by username.  If there is no user with the given
-			// username, or the password is not correct, set the user to `false` to
-			// indicate failure and set a flash message.  Otherwise, return the
-			// authenticated `user`.
-			findByUsername(username, function(err, user) {
-				if (err) { return done(err); }
-				if (!user || user.password != password) {
-					return done(null, false, { message: 'Unknown user or invalid password' });
-				}
-				return done(null, user);
-			})
-		});
-	}
-));
 
 
 
@@ -111,50 +73,28 @@ app.configure('development', function() {
 
 
 app.get('/', routes.index);
-app.post('/api/login', passport.authenticate('local', { 
-	failureRedirect: '/',
-	failureFlash: true
-}), function(req, res) {
-	res.redirect('/');
+app.post('/api/login', passport.authenticate('local', {failureRedirect:'/', failureFlash:true}), routes.login);
+app.get('/api/logout', ensureAuthenticated, routes.logout);
+
+app.get('/api/tabs', ensureAuthenticated, routes.tabs);
+app.get('/api/accounts', ensureAuthenticated, routes.accounts);
+
+
+
+
+app.post('/api/remove', ensureAuthenticated, function(req, res) {
+	msg = 'Tab has been successfully removed.';
+
+	removeDbData(req.body.tabId, msg, res);
 });
 
-app.get('/api/logout', function(req, res) {
-	req.logout();
-	res.redirect('/');
-});
-
-// Simple route middleware to ensure user is authenticated.
-// Use this route middleware on any resource that needs to be protected.  If
-// the request is authenticated (typically via a persistent login session),
-// the request will proceed.  Otherwise, the user will be redirected to the
-// login page.
-function ensureAuthenticated(req, res, next) {
-	if (req.isAuthenticated()) { return next(); }
-	res.redirect('/');
-}
-
-
-
-
-app.post('/api/option', function(req, res) {
-	data = new Object();
-	data["sql"] = 'DELETE FROM tabs WHERE tab="'+req.body.tabId+'"';
-	data["msg"] = 'Tab has been successfully deleted.';
-	
-	deleteDbData('SELECT img FROM tabs WHERE tab="'+req.body.tabId+'"', res);
-	updateGrid(data, res);
-});
-
-
-
-
-app.post('/api/upload', function(req, res) {
+var uploadPath = 'public/uploads/';
+app.post('/api/upload', ensureAuthenticated, function(req, res) {
 	var url = req.body.tabTextUrl,
-		name = req.body.tabTextName.length > 17 ? req.body.tabTextName.substring(0, 17)+'...' : req.body.tabTextName;
-		tabId = req.body.edit ? req.body.edit : randomString(9);
+	name = req.body.tabTextName.length > 17 ? req.body.tabTextName.substring(0, 17)+'...' : req.body.tabTextName;
+	tabId = req.body.edit ? req.body.edit : randomString(9);
 	
-	var imagePath = 'uploads/'+tabId+'.png',
-		uploadPath = 'public/'+imagePath;
+	var image = tabId+'.png';
 	
 	console.log(req.body);
 		
@@ -187,41 +127,45 @@ app.post('/api/upload', function(req, res) {
 						console.log(result);
 						
 						var data = new Object();
-						name = req.body.tabTextName == '' ? result.title.length > 17 ? result.title.substring(0, 17)+'...' : result.title : name,
-						data["sql"] = 'UPDATE tabs SET '+
-							'name="'+name+'",'+
-							'url="'+url+'",'+
-							'title="'+result.title+'",'+
-							'icon="'+result.icon+'",'+
-							'img="'+imagePath+'" WHERE tab="'+tabId+'"';
-						data["msg"] = 'Tab has been successfully updated.';
+						name = req.body.tabTextName == '' ? result.title.length > 17 ? result.title.substring(0, 17)+'...' : result.title : name;
 
-						deleteDbData('SELECT img FROM tabs WHERE tab="'+tabId+'"', res);
+						var data = new Tab({
+							tab: tabId
+						      , name: name
+						      , url: url
+						      , title: result.title
+						      , icon: result.icon
+						      , img: image
+						});
 						
-						updateGrid(data, res);
+						msg = 'Tab has been successfully updated.';
+
+						deleteData(data.tab, res);
+						
+						updateDbData(data, msg, res);
 										
 						_page.set('viewportSize', {width:960,height:540});
 						_page.set('clipRect', {top:0,left:0,width:960,height:540});
-						_page.render(uploadPath);
+						_page.render(uploadPath+image);
 					}, "title");
 				/** Edit: Url is NOT valid */
 				} else {
 					console.log('edited > '+tabId);
 					console.log('url_status > '+status);
 					
-					var data = new Object();
-					name = req.body.tabTextName == '' ? url.length > 17 ? url.substring(0, 17)+'...' : url : name,
-					data["sql"] = 'UPDATE tabs SET '+
-						'name="'+name+'",'+
-						'url="'+url+'",'+
-						'title="'+url+'",'+
-						'icon="",'+
-						'img="" WHERE tab="'+tabId+'"';
-					data["msg"] = 'Tab has been successfully updated.';
+					name = req.body.tabTextName == '' ? url.length > 17 ? url.substring(0, 17)+'...' : url : name;
+					var data = new Tab({
+						tab: tabId
+					      , name: name
+					      , url: url
+					      , title: url
+					      , icon: ""
+					      , img: ""
+					});
 
-					deleteDbData('SELECT img FROM tabs WHERE tab="'+tabId+'"', res);
+					deleteData(data.tab, res);
 					
-					updateGrid(data, res);
+					updateDbData(data, msg, res);
 				}
 			});
 		/** Upload tab */
@@ -252,30 +196,40 @@ app.post('/api/upload', function(req, res) {
 						console.log('url_status > '+status);
 						console.log(result);
 						
-						var data = new Object();
-						name = req.body.tabTextName == '' ? result.title.length > 17 ? result.title.substring(0, 17)+'...' : result.title : name,
-						data["sql"] = 'INSERT INTO tabs (tab,name,url,title,icon,img) VALUES ('+
-							'"'+tabId+'","'+name+'","'+url+'","'+result.title+'","'+result.icon+'","'+imagePath+'")';
-						data["msg"] = 'Tab has been successfully added to grid.';
+						name = req.body.tabTextName == '' ? result.title.length > 17 ? result.title.substring(0, 17)+'...' : result.title : name;
+						var data = new Tab({
+							tab: tabId
+						      , name: name
+						      , url: url
+						      , title: result.title
+						      , icon: result.icon
+						      , img: image
+						});
+						var msg = 'Tab has been successfully added to grid.';
 						
-						updateGrid(data, res);
+						saveDbData(data, msg, res);
 						
 						_page.set('viewportSize', {width:960,height:540});
 						_page.set('clipRect', {top:0,left:0,width:960,height:540});
-						_page.render(uploadPath);
+						_page.render(uploadPath+image);
 					}, "title");
 				/** Upload: Url is NOT valid */
 				} else {
 					console.log('uploaded > '+tabId);
 					console.log('url_status > '+status);
 					
-					var data = new Object();
-					name = req.body.tabTextName == '' ? url.length > 17 ? url.substring(0, 17)+'...' : url : name,
-					data["sql"] = 'INSERT INTO tabs (tab,name,url,title,icon,img) VALUES ('+
-						'"'+tabId+'","'+name+'","'+url+'","'+url+'","","")';
-					data["msg"] = 'Tab has been successfully added to grid.';
+					name = req.body.tabTextName == '' ? url.length > 17 ? url.substring(0, 17)+'...' : url : name;
+					var data = new Tab({
+						tab: tabId
+					      , name: name
+					      , url: url
+					      , title: url
+					      , icon: ""
+					      , img: ""
+					});
+					var msg = 'Tab has been successfully added to grid.';
 					
-					updateGrid(data, res);
+					saveDbData(data, msg, res);
 				}
 			});
 		}
@@ -284,35 +238,70 @@ app.post('/api/upload', function(req, res) {
 
 
 
-function updateGrid(obj, res) {
-	updateDbData(obj.sql);
-	res.send({message: obj.msg});
+/** Simple route middleware to ensure user is authenticated.
+  * Use this route middleware on any resource that needs to be protected.  If
+  * the request is authenticated (typically via a persistent login session),
+  * the request will proceed.  Otherwise, the user will be redirected to the
+  * login page.
+  */
+function ensureAuthenticated(req, res, next) {
+	if (req.isAuthenticated()) { return next(); }
+	res.redirect('/');
 }
 
-function updateDbData(sql) {
-	db.getConnection(function(err, connection) {
-		if(err) throw err;	
-		connection.query(sql, function(err) {
-			if(err) throw err;
-			connection.destroy();
-		});
+function saveDbData(tmp, msg, res) {
+	tmp.save(function(err, log) {
+		if(err) return console.error(err);
+	});
 
+	res.send({message: msg});
+}
+
+function updateDbData(tmp, msg, res) {
+	var query = new Object({tab: tmp.tab});
+	Tab.findOne(query, function(err, doc) {
+		if(err) return console.error(err);
+		doc.tab = tmp.tab
+	      , doc.name = tmp.name
+	      , doc.url = tmp.url
+	      , doc.title = tmp.title
+	      , doc.icon = tmp.icon
+	      , doc.img = tmp.img;
+	      	
+		saveDbData(doc, msg, res);
 	});
 }
 
-function deleteDbData(sql, res) {
-	db.getConnection(function(err, connection) {
-		if(err) throw err;	
-		connection.query(sql, function(err, rows) {
-			if(err) throw err;
-			fs.exists('public/'+rows[0].img, function(exists) {
-				if(exists) {
-					fs.unlink('public/'+rows[0].img, function(err) {
-						if(err) {res.send({error: 'Error No: '+err.errno+"; Can't delete file. "+err+'.'}); return;}
-					});
-				}
-			});
-			connection.destroy();
+function removeDbData(tabId, msg, res) {
+	var query = new Object({tab: tabId});
+	Tab.findOne(query, function(err, doc) {
+		if(err) return console.error(err);
+		doc.remove(function(err, log) {
+			if(err) return console.error(err);
+		});
+	});
+
+	deleteData(tabId, res);
+	res.send({message: msg});
+}
+
+function deleteData(tabId, res) {
+	var query = new Object({tab: tabId});
+	Tab.findOne(query, function(err, doc) {
+		if(err) return console.error(err);
+		fs.exists(uploadPath+doc.img, function(exists) {
+			if(exists) {
+				fs.unlink(uploadPath+doc.img, function(err) {
+					if(err) {
+						res.send({
+							error: 'Error No: '+err.errno+"; Can't delete file. "+err+'.'
+						});
+						return;
+					}
+				});
+			} else {
+				console.log('Incorrect path or Image "'+ doc.img +'" does not exists.');
+			}
 		});
 	});
 }
@@ -331,16 +320,16 @@ function randomString(length) {
 
 
 
-http.createServer(app).listen(app.get('port'), function() {
-	console.log("Express server listening on port " + app.get('port') + ".");
-});
-
-
-
-
 phantom.create('--web-security=no', '--ignore-ssl-errors=yes', function(ph) {
 	ph.createPage(function(page) {
 		_page = page;
 		console.log('Phantom bridge initiated and page created.');
 	});
+});
+
+
+
+
+http.createServer(app).listen(app.get('port'), function() {
+	console.log("Express server listening on port " + app.get('port') + ".");
 });

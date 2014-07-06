@@ -16,9 +16,14 @@ block content
 			li
 				a(href='http://www.mpib-berlin.mpg.de')
 					|Max Planck Institut for Human Development
-			li
-				a(title='Write a email' href='mailto:')
-					i.fa.fa-envelope
+			if !user
+				li
+					a(title='Write a email' href='mailto:')
+						i.fa.fa-envelope
+			if user
+				li
+					a(title='Show Mongoose models' href='api/tabs')
+						i.fa.fa-info
 			li
 				if user
 					a(title='Log off' href='api/logout')
@@ -89,12 +94,12 @@ block content
 		ul#grid(data-length=grid.length)
 			each item, i in grid
 				li.tabs
-					form.TABForm(action='/api/option' method='post' enctype='multipart/form-data')
+					form.TABForm(action='/api/remove' method='post' enctype='multipart/form-data')
 						div
 							a(href=item.url title=item.title?item.title:item.name)
 								if item.icon
 									img.icon(src=item.icon)
-								img.pic(src=item.img)
+								img.pic(src='uploads/' + item.img)
 								h5= item.name
 								input(type='hidden' name='tabId' value=item.tab)
 							if user
