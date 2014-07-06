@@ -24,32 +24,30 @@ html(lang='en')
 			#logo
 
 			ul.fa-ul
+				li
+					if user
+						a(title='Log off' href='api/logout')
+							i.fa.fa-sign-out.fa-fw
+							|Log out
+					else
+						a#log-in(rel='leanModal' name='login' title='Log in' href='#login')
+							i.fa.fa-sign-in.fa-fw
+							|Log in
 				if user
 					li
 						a#tab-add(rel='leanModal' name='createtab' title='Create new tab' href='#createtab')
 							i.fa.fa-plus-circle.fa-fw
 							|Create
-				li
-					a(href='http://intra/en')
-						|Intranet
-				li
-					a(href='http://www.mpib-berlin.mpg.de')
-						|Max Planck Institut for Human Development
-				if !user
-					li
-						a(title='Write a email' href='mailto:')
-							i.fa.fa-envelope
 				if user
 					li
 						a(title='Show Mongoose models' href='api/tabs')
-							i.fa.fa-info
-				li
-					if user
-						a(title='Log off' href='api/logout')
-							i.fa.fa-sign-out
-					else
-						a#log-in(rel='leanModal' name='login' title='Log in' href='#login')
-							i.fa.fa-sign-in
+							i.fa.fa-info.fa-fw
+							|Mongoose
+				if !user
+					li
+						a(title='Write a email' href='mailto:')
+							i.fa.fa-envelope.fa-fw
+							|Email
 				li
 					a#reload(title='Reload grid' href='#reload')
 						i.fa.fa-refresh
