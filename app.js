@@ -2,12 +2,12 @@
  * Module dependencies.
  */
 var flash = require('connect-flash')
+  , path = require('path')
   , express = require('express')
-  , passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy
-  , mongoose = require('mongoose').connect('mongodb://localhost/tabs')
   , http = require('http')
-  , path = require('path');
+  , mongoose = require('mongoose')
+  , passport = require('passport')
+  , LocalStrategy = require('passport-local').Strategy;
 
 /**
  * Route dependencies
@@ -27,20 +27,30 @@ app.configure(function() {
 	app.set('port', process.env.PORT || 9090);
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'jade');
+	app.set('view options', { layout: false });
+
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
-	app.use(express.methodOverride());
-	app.use(express.static(path.join(__dirname, 'public')));	
-	app.use(express.cookieParser());
 	app.use(express.bodyParser());
+	app.use(express.methodOverride());
+
+	app.use(express.cookieParser());
 	app.use(express.session({ secret: 'keyboard cat' }));
-	app.use(flash());
+
 	app.use(passport.initialize());
 	app.use(passport.session());
+
+	app.use(flash());
+
 	app.use(app.router);
+	app.use(express.static(path.join(__dirname, 'public')));	
 });
 
-app.configure('development', function() {
+app.configure('development', function(){
+    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+});
+
+app.configure('production', function(){
 	app.use(express.errorHandler());
 });
 
@@ -48,7 +58,7 @@ app.configure('development', function() {
 
 
 /**
- * Passport setup
+ * Configure passport
  * 
  * To support persistent login sessions, Passport needs to be able to
  * serialize users into and deserialize users out of the session.
@@ -78,7 +88,15 @@ passport.deserializeUser(Account.deserializeUser());
 
 
 /**
- * Route setup
+ * Connect mongoose
+ */
+mongoose.connect('mongodb://localhost/password_local_mongoose');
+
+
+
+
+/**
+ * Configure routes
  */
 app.get('/', routes.index);
 app.post('/api/login', passport.authenticate('local', {failureRedirect:'/', failureFlash:true}), routes.login);
@@ -97,5 +115,5 @@ app.post('/api/upload', routes.ensureAuthenticated, routes.upload);
  * Fires the server.
  */
 http.createServer(app).listen(app.get('port'), function() {
-	console.log("Express server listening on port " + app.get('port') + ".");
+	console.log("Express server listening on %s:%d in %s mode", '127.0.0.1', app.get('port'), app.settings.env);
 });
