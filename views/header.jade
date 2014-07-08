@@ -27,27 +27,21 @@ html(lang='en')
 				li
 					if user
 						a(title='Log off' href='api/logout')
-							i.fa.fa-sign-out.fa-fw
-							|Log out
+							i.fa.fa-sign-out
 					else
 						a#log-in(rel='leanModal' name='login' title='Log in' href='#login')
-							i.fa.fa-sign-in.fa-fw
-							|Log in
+							i.fa.fa-sign-in
 				if user
 					li
 						a#tab-add(rel='leanModal' name='createtab' title='Create new tab' href='#createtab')
-							i.fa.fa-plus-circle.fa-fw
-							|Create
-				if user
-					li
+							i.fa.fa-plus-circle
+				li
+					if user
 						a(title='Show Mongoose models' href='api/tabs')
-							i.fa.fa-info.fa-fw
-							|Mongoose
-				if !user
-					li
-						a(title='Write a email' href='mailto:')
-							i.fa.fa-envelope.fa-fw
-							|Email
+							i.fa.fa-info
+					else
+						a(title='Write a email' href='mailto:your@email.com')
+							i.fa.fa-envelope
 				li
 					a#reload(title='Reload grid' href='#reload')
 						i.fa.fa-refresh
