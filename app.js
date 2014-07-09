@@ -94,7 +94,7 @@ Account.register(new Account({ username : "bob" }), "secret", function(err, acco
 /**
  * Connect mongoose
  */
-mongoose.connect('mongodb://localhost/passport_local_mongoose');
+mongoose.connect('mongodb://localhost/test');
 
 
 
