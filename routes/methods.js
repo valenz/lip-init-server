@@ -176,7 +176,7 @@ module.exports.deleteData = function(id, res) {
 					}
 				});
 			} else {
-				console.log('Incorrect path or Image "'+ id +'" does not exists.');
+				console.log('Incorrect path or file "'+ id +'.png" does not exists.');
 			}
 		});
 	});
