@@ -5,6 +5,10 @@ html(lang='en')
 		
 		title LIP-Support
 		
+		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Lato')
+		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Abril+Fatface')
+		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Arvo')
+		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Open+Sans')
 		link(rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css')
 		link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
 		link(rel='stylesheet', type='text/css', href='/stylesheets/form.css')
@@ -22,6 +26,17 @@ html(lang='en')
 	body
 		#head
 			#logo
+				span1
+					| Welcome 
+				span2
+					| to our 
+				span3
+					| new
+				br
+				span4
+					img(src='/images/logo.png')
+				span5
+					| &nbsp;Init Grid!
 
 			ul.fa-ul
 				li
@@ -33,14 +48,14 @@ html(lang='en')
 							i.fa.fa-sign-in
 				if user
 					li
-						a#tab-add(rel='leanModal' name='createtab' title='Create new tab' href='#createtab')
+						a#tab-add(rel='leanModal' name='createtab' title='New tab' href='#createtab')
 							i.fa.fa-plus-circle
 				li
 					if user
-						a(title='Show Mongoose models' href='api/tabs')
+						a(title='Mongoose models' href='api/tabs')
 							i.fa.fa-info
 					else
-						a(title='Write a email' href='mailto:your@email.com')
+						a(title='Write email' href='mailto:your@email.com')
 							i.fa.fa-envelope
 				li
 					a#reload(title='Reload grid' href='#reload')
@@ -50,7 +65,7 @@ html(lang='en')
 			if user
 				.TTWForm-container#createtab
 					#createtab-header
-						h2 Create new Tab
+						h1 Tab adjustments
 						a.modal_close(href='#' title='Close')
 							i.fa.fa-times.fa-lg
 					form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
@@ -72,7 +87,7 @@ html(lang='en')
 			if !user
 				.TTWForm-container#login
 					#login-header
-						h2 Login
+						h1 Login
 						a.modal_close(href='#' title='Close')
 							i.fa.fa-times.fa-lg
 					form.LOGForm(action='/api/login' method='post' enctype='multipart/form-data')

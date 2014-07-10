@@ -159,7 +159,6 @@ module.exports.removeDbData = function(id, msg, res) {
 		});
 	});
 
-	deleteData(id, res);
 	ressend('message', msg, res);
 };
 

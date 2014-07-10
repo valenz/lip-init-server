@@ -47,6 +47,7 @@ module.exports.accounts = function(req, res) {
 };
 
 module.exports.remove = function(req, res) {
+	methods.deleteData(req.body.tabId, res);
 	methods.removeDbData(req.body.tabId, 'Tab has been successfully removed.', res);
 };
 

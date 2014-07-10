@@ -55,15 +55,15 @@ $(document).ready(function() {
     /** Cancel form */
     $('#lean_overlay').click(function() {
 		$('.TTWForm').find('[type=hidden]').attr('name', 'upload');
+		$('[id^=field]').each(function() {
+			$(this).val('');
+		});
 		$('#submit').show();
 		$('.TTWForm-container').hide();
 		$('#lean_overlay').hide();
     });
     $('.modal_close').click(function() {
 		$('#lean_overlay').click();
-		$('[id^=field]').each(function() {
-			$(this).val('');
-		});
 	});
 	
 	

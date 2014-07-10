@@ -1,7 +1,8 @@
 body {
 	background: #FFF9E5 url(../images/bg.png) repeat 100% 0 scroll;
 	color: #FFF9E5;
-	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-family: 'Lato', sans-serif;
+	font-weight: 400;
 }
 
 
@@ -16,16 +17,53 @@ body {
 	border-bottom: 1px solid #797979;
 }
 
-#head p {
-	font-size: 12px;
-	text-align: center;
-}
-
 #logo {
 	margin: 0 auto;
+	text-align: center;
 	width: 800px;
-	background: #12282F url(../images/logo.png) no-repeat 0 0 scroll;
-	height: 182px;
+	height: 150px;
+}
+#logo span1 {
+	font-family: 'Abril Fatface', cursive;
+	font-weight: 400;
+	color: #FFFFFF;
+	background-color: transparent;
+	font-style: bold;
+	font-size: 62px;
+}
+#logo span2 {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 100;
+	color: #D8D8D8;
+	background-color: transparent;
+	font-style: normal;
+	font-size: 26px;
+}
+#logo span3 {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 800;
+	color: #FF0000;
+	background-color: transparent;
+	font-style: italic;
+	font-size: 50px;
+}
+#logo img {
+	/*font-family: 'Arvo', serif;
+	font-weight: 400;
+	color: #FFFFFF;
+	background-color: #F89B24;
+	font-style: normal;
+	font-size: 34px;*/
+	width: 175px;
+	height: 39.8px;
+}
+#logo span5 {
+	font-family: 'Arvo', serif;
+	font-weight: 700;
+	color: #FFFFFF;
+	background-color: transparent;
+	font-style: normal;
+	font-size: 46px;
 }
 
 
@@ -69,7 +107,7 @@ body {
 	-webkit-box-shadow: inset 1px 3px 5px 0 #101010;
 }
 
-.fa-ul li:first-child {
+/*.fa-ul li:first-child {
 	color: #FFF9E5;
 	background-color: #348371;
 	border: 1px solid #2D7161;
@@ -90,7 +128,7 @@ body {
 	box-shadow: inset 1px 3px 5px 0 #101010;
 	-moz-box-shadow: inset 1px 3px 5px 0 #101010;
 	-webkit-box-shadow: inset 1px 3px 5px 0 #101010;
-}
+}*/
 
 .fa-fw {
 	padding: 0 7px 0 0;
