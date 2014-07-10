@@ -62,7 +62,7 @@ module.exports.saveDbData = function(tmp, msg, res) {
 				
 			}, "title");
 		} else {
-			var name = tmp.name == '' ? tmp.url.length > 19 ? tmp.url.substring(0, 19)+'...' : url : tmp.name;
+			var name = tmp.name == '' ? tmp.url.length > 19 ? tmp.url.substring(0, 19)+'...' : tmp.url : tmp.name;
 			
 			var data = new Tab({
 				name: name,
@@ -130,7 +130,7 @@ module.exports.updateDbData = function(tmp, msg, res) {
 					
 				}, "title");
 			} else {
-				var name = tmp.name == '' ? tmp.url.length > 19 ? tmp.url.substring(0, 19)+'...' : url : tmp.name;
+				var name = tmp.name == '' ? tmp.url.length > 19 ? tmp.url.substring(0, 19)+'...' : tmp.url : tmp.name;
 			
 				doc.name = name;
 				doc.url = tmp.url;
