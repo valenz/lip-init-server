@@ -155,7 +155,7 @@ module.exports.removeDbData = function(id, msg, res) {
 		if(err) return console.error(err);
 		doc.remove(function(err, log) {
 			if(err) return console.error(err);
-			console.log('REMOVE: '+doc._id);
+			console.log('REMOVE.DB: '+doc._id);
 		});
 	});
 
@@ -173,6 +173,7 @@ module.exports.deleteData = function(id, res) {
 						ressend('error', 'Error No: '+err.errno+"; Can't delete file. "+err+'.', res);
 						return;
 					}
+					console.log('REMOVE.FILE: '+id);
 				});
 			} else {
 				console.log('Incorrect path or file "'+ id +'.png" does not exists.');
