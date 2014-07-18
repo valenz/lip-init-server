@@ -1,10 +1,9 @@
 {
-	"name": "lip-init-server",
+	"name": "TabGrid",
 	"description": "Grid",
 	"version": "0.2.5",
-	"repository": "git://github.com/valenz/lip-init-server.git",
+	"repository": "git@github.com:valenz/lip-init-server.git",
 	"author": "Stephan Wegner <stephan.wegner@mail.de>",
-	"license": "MIT",
 	"keywords": [
 		"grid"
 	],
