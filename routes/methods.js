@@ -15,9 +15,8 @@ phantom.create('--web-security=no', '--ignore-ssl-errors=yes', function(ph) {
 });
 
 module.exports.saveDbData = function(tmp, msg, res) {
-
 	_page.open(tmp.url, function(status) {
-		/** Edit: Url is valid */
+		/** Upload: Url is valid */
 		if(status == 'success') {
 			/** Get title and icon from a webpage */
 			_page.evaluate(function() {
@@ -38,7 +37,7 @@ module.exports.saveDbData = function(tmp, msg, res) {
 				}
 			}, function(result) {
 				
-				var name = tmp.name == '' ? result.title.length > 19 ? result.title.substring(0, 19)+'...' : result.title : tmp.name;
+				var name = tmp.name == '' ? result.title.length > 19 ? result.title.substring(0, 19)+'...' : result.title == '' ? tmp.url : result.title : tmp.name;
 				
 				var data = new Tab({
 					name: name,
@@ -108,7 +107,7 @@ module.exports.updateDbData = function(tmp, msg, res) {
 					}
 				}, function(result) {
 					
-					var name = tmp.name == '' ? result.title.length > 19 ? result.title.substring(0, 19)+'...' : result.title : tmp.name;
+					var name = tmp.name == '' ? result.title.length > 19 ? result.title.substring(0, 19)+'...' : result.title == '' ? tmp.url : result.title : tmp.name;
 					
 					doc.name = name;
 					doc.url = tmp.url;
