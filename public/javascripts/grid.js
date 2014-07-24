@@ -6,6 +6,13 @@ $(document).ready(function() {
 	$('li.tabs').mouseleave(function(e) {
 		$(this).find('[class^=btn]').css('display', 'none');
 	});
+
+
+
+	$('.pic').error(function(){
+		$(this).hide();
+	        $(this).parents('img-container').css('background-color', '#FFFFFF');
+	});
 	
 	
 	

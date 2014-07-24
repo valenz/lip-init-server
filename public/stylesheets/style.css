@@ -212,7 +212,7 @@ li .icon {
 	height: 14px;
 }
 
-li .pic {
+li .pic, li .img-container {
 	border: 1px #FFF9E5 solid;
 	border-radius: 3px;
 	-webkit-border-radius: 3px;
