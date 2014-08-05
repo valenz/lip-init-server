@@ -5,7 +5,7 @@ Save pages in a grid with nodejs.
 
 ## Installation
 ### Quick installation
-	$ git clone git@github.com:valenz/lip-init-server.git
+	$ git clone git@github.com:valenz/tabgrid.git
 
 	$ cd lip-init-server
 
