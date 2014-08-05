@@ -243,3 +243,12 @@ li a {
 	text-align: center;
 	font-size: 8px;
 }
+
+#foot a {
+	text-decoration: none;
+	color: #FFF9E5;
+}
+
+#foot .fa {
+	padding: 3px;
+}
