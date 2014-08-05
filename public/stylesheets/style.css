@@ -24,44 +24,12 @@ body {
 #logo {
 	margin: 0 auto;
 	text-align: center;
-	width: 800px;
-	height: 150px;
-}
-#logo span1 {
-	font-family: 'Abril Fatface', cursive;
-	font-weight: 400;
+	width: 600px;
+	height: 157px;
+	font-family: 'Audiowide', cursive;
+	font-size: 58px;
 	color: #FFFFFF;
 	background-color: transparent;
-	font-style: bold;
-	font-size: 62px;
-}
-#logo span2 {
-	font-family: 'Open Sans', sans-serif;
-	font-weight: 100;
-	color: #D8D8D8;
-	background-color: transparent;
-	font-style: normal;
-	font-size: 26px;
-}
-#logo span3 {
-	font-family: 'Open Sans', sans-serif;
-	font-weight: 800;
-	color: #FF0000;
-	background-color: transparent;
-	font-style: italic;
-	font-size: 50px;
-}
-#logo img {
-	width: 175px;
-	height: 39.8px;
-}
-#logo span5 {
-	font-family: 'Arvo', serif;
-	font-weight: 700;
-	color: #FFFFFF;
-	background-color: transparent;
-	font-style: normal;
-	font-size: 46px;
 }
 
 

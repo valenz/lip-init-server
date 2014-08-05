@@ -1,4 +1,4 @@
-# lip-init-server
+# Tabgrid
 Save pages in a grid with nodejs.
 
 [![Build Status](https://travis-ci.org/valenz/tabgrid.svg?branch=master)](https://travis-ci.org/valenz/tabgrid)
