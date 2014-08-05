@@ -13,7 +13,7 @@ Save pages in a grid with nodejs.
 
 	$ node app
 
-For running your app in background and save all log files into 'logs' folder
+For running your app in background and save all log files into folder 'logs' type:
 
 	$ npm install forever
 
