@@ -24,7 +24,7 @@ body {
 #logo {
 	margin: 0 auto;
 	text-align: center;
-	width: 600px;
+	width: 700px;
 	height: 74px;
 	font-family: 'Audiowide', cursive;
 	font-size: 58px;
@@ -72,29 +72,6 @@ body {
 	-moz-box-shadow: inset 1px 3px 5px 0 #101010;
 	-webkit-box-shadow: inset 1px 3px 5px 0 #101010;
 }
-
-/*.fa-ul li:first-child {
-	color: #FFF9E5;
-	background-color: #348371;
-	border: 1px solid #2D7161;
-	-webkit-transition: .1s ease-in-out;
-	-moz-transition: .1s ease-in-out;
-}
-
-.fa-ul li:first-child:hover {
-	background-color: #265F52;
-	border: 1px solid #1F4D42;
-	box-shadow: inset 0 1px 0 0 #212121;
-	-moz-box-shadow: inset 0 1px 0 0 #212121;
-	-webkit-box-shadow: inset 0 1px 0 0 #212121;
-}
-
-.fa-ul li:first-child:active {
-	outline: 0;
-	box-shadow: inset 1px 3px 5px 0 #101010;
-	-moz-box-shadow: inset 1px 3px 5px 0 #101010;
-	-webkit-box-shadow: inset 1px 3px 5px 0 #101010;
-}*/
 
 .fa-fw {
 	padding: 0 7px 0 0;
