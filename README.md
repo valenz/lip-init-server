@@ -3,7 +3,7 @@ Save pages in a grid with nodejs.
 
 
 ## Requirements
-You need default MongoDB service up and running.
+You need default MongoDB service up and running and the Node.js engine (greater than 0.10).
 
 
 ## Installation
