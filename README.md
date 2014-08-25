@@ -1,11 +1,9 @@
-# Tabgrid
+# Tabgrid [![Build Status](https://travis-ci.org/valenz/tabgrid.svg?branch=master)](https://travis-ci.org/valenz/tabgrid)
 Save pages in a grid with nodejs.
-
-[![Build Status](https://travis-ci.org/valenz/tabgrid.svg?branch=master)](https://travis-ci.org/valenz/tabgrid)
 
 
 ## Requirements
-Default MongoDB service need up and running.
+You need default MongoDB service up and running.
 
 
 ## Installation
