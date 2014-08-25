@@ -28,4 +28,4 @@ For running your app in background and save all log files into folder 'logs' typ
 ## Checking
 Finally open your web browser and type:
 
-	localhost:9090
+	http://localhost:9090
