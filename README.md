@@ -1,11 +1,10 @@
 	  ______    __              __    __
  	 /_  __/_  / /_  ____  ____/_/___/ /
 	  / / __ \/ __ \/ __ \/ __/ / __  /
- 	 / / /_/ / /_/ / /_/ / / / / /_/ /
+ 	 / / /_/ / /_/ / /_/ / / / / /_/ /	Save pages in a grid with Node.js.
 	/_/\_____\____/\__, /_/ /_/\____/
 		          /____/
-
-Save pages in a grid with nodejs. [![Build Status](https://travis-ci.org/valenz/tabgrid.svg?branch=master)](https://travis-ci.org/valenz/tabgrid)
+[![Build Status](https://travis-ci.org/valenz/tabgrid.svg?branch=master)](https://travis-ci.org/valenz/tabgrid)
 
 
 ## Requirements
