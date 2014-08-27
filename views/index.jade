@@ -4,16 +4,16 @@ block content
 
 	if grid.length != 0
 		ul#grid(data-length=grid.length)
-			each item, i in grid
-				li.tabs
+			each item, j in grid
+				li.tabs(data-item=j)
 					form.TABForm(action='/api/remove' method='post' enctype='multipart/form-data')
 						div
 							a(href=item.url title=item.title?item.title:item.name)
 								if item.icon
 									img.icon(src=item.icon)
-								//img.pic(src='uploads/' + item._id+'.png' onerror='this.onerror=null;this.src="images/bg.png"')
 								div.img-container
-									img.pic(src='uploads/' + item._id+'.png')
+									if item.icon
+										img.pic(src='uploads/' + item._id+'.png')
 								h5= item.name
 								input(type='hidden' name='tabId' value=item._id)
 							if user
