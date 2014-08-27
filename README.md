@@ -3,7 +3,7 @@
 	  / / __ \/ __ \/ __ \/ __/ / __  /
  	 / / /_/ / /_/ / /_/ / / / / /_/ /
 	/_/\_____\____/\__, /_/ /_/\____/
-		          /____/ Save pages in a grid with Node.js.
+		          /____/ Save websites in a grid with Node.js.
 [![Build Status](https://travis-ci.org/valenz/tabgrid.svg?branch=master)](https://travis-ci.org/valenz/tabgrid)
 
 
