@@ -10,6 +10,7 @@ node_modules/
 # ide
 *.swp
 *~
+*._.
 
 # misc
 README.html
