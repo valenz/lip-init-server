@@ -15,8 +15,10 @@ html(lang='en')
 			script(type='text/javascript' src='//code.jquery.com/jquery-latest.min.js')
 			script(type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js')
 			script(type='text/javascript' src='/javascripts/jquery.leanModal.min.js')
+			script(type='text/javascript' src='/javascripts/modernizr.min.js')
 			script(type='text/javascript' src='/javascripts/spinner.min.js')
 			script(type='text/javascript' src='/javascripts/jquery.form.js')
+			script(type='text/javascript' src='/javascripts/settings.js')
 			//script(type='text/javascript' src='/javascripts/local.js')
 			script(type='text/javascript' src='/javascripts/form.js')
 			script(type='text/javascript' src='/javascripts/grid.js')
@@ -30,7 +32,7 @@ html(lang='en')
 			ul.fa-ul
 				li
 					if user
-						a(title='Log off' href='api/logout')
+						a(title='Log off' href='/api/logout')
 							i.fa.fa-sign-out
 					else
 						a#log-in(rel='leanModal' name='login' title='Log in' href='#login')
@@ -39,13 +41,13 @@ html(lang='en')
 					li
 						a#tab-add(rel='leanModal' name='createtab' title='New tab' href='#createtab')
 							i.fa.fa-plus-circle
-				li
-					if user
-						a(title='Settings' href='api/tabs')
+				if user
+					li
+						a(title='Settings' href='/api/settings')
 							i.fa.fa-cog
-					else
-						a(title='Write email' href='mailto:your@email.com')
-							i.fa.fa-envelope
+				li
+					a(title='Write email' href='mailto:your@email.com')
+						i.fa.fa-envelope
 				li
 					a#reload(title='Reload grid' href='#reload')
 						i.fa.fa-refresh

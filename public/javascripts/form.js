@@ -8,7 +8,7 @@ $(document).ready(function() {
     /** Connect leanModal trigger to target ID */
     $('#tab-add').leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
     $('#log-in').leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
-    $('#note-add').leanModal({ top : 190, overlay : 0.0, closeButton: ".modal_close" });
+    $('#note-add').leanModal({ top : 100, overlay : 0.0, closeButton: ".modal_close" });
 	
     
     
@@ -92,6 +92,7 @@ $(document).ready(function() {
 				status(text +' '+ xhr.status +' '+ desc);
 			},
 			success: function(data) {
+				console.log(data);
 				if(data.message) {
 					$('[id^=field]').each(function() {
 						$(this).val('');
@@ -144,6 +145,7 @@ $(document).ready(function() {
     
     /** Shows a message after submit */
     function status(message) {
+		console.log(message);
 		$('#note-add').click();
 		if(message.error) {    
 			$('.message').html('<i class="fa fa-exclamation-circle fa-fw"></i>');
@@ -157,9 +159,10 @@ $(document).ready(function() {
 				--counter;
 			}, 1000);
 			setTimeout(function() {
-				$('.notify').hide();
+				$('#lean_overlay').hide();
+				$('.status').hide();
 				setTimeout(function() {location.reload();}, 1000);
-			}, (counter-1)*1000);
+			}, (counter+1)*1000);
 		}
     }
     

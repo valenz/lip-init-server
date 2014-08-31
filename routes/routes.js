@@ -1,16 +1,14 @@
 var mongoose = require('mongoose')
-  , methods = require('./methods')
-  , Tab = require('../models/tab');
+  , methods = require('./methods');
 
 module.exports.index = function(req, res) {
-	Tab.find(function(err, doc) {
+	mongoose.model('tabs').find(function(err, doc) {
 		if(err) return console.error(err);
-		var tmp = new Object({
+		res.render('index', {
 			grid: doc,
 			user: req.user,
 			message: req.flash('error')
 		});
-		res.render('index', tmp);
 	});
 };
 
@@ -29,21 +27,38 @@ module.exports.login = function(req, res) {
 	res.redirect('/');
 };
 
+module.exports.settings = function(req, res) {
+	mongoose.model('tabs').find(function(err, tab) {
+		mongoose.model('accounts').find(function(err, acc) {
+			if(err) return console.error(err);
+			res.render('settings', {
+				accs: acc,
+				tabs: tab,
+				user: req.user,
+				message: req.flash('error')
+			});
+		});
+	});
+};
+
+module.exports.getItem = function(req, res) {
+	var query = new Object({_id: req.params.id});
+	mongoose.model('tabs').findOne(query, function(err, doc) {
+		if(err) return console.error(err);
+		if(!doc) {
+			mongoose.model('accounts').findOne(query, function(err, doc) {
+				if(err) return console.error(err);
+				res.send(doc);
+			});
+		} else {
+			res.send(doc);
+		}
+	});
+};
+
 module.exports.logout = function(req, res) {
 	req.logout();
 	res.redirect('/');
-};
-
-module.exports.tabs = function(req, res) {
-	mongoose.model('tabs').find(function(err, tabs) {
-		res.send(tabs);
-	});
-};
-
-module.exports.accounts = function(req, res) {
-	mongoose.model('accounts').find(function(err, accounts) {
-		res.send(accounts);
-	});
 };
 
 module.exports.remove = function(req, res) {
