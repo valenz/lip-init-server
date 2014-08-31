@@ -26,6 +26,7 @@ block content
 				span| Login: 
 				input(type="checkbox" checked=sets[0].login)
 
+		if !sets[0].login || user
 			p| Accounts: (
 				= accs.length
 				| )

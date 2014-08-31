@@ -44,7 +44,7 @@ $(document).ready(function() {
 		});
 	}
 	
-	if($(!validateLogin())) {
+	if($('.adj input:checkbox').prop('checked') && !validateLogin()) {
 		/** Connect leanModal trigger to target ID */
 		$('#log-in').leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
 		$('#create-user').click(function () {
