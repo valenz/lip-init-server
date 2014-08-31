@@ -1,5 +1,5 @@
 /** Basic Styling **/
-.TTWForm, .LOGForm {
+.TTWForm, .LOGForm, .USEForm {
  	width: 500px;
  	margin: 0 auto;
 }
@@ -39,7 +39,7 @@
     display: none;
 }
 
-#createtab-header, #login-header {
+#createtab-header, #login-header, #createUser-header {
 	padding: 7px 18px 5px 25px;
 	background-color: #12282F;
 	color: #FFF9E5;
@@ -50,7 +50,7 @@
 	-ms-border-radius: 4px 4px 0px 0px;
 }
 
-#form-submit {
+.form-submit {
 	color: #12282F;
 }
 
@@ -72,18 +72,18 @@
 
 
 /** Field Styles **/
-.TTWForm .field, .LOGForm .field, #form-title.field {
+.TTWForm .field, .LOGForm .field, .USEForm .field, #form-title.field {
     padding-bottom: 25px;
     padding-top: 0;
     position: relative;
     clear: both;
 }
 
-.TTWForm .field:first-child, .LOGForm .field:first-child {
+.TTWForm .field:first-child, .LOGForm .field:first-child, .USEForm .field:first-child {
     padding-top:25px;
 }
 
-.TTWForm .field:last-child, .LOGForm .field:last-child {
+.TTWForm .field:last-child, .LOGForm .field:last-child, .USEForm .field:last-child {
     padding-bottom:0;
 }
 
@@ -123,7 +123,7 @@
 }
 
 
-.TTWForm input, .LOGForm input, .TTWForm textarea, .LOGForm textarea, .TTWForm select, .LOGForm select, div.selector, div.uploader  {
+.TTWForm input, .LOGForm input, .USEForm input, .TTWForm textarea, .LOGForm textarea, .USEForm textarea, .TTWForm select, .LOGForm select, .USEForm select, div.selector, div.uploader  {
     width:100%;
     height: 31px;
     font-size: 20px;
@@ -144,7 +144,7 @@
     -moz-transition: .3s ease-in-out;
 }
 
-.TTWForm label, .LOGForm label {
+.TTWForm label, .LOGForm label, .USEForm label {
     color: #17313A;
     text-align: left;
     font-size: 18px;
@@ -152,15 +152,15 @@
     display:inline-block;
 }
 
-.TTWForm label:first-child, .LOGForm label:first-child {
+.TTWForm label:first-child, .LOGForm label:first-child, .USEForm label:first-child {
     padding-top:0;
 }
 
-.TTWForm label:last-child, .LOGForm label:last-child {
+.TTWForm label:last-child, .LOGForm label:last-child, .USEForm label:last-child {
     padding-bottom:0;
 }
 
-.TTWForm .submit #submit, .LOGForm .submit #submit {
+.TTWForm .submit #submitTTW, .LOGForm .submit #submitLOG, .USEForm .submit #submitUSE {
     display: block;
     margin: 0px -6px 0px 0;
     text-align: center;
@@ -183,7 +183,7 @@
     -moz-transition: .1s ease-in-out;
 }
 
-.TTWForm .submit #submit:hover, .LOGForm .submit #submit:hover {
+.TTWForm .submit #submitTTW:hover, .LOGForm .submit #submitLOG:hover, .USEForm .submit #submitUSE:hover {
 	background-color: #265F52;
 	border: 1px solid #17313A;
 	box-shadow: 0 0 0 1px #FFF9E5;
@@ -191,14 +191,14 @@
 	-webkit-box-shadow: 0 0 0 1px #FFF9E5;
 }
 
-.TTWForm .submit #submit:active, .LOGForm .submit #submit:active {
+.TTWForm .submit #submitTTW:active, .LOGForm .submit #submitLOG:active, .USEForm .submit #submitUSE:active {
 	outline: 0;
 	box-shadow: inset 1px 3px 5px 0 #101010;
 	-moz-box-shadow: inset 1px 3px 5px 0 #101010;
 	-webkit-box-shadow: inset 1px 3px 5px 0 #101010;
 }
 
-.TTWForm .submit #loading, .LOGForm .submit #loading {
+.TTWForm .submit #loadingTTW, .LOGForm .submit #loadingLOG, .USEForm .submit #loadingUSE {
     display: block;
     margin: 0px -6px 0px 0;
     text-align: center;
@@ -219,11 +219,11 @@
     -moz-border-radius: 2px;
 }
 
-.TTWForm .submit #loading, .LOGForm .submit #loading {
+.TTWForm .submit #loadingTTW, .LOGForm .submit #loadingLOG, .USEForm .submit #loadingUSE {
 	cursor: not-allowed;
 }
 
-.TTWForm .submit input, .LOGForm .submit input {
+.TTWForm .submit input, .LOGForm .submit input, .USEForm .submit input {
 	display: none;
 }
 
@@ -231,7 +231,7 @@
 
 
 /** IE Hacks **/
-.TTWForm input, .LOGForm input {
+.TTWForm input, .LOGForm input, .USEForm input {
     *height: 28px;
 }
 

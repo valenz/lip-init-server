@@ -19,7 +19,7 @@
 		
 		$('#adjReset').click(function(e) {
 			if(checkStorage($('.adj').find('[type=range]'))) {
-				if(confirm('You are going to reset settings to default. \nAre you sure with that?')) {
+				if(confirm('You are going to reset your settings to default. \nAre you sure with that?')) {
 					localStorage.removeItem($('.adj').find('[type=range]').attr('type'));
 					setRange($('.adj').find('[type=range]'));
 					status({message: 'Settings set to default successfully.'});

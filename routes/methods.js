@@ -1,8 +1,8 @@
-var Tab = require('../models/tab')
-  , fs = require('fs')
+var fs = require('fs')
   , phantom = require('phantom'), _page
   , uploadPath = 'public/uploads/'
-  , Tab = require('../models/tab');
+  , Tab = require('../models/tab')
+  , Acc = require('../models/account');
   
 
 
@@ -181,6 +181,23 @@ module.exports.deleteData = function(id, res) {
 	});
 };
 
+module.exports.createUser = function(username, password, msg, res) {
+	// The passport-local-mongoose package automatically takes care of salting and hashing the password. 
+	var user = new Object({
+		username: username
+	});
+	Acc.register(new Acc(user), password, function(err, account) {
+		if(err) {
+			ressend('error', err.name+': '+err.message+'.', res);
+			return console.error(err);
+		} else {
+			ressend('message', msg, res);
+		}
+	});
+};
+
 function ressend(message, msg, res) {
-	res.send({message: msg});
+	var obj = new Object();
+	obj[message] = msg;
+	res.send(obj);
 }

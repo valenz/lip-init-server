@@ -18,6 +18,7 @@ var routes = require('./routes/routes')
  * Model dependencies
  */
 var Account = require('./models/account');
+var Settings = require('./models/setting');
 
 /**
  * Configure Express
@@ -81,17 +82,24 @@ passport.use(Account.createStrategy());
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
-/** 
- * The passport-local-mongoose package automatically takes care of salting and hashing the password. 
- */
-var user = new Object({
-	username: "admin"
-});
-Account.register(new Account(user), "0", function(err, account) {
+Settings.findOne({login: false}, function(err, set) {
 	if(err) return console.error(err);
+	if(set) {
+		return console.log(set);
+	} else {
+		Settings.findOne({login: true}, function(err, set) {
+			if(err) return console.error(err);
+			if(set) {
+				return console.log(set);
+			} else {
+				var data = new Settings({login: true});
+				data.save(function(err, doc) {
+					if(err) return console.error(err);
+				});
+			}
+		});
+	}
 });
-
-
 
 
 /**
@@ -106,10 +114,13 @@ mongoose.connect('mongodb://localhost/test');
  * Configure routes
  */
 app.get('/', routes.index);
+
+app.post('/api/create', routes.create);
+
 app.post('/api/login', passport.authenticate('local', {failureRedirect:'/', failureFlash:true}), routes.login);
 app.get('/api/logout', routes.ensureAuthenticated, routes.logout);
 
-app.get('/api/settings', routes.ensureAuthenticated, routes.settings);
+app.get('/api/settings', routes.settings);
 app.get('/api/settings/:id?', routes.ensureAuthenticated, routes.getItem);
 
 app.post('/api/remove', routes.ensureAuthenticated, routes.remove);

@@ -1,18 +1,10 @@
 $(document).ready(function() {
-    /** Create new tab */
-    $('#tab-add').click(function() {
-		$('.TTWForm-container').show();
-		$('#submit').show();
-		$('#field8').focus();
-    });
     /** Connect leanModal trigger to target ID */
-    $('#tab-add').leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
-    $('#log-in').leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
     $('#note-add').leanModal({ top : 100, overlay : 0.0, closeButton: ".modal_close" });
 	
     
     
-        
+	
     /** Focus cursor */
     $('#field8').focusin(function() {
 		if(!$(this).val()) {
@@ -28,13 +20,44 @@ $(document).ready(function() {
     
     
     
-    /** Log in screen */
-    $('#log-in').click(function() {
-		$('.LOGForm').show();
-		$('#submit').show();
-		$('#field2').focus();
-	});
-    
+    //if(validateLogin()) {
+	if(validateLogin()) {
+		/** Connect leanModal trigger to target ID */
+		$('#tab-add').leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
+		/** Create tab screen */
+		$('#tab-add').click(function() {
+			$('.TTWForm').show();
+			$('#submitTTW').show();
+			$('.focus').focus();
+		});
+	
+	}
+	
+	if(!$('.adj input:checkbox').prop('checked') || validateLogin()) {
+		/** Connect leanModal trigger to target ID */
+		$('#create-user').leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
+		/** Create user screen */
+		$('#create-user').click(function() {
+			$('.USEForm').show();
+			$('#submitUSE').show();
+			$('.focus').focus();
+		});
+	}
+	
+	if($(!validateLogin())) {
+		/** Connect leanModal trigger to target ID */
+		$('#log-in').leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
+		$('#create-user').click(function () {
+			status({'error': 'To create a new user you must be logged in first.'});
+		});
+		/** Create login screen */
+		$('#log-in').click(function() {
+			$('.LOGForm').show();
+			$('#submitLOG').show();
+			$('.focus').focus();
+		});
+	}
+	
     
     
     
@@ -58,7 +81,7 @@ $(document).ready(function() {
 		$('[id^=field]').each(function() {
 			$(this).val('');
 		});
-		$('#submit').show();
+		$('[id^=submit]').show();
 		$('.TTWForm-container').hide();
 		$('#lean_overlay').hide();
     });
@@ -71,9 +94,38 @@ $(document).ready(function() {
 	
 	/** Submit to log in */
 	$('.LOGForm').submit(function(e) {
-		$('#submit').hide();
-		$loading.show();
+		$('[id^=submit]').hide();
+		$loading0.show();
+		$loading1.show();
+		$loading2.show();
 	});
+    
+    
+    
+    
+    /** Submit form to delete tabs */
+    $('.USEForm').submit(function(e) {
+		e.preventDefault();
+		var fd = $(this);
+		$.ajax({
+			type: fd.attr('method'),
+			url: fd.attr('action'),
+			data: new FormData(fd[0]),
+			processData: false,
+			contentType: false,
+			error: function(xhr, text, desc) {
+				status(text +' '+ xhr.status +' '+ desc);
+			},
+			success: function(data) {
+				if(data.message) {
+					fd.parents('#createUser').hide();
+					status(data);
+				} else {
+					status(data);
+				}
+			}
+		});
+    });
 	
 	
 	
@@ -105,12 +157,12 @@ $(document).ready(function() {
 			complete: function() {
 				$('#lean_overlay').hide();
 				$('.TTWForm-container').hide();
-				$('#submit').show();
+				$('.submit').show();
 			}
 		});
     });
-    $('#submit').click(function(e) {
-		$(this).parents('#form-submit').find('[type=submit]').click();
+    $('[id^=submit]').click(function(e) {
+		$(this).parents('.form-submit').find('[type=submit]').click();
 	});
     
     
@@ -145,7 +197,6 @@ $(document).ready(function() {
     
     /** Shows a message after submit */
     function status(message) {
-		console.log(message);
 		$('#note-add').click();
 		if(message.error) {    
 			$('.message').html('<i class="fa fa-exclamation-circle fa-fw"></i>');
@@ -155,7 +206,7 @@ $(document).ready(function() {
 			$('.message').html('<i class="fa fa-check-circle fa-fw"></i>');
 			$('.message').append(message.message).show();
 			setInterval(function() {
-				$('.message+span').html('<p>Grid will be updated in few seconds. ('+counter+')</p>');
+				$('.message+span').html('<p>Page will be updated in few seconds. ('+counter+')</p>');
 				--counter;
 			}, 1000);
 			setTimeout(function() {
@@ -165,18 +216,36 @@ $(document).ready(function() {
 			}, (counter+1)*1000);
 		}
     }
+	
+	
+	
+	
+	/** Validates the state of your login */
+	function validateLogin() {
+		if($('#log-in').attr('name') == 'login') {
+			return false;
+		} else {
+			return true;
+		}
+	}
     
     
     
     
     /** Spinning load icon while submit */
-    var $loading = $('#loading').hide();
+    var $loading0 = $('#loadingTTW').hide();
+    var $loading1 = $('#loadingLOG').hide();
+    var $loading2 = $('#loadingUSE').hide();
 	$(document).ajaxStart(function() {
-		$('#submit').hide();
-		$loading.show();
+		$('[id^=submit]').hide();
+		$loading0.show();
+		$loading1.show();
+		$loading2.show();
 	}).ajaxStop(function() {
-		$('#submit').show();
-		$loading.hide();
+		$('[id^=submit]').show();
+		$loading0.hide();
+		$loading1.hide();
+		$loading2.hide();
     });
     
     var opts = {
@@ -198,5 +267,7 @@ $(document).ready(function() {
 		left: '395px' // Left position relative to parent in px
     };
     
-    var spinner = new Spinner(opts).spin($('#loading')[0]);
+    var spinner0 = new Spinner(opts).spin($loading0[0]);
+    var spinner1 = new Spinner(opts).spin($loading1[0]);
+    var spinner2 = new Spinner(opts).spin($loading2[0]);
 });
