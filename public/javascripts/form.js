@@ -44,12 +44,14 @@ $(document).ready(function() {
 		});
 	}
 	
-	if($('.adj input:checkbox').prop('checked') && !validateLogin()) {
+	if(!validateLogin()) {
 		/** Connect leanModal trigger to target ID */
 		$('#log-in').leanModal({ top : 100, overlay : 0.4, closeButton: ".modal_close" });
-		$('#create-user').click(function () {
-			status({'error': 'To create a new user you must be logged in first.'});
-		});
+		if($('.adj input:checkbox').prop('checked')) {
+			$('#create-user').click(function () {
+				status({'error': 'To create a new user you must be logged in first.'});
+			});
+		}
 		/** Create login screen */
 		$('#log-in').click(function() {
 			$('.LOGForm').show();
