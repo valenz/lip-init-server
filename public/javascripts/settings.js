@@ -1,4 +1,4 @@
-$(document).ready(function() {
+﻿$(document).ready(function() {
 	if(Modernizr.localstorage) {
 		setRange($('.adj').find('[type=range]'));
 		$('.adj').find('[type=range]').mousemove(function() {
