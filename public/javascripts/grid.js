@@ -16,7 +16,7 @@ $(document).ready(function() {
 	var h5Width = parseInt($('li h5').css('width'));
 	var h5Size = parseInt($('li h5').css('font-size'));
 	var h5Bottom = parseInt($('li h5').css('bottom'));
-	var factor = 1+(localStorage.getItem('range'))/100;
+	var factor = Modernizr.localstorage && localStorage.getItem('range') ? localStorage.getItem('range') : 1;
 	$('#grid li').each(function(key) {
 		$(this).css('width', Math.floor(liWidth*factor)+'px');
 	});

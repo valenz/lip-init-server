@@ -1,12 +1,14 @@
 ﻿$(document).ready(function() {
 	if(Modernizr.localstorage) {
 		setRange($('.adj').find('[type=range]'));
+		
 		$('.adj').find('[type=range]').mousemove(function() {
-			$('.adj').find('#rangeFac').text($(this).val()+'%');
+			$('.adj').find('#rangeFac').text($(this).val());
 		});
+		
 		$('.adj').find('[type=range]').change(function() {
 			try {
-				$('.adj').find('#rangeFac').text($(this).val()+'%');
+				$('.adj').find('#rangeFac').text($(this).val());
 				localStorage.setItem($(this).attr('type'), $(this).val());
 				status({message: 'Range saved successfully.'});
 			} catch(e) {
@@ -61,10 +63,10 @@
 	function setRange(r) {
 		if(localStorage.getItem(r.attr('type'))) {
 			r.val(localStorage.getItem(r.attr('type')));
-			$('.adj').find('#rangeFac').text(r.val()+'%');
+			$('.adj').find('#rangeFac').text(r.val());
 		} else {
-			r.val(0);
-			$('.adj').find('#rangeFac').text('0%');
+			r.val(1);
+			$('.adj').find('#rangeFac').text('1');
 		
 		}
 	}
