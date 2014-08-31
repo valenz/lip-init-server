@@ -3,9 +3,10 @@
 block content
 
 	#adjustments
-		p| Token:
-		.adj.clearfix
-			code(style='word-break: break-all;')= user
+		if user
+			p| Token:
+			.adj.clearfix
+				code(style='word-break: break-all;')= user
 			
 		p| Adjustments:
 			span#adjReset(title='Reset settings to default')
@@ -18,33 +19,30 @@ block content
 			#rangeLeft| 1
 			#rangeRight| 1.5
 			input(type="range" min="1" max="1.5" step="0.01")
-			
-		p| Login:
-		.adj.clearfix
-			span| Login: 
-			input(type="checkbox" checked=sets[0].login)
+		
+		if user
+			p| Login:
+			.adj.clearfix
+				span| Login: 
+				input(type="checkbox" checked=sets[0].login)
 
-		p| Accounts: (
-			= accs.length
-			| )
-		.adj.clearfix
-			a#create-user(rel='leanModal' name='createUser' title='Create user' href='#createUser')
-				.item.itemfloat| +
-			each item, j in accs
-				a(href="settings/"+item._id)
-					.item.itemfloat(data-item=j)= item.username
+			p| Accounts: (
+				= accs.length
+				| )
+			.adj.clearfix
+				a#create-user(rel='leanModal' name='createUser' title='Create user' href='#createUser')
+					.item.itemfloat| +
+				each item, j in accs
+					a(href="settings/"+item._id)
+						.item.itemfloat(data-item=j)= item.username
 
-		p| Tabs: (
-			= tabs.length
-			| )
-		.adj.clearfix
-			each item, j in tabs
-				a(href="settings/"+item._id)
-					.item.itemfloat(data-item=j)= item.name
-
-	
-
-								
+			p| Tabs: (
+				= tabs.length
+				| )
+			.adj.clearfix
+				each item, j in tabs
+					a(href="settings/"+item._id)
+						.item.itemfloat(data-item=j)= item.name
 
 	#foot
 		p
