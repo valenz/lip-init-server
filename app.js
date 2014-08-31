@@ -92,7 +92,7 @@ Settings.findOne({login: false}, function(err, set) {
 			if(set) {
 				return console.log(set);
 			} else {
-				var data = new Settings({login: true});
+				var data = new Settings({login: false});
 				data.save(function(err, doc) {
 					if(err) return console.error(err);
 				});
