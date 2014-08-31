@@ -1,0 +1,38 @@
+extends header
+
+block content
+
+	#adjustments
+		p| Adjustments:
+			span#adjReset(title='Reset settings to default')
+				i.fa.fa-eraser
+		code#rangeMsg
+		.adj.clearfix
+			div
+				span| Range: 
+				span#rangeFac
+			#rangeLeft| 0%
+			#rangeRight| 100%
+			input(type="range" min="0" max="100" step="1")
+
+		p| Accounts: (
+			= accs.length
+			| )
+		.adj.clearfix
+			each item, j in accs
+				a(href="settings/"+item._id)
+					.item.itemfloat(data-item=j)= item.username
+
+		p| Tabs: (
+			= tabs.length
+			| )
+		.adj.clearfix
+			each item, j in tabs
+				a(href="settings/"+item._id)
+					.item.itemfloat(data-item=j)= item.name
+
+	#foot
+		p
+			a(name='github' title='Github' href='https://github.com/valenz/tabgrid')
+				i.fa.fa-github
+				| tabgrid 2014
