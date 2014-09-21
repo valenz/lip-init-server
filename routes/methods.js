@@ -184,7 +184,6 @@ module.exports.deleteData = function(id, res) {
 
 module.exports.secLogin = function(req, res, msg) {
 	var login = req.login ? true : false;
-	console.log(req);
 	
 	Set.findOne({login: !login}, function(err, doc) {
 		if(err) return console.error(err);
