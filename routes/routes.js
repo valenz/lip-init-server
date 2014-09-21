@@ -28,7 +28,7 @@ module.exports.ensureAuthenticated = function(req, res, next) {
 }
 
 module.exports.secLogin = function(req, res) {
-	methods.secLogin(req.body, res, 'Settings has been modified successfully.');
+	methods.secLogin(req.body, res, 'Settings has been updated successfully.');
 };
 
 module.exports.create = function(req, res) {

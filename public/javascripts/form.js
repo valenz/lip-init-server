@@ -105,7 +105,7 @@ $(document).ready(function() {
     
     
     
-    /**  */
+    /** Submit form to update settings */
     $('.SETForm').submit(function(e) {
 		e.preventDefault();
 		var fd = $(this);
