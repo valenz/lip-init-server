@@ -184,6 +184,12 @@ body {
 	float: right;
 	text-align: right;
 }
+#user {
+	box-shadow: 0 0 0 1px #B36B34;
+	-moz-box-shadow: 0 0 0 1px #B36B34;
+	-webkit-box-shadow: 0 0 0 1px #B36B34;
+	background-color: #B36B34;
+}
 
 .item {
 	margin: 3px;

@@ -42,7 +42,10 @@ block content
 					.item.itemfloat| +
 				each item, j in accs
 					a(href="settings/"+item._id)
-						.item.itemfloat(data-item=j)= item.username
+						if item.username == user.username
+							.item.itemfloat#user(data-item=j)= item.username
+						else
+							.item.itemfloat(data-item=j)= item.username
 
 		if tabs.length != 0
 			h3| (

@@ -114,6 +114,7 @@ module.exports.updateDbData = function(tmp, msg, res) {
 					doc.url = tmp.url;
 					doc.title = result.title;
 					doc.icon = result.icon;
+					doc.__v = doc.__v + 1;
 					
 					console.log('UPDATE.DATA: '+doc);
 					doc.save(function(err, doc) {
@@ -136,6 +137,7 @@ module.exports.updateDbData = function(tmp, msg, res) {
 				doc.url = tmp.url;
 				doc.title = tmp.url;
 				doc.icon = "";
+				doc.__v = doc.__v + 1;
 
 				console.log('UPDATE.DATA: '+doc);
 				doc.save(function(err, doc) {
