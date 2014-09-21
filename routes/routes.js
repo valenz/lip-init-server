@@ -27,8 +27,12 @@ module.exports.ensureAuthenticated = function(req, res, next) {
 	res.redirect('/');
 }
 
+module.exports.secLogin = function(req, res) {
+	methods.secLogin(req.body, res, 'Settings has been modified successfully.');
+};
+
 module.exports.create = function(req, res) {
-	methods.createUser(req.body.username, req.body.password, 'User has been successfully created.', res);
+	methods.createUser(req.body, res, 'User has been created successfully.');
 };
 
 module.exports.login = function(req, res) {

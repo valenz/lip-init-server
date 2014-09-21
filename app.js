@@ -115,16 +115,17 @@ mongoose.connect('mongodb://localhost/test');
  */
 app.get('/', routes.index);
 
-app.post('/api/create', routes.create);
+app.post('/create', routes.create);
 
-app.post('/api/login', passport.authenticate('local', {failureRedirect:'/', failureFlash:true}), routes.login);
-app.get('/api/logout', routes.ensureAuthenticated, routes.logout);
+app.post('/login', passport.authenticate('local', {failureRedirect:'/', failureFlash:true}), routes.login);
+app.get('/logout', routes.ensureAuthenticated, routes.logout);
 
-app.get('/api/settings', routes.settings);
-app.get('/api/settings/:id?', routes.ensureAuthenticated, routes.getItem);
+app.post('/security', routes.ensureAuthenticated, routes.secLogin);
+app.get('/settings', routes.settings);
+app.get('/settings/:id?', routes.ensureAuthenticated, routes.getItem);
 
-app.post('/api/remove', routes.ensureAuthenticated, routes.remove);
-app.post('/api/upload', routes.ensureAuthenticated, routes.upload);
+app.post('/remove', routes.ensureAuthenticated, routes.remove);
+app.post('/upload', routes.ensureAuthenticated, routes.upload);
 
 
 

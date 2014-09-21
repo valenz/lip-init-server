@@ -6,7 +6,7 @@ block content
 		ul#grid(data-length=grid.length)
 			each item, j in grid
 				li.tabs(data-item=j)
-					form.TABForm(action='/api/remove' method='post' enctype='multipart/form-data')
+					form.TABForm(action='/remove' method='post' enctype='multipart/form-data')
 						div
 							a(href=item.url title=item.title?item.title:item.name)
 								if item.icon

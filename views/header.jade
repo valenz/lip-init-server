@@ -32,7 +32,7 @@ html(lang='en')
 			ul.fa-ul
 				li
 					if user
-						a(title='Log off' href='/api/logout')
+						a(title='Log off' href='/logout')
 							i.fa.fa-sign-out
 					else
 						a#log-in(rel='leanModal' name='login' title='Log in' href='#login')
@@ -42,7 +42,7 @@ html(lang='en')
 						a#tab-add(rel='leanModal' name='createtab' title='New tab' href='#createtab')
 							i.fa.fa-plus-circle
 				li
-					a(title='Settings' href='/api/settings')
+					a(title='Settings' href='/settings')
 						i.fa.fa-cog
 				li
 					a(title='Write email' href='mailto:your@email.com')
@@ -58,7 +58,7 @@ html(lang='en')
 						h1 Create User
 						a.modal_close(href='#' title='Close')
 							i.fa.fa-times.fa-lg
-					form.USEForm(action='/api/create' method='post' enctype='multipart/form-data')
+					form.USEForm(action='/create' method='post' enctype='multipart/form-data')
 						#field2-container.field.f_100
 							label
 								|Username:
@@ -79,7 +79,7 @@ html(lang='en')
 						h1 Tab adjustments
 						a.modal_close(href='#' title='Close')
 							i.fa.fa-times.fa-lg
-					form.TTWForm(action='/api/upload' method='post' enctype='multipart/form-data')
+					form.TTWForm(action='/upload' method='post' enctype='multipart/form-data')
 						#field8-container.field.f_100
 							label
 								|Address (required):
@@ -100,7 +100,7 @@ html(lang='en')
 						h1 Login
 						a.modal_close(href='#' title='Close')
 							i.fa.fa-times.fa-lg
-					form.LOGForm(action='/api/login' method='post' enctype='multipart/form-data')
+					form.LOGForm(action='/login' method='post' enctype='multipart/form-data')
 						#field2-container.field.f_100
 							label
 								|Username:

@@ -105,7 +105,36 @@ $(document).ready(function() {
     
     
     
-    /** Submit form to delete tabs */
+    /**  */
+    $('.SETForm').submit(function(e) {
+		e.preventDefault();
+		var fd = $(this);
+		$.ajax({
+			type: fd.attr('method'),
+			url: fd.attr('action'),
+			data: new FormData(fd[0]),
+			processData: false,
+			contentType: false,
+			error: function(xhr, text, desc) {
+				status(text +' '+ xhr.status +' '+ desc);
+			},
+			success: function(data) {
+				if(data.message) {
+					status(data);
+				} else {
+					status(data);
+				}
+			}
+		});
+    });
+    $('#seclog').click(function() {
+		$('.SETForm').submit();
+	});
+    
+    
+    
+    
+    /** Submit form to create users */
     $('.USEForm').submit(function(e) {
 		e.preventDefault();
 		var fd = $(this);

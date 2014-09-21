@@ -2,7 +2,8 @@ var fs = require('fs')
   , phantom = require('phantom'), _page
   , uploadPath = 'public/uploads/'
   , Tab = require('../models/tab')
-  , Acc = require('../models/account');
+  , Acc = require('../models/account')
+  , Set = require('../models/setting');
   
 
 
@@ -181,12 +182,42 @@ module.exports.deleteData = function(id, res) {
 	});
 };
 
-module.exports.createUser = function(username, password, msg, res) {
+module.exports.secLogin = function(req, res, msg) {
+	var login = req.login ? true : false;
+	console.log(req);
+	
+	Set.findOne({login: !login}, function(err, doc) {
+		if(err) return console.error(err);
+		if(login) {
+			doc.login = true;
+			doc.save(function(err, doc) {
+				if(err) {
+					ressend('error', 'Error No: '+err.errno+"; Can't save changes. "+err+'.', res);
+					return console.error(err);
+				} else {
+					ressend('message', msg, res);
+				}
+			});
+		} else {
+			doc.login = false;
+			doc.save(function(err, doc) {
+				if(err) {
+					ressend('error', 'Error No: '+err.errno+"; Can't save changes. "+err+'.', res);
+					return console.error(err);
+				} else {
+					ressend('message', msg, res);
+				}
+			});
+		}
+	});
+};
+
+module.exports.createUser = function(req, res, msg) {
 	// The passport-local-mongoose package automatically takes care of salting and hashing the password. 
 	var user = new Object({
-		username: username
+		username: req.username
 	});
-	Acc.register(new Acc(user), password, function(err, account) {
+	Acc.register(new Acc(user), req.password, function(err, account) {
 		if(err) {
 			ressend('error', err.name+': '+err.message+'.', res);
 			return console.error(err);
