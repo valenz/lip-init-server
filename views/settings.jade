@@ -42,7 +42,7 @@ block content
 					.item.itemfloat| +
 				each item, j in accs
 					a(href="settings/"+item._id)
-						if item.username == user.username
+						if user && item.username == user.username
 							.item.itemfloat#user(data-item=j)= item.username
 						else
 							.item.itemfloat(data-item=j)= item.username
