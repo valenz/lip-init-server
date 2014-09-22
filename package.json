@@ -21,6 +21,7 @@
 		"phantom": "^0.5.7"
 	},
 	"scripts": {
+		"test": "phantom",
 		"start": "node app"
 	}
 }
