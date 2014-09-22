@@ -11,3 +11,6 @@ services:
 
 install:
         - npm install -g phantomjs
+        - npm install
+
+script: node app
