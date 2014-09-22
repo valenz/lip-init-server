@@ -11,6 +11,7 @@ services:
 
 install:
         - npm install -g phantomjs
+        - npm install weak
         - npm install
 
 script: npm test
