@@ -2,13 +2,16 @@
 	"name": "Tabgrid",
 	"description": "Grid",
 	"version": "0.2.5",
-	"repository": "git@github.com:valenz/tabgrid.git",
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:valenz/tabgrid.git"
+	},
 	"author": "Stephan Wegner <stephan.wegner@mail.de>",
 	"keywords": [
 		"grid"
 	],
 	"engines": {
-		"node": ">=0.10"
+		"node": "=0.10"
 	},
 	"dependencies": {
 		"connect-flash": "^0.1.1",
