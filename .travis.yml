@@ -8,7 +8,6 @@ services:
         - mongodb
 
 install:
-        - npm install phantomjs
         - npm install
 
 script: npm test
