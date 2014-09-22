@@ -1,10 +1,11 @@
 language: node_js
-node:js:
+node_js:
         - "0.10"
-        - "0.11"
-python:
-        - "2.7"
 
 services:
         - mongodb
-        - phantomjs
+
+install:
+        - npm install
+
+script: npm test
