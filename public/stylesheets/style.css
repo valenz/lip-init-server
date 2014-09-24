@@ -311,20 +311,20 @@ li a {
 
 
 /**
- * FOOT
+ * FOOTER
  */
-#foot {
+#footer {
 	margin: 0 auto;
 	height: auto;
 	text-align: center;
 	font-size: 8px;
 }
 
-#foot a {
+#footer a {
 	text-decoration: none;
 	color: #FFF9E5;
 }
 
-#foot .fa {
+#footer .fa {
 	padding: 3px;
 }
