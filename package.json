@@ -2,7 +2,10 @@
 	"name": "Tabgrid",
 	"description": "Grid",
 	"version": "0.2.5",
-	"repository": "https://github.com/valenz/tabgrid.git",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/valenz/tabgrid.git"
+	},
 	"author": "Stephan Wegner <stephan.wegner@mail.de>",
 	"keywords": [
 		"grid"
