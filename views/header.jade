@@ -8,17 +8,18 @@ html(lang='en')
 		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Lato')
 		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Audiowide')
 		link(rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css')
-		link(rel='stylesheet', type='text/css', href='/stylesheets/former.css')
+		link(rel='stylesheet', type='text/css', href='/stylesheets/form.css')
 		link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
 		link(rel='shortcut icon', type='favicon', href='/images/favicon.ico')
 		block scripts
 			script(type='text/javascript' src='//code.jquery.com/jquery-latest.min.js')
 			script(type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js')
-			script(type='text/javascript' src='/javascripts/jquery.leanModal.min.js')
-			script(type='text/javascript' src='/javascripts/modernizr.min.js')
-			script(type='text/javascript' src='/javascripts/spinner.min.js')
-			script(type='text/javascript' src='/javascripts/jquery.form.js')
+			script(type='text/javascript' src='/javascripts/libs/jquery.leanModal.min.js')
+			script(type='text/javascript' src='/javascripts/libs/modernizr.min.js')
+			script(type='text/javascript' src='/javascripts/libs/spinner.min.js')
+			script(type='text/javascript' src='/javascripts/libs/jquery.form.js')
 			script(type='text/javascript' src='/javascripts/settings.js')
+			script(type='text/javascript' src='/javascripts/loader.js')
 			//script(type='text/javascript' src='/javascripts/local.js')
 			script(type='text/javascript' src='/javascripts/form.js')
 			script(type='text/javascript' src='/javascripts/grid.js')
@@ -26,18 +27,16 @@ html(lang='en')
 	body
 		#head
 			#logo: a(name='tabgrid' title='Tabgrid' href='/')| Tabgrid
-			include menu
-			include former
+			include includes/menu
+			include includes/form
 
 	if message.length != 0
 		p.login
-			i.fa.fa-exclamation-circle.fa-fw
-			= ' ' + message
+			i.fa.fa-exclamation-circle.fa-fw= ' ' + message
 	else
 		.status#note
 			p.message
 			span
-			a.note-close(href='#' title='Close')
-				i.fa.fa-times.fa-lg
+			a.note-close(href='#' title='Close'): i.fa.fa-times.fa-lg
 
 		block content

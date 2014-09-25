@@ -24,7 +24,7 @@ block content
 		if user
 			h3| Security
 			.adj.clearfix
-				form.SETForm(action='/security' method='post' enctype='multipart/form-data')
+				form.setting-form(action='/security' method='post' enctype='multipart/form-data')
 					.elemcol
 						.elemrow
 							span| Login
@@ -47,7 +47,7 @@ block content
 						else
 							.item.itemfloat(data-item=j)= item.username
 
-		if tabs.length != 0
+		if tabs.length != 0 && user
 			h3| (
 				= tabs.length
 				| ) Tabs
@@ -56,4 +56,4 @@ block content
 					a(href="settings/"+item._id)
 						.item.itemfloat(data-item=j)= item.name
 
-	include footer
+	include includes/footer

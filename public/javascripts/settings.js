@@ -70,6 +70,8 @@
 		
 		}
 	}
+	
+	/** Validates local storage */
 	function checkStorage(r) {
 		return localStorage.getItem(r.attr('type')) ? true : false;
 	}

@@ -39,6 +39,11 @@ module.exports.login = function(req, res) {
 	methods.login('Logged in successfully.', res);
 };
 
+module.exports.logout = function(req, res) {
+	req.logout();
+	res.redirect('/');
+};
+
 module.exports.settings = function(req, res) {
 	mongoose.model('tabs').find(function(err, tab) {
 		if(err) return console.error(err);
@@ -71,11 +76,6 @@ module.exports.getItem = function(req, res) {
 			res.send(doc);
 		}
 	});
-};
-
-module.exports.logout = function(req, res) {
-	req.logout();
-	res.redirect('/');
 };
 
 module.exports.remove = function(req, res) {
