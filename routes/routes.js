@@ -23,7 +23,7 @@ module.exports.index = function(req, res) {
   * login page.
   */
 module.exports.ensureAuthenticated = function(req, res, next) {
-	if (req.isAuthenticated()) { return next(); }
+	if (req.isAuthenticated()) return next();
 	res.redirect('/');
 }
 
@@ -32,6 +32,7 @@ module.exports.secLogin = function(req, res) {
 };
 
 module.exports.create = function(req, res) {
+	console.log(req.body);
 	methods.createUser(req.body, res, 'User has been created successfully.');
 };
 

@@ -218,14 +218,18 @@ module.exports.createUser = function(req, res, msg) {
 	var user = new Object({
 		username: req.username
 	});
-	Acc.register(new Acc(user), req.password, function(err, account) {
-		if(err) {
-			ressend('error', err.name+': '+err.message+'.', res);
-			return console.error(err);
-		} else {
-			ressend('message', msg, res);
-		}
-	});
+	if(req.password === req.confirm) {
+		Acc.register(new Acc(user), req.password, function(err, account) {
+			if(err) {
+				ressend('error', err.name+': '+err.message+'.', res);
+				return console.error(err);
+			} else {
+				ressend('message', msg, res);
+			}
+		});
+	} else {
+		ressend('error', 'User could not be created. Passwords do not match.', res);
+	}
 };
 
 function ressend(message, msg, res) {
