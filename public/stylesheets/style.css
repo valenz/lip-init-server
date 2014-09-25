@@ -112,7 +112,7 @@ body {
 .message, .message+span, .no-data, .login {
 	text-align: center;
 	font-size: 13px;
-	color: #bbb;
+	color: #BBBBBB;
 }
 
 .fa-check-circle {
@@ -139,20 +139,29 @@ body {
 	width: 800px;
 }
 
-#adjustments p {
+#adjustments h3 {
 	padding-bottom: 7px;
+	font-weight: lighter;
 	border-bottom:1px #17313A solid;
-	text-align: center;
+	text-align: right;
 }
 
 .adj {
 	margin: 0 auto;
-	width: 750px;
+	width: 800px;
 }
 .adj input[type=range] {
 	width: 100%;
 	position: relative;
 	top:6px;
+}
+.adj input[type=checkbox] {
+	position: relative;
+	top: 1px;
+}
+.elemrow span {
+	float: left;
+	width: 75px;
 }
 
 #adjReset {
@@ -174,6 +183,12 @@ body {
 	width: 50px;
 	float: right;
 	text-align: right;
+}
+#user {
+	box-shadow: 0 0 0 1px #B36B34;
+	-moz-box-shadow: 0 0 0 1px #B36B34;
+	-webkit-box-shadow: 0 0 0 1px #B36B34;
+	background-color: #B36B34;
 }
 
 .item {
@@ -296,20 +311,20 @@ li a {
 
 
 /**
- * FOOT
+ * FOOTER
  */
-#foot {
+#footer {
 	margin: 0 auto;
 	height: auto;
 	text-align: center;
 	font-size: 8px;
 }
 
-#foot a {
+#footer a {
 	text-decoration: none;
 	color: #FFF9E5;
 }
 
-#foot .fa {
+#footer .fa {
 	padding: 3px;
 }

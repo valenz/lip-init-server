@@ -46,7 +46,7 @@ $(document).ready(function() {
 			$(this).val(arr[key]);
 		});
 		$('.TTWForm').find('[type=hidden]').attr('name', 'edit');
-		$('#submit').show();
+		$('[id^=submit]').show();
 		$('#tab-add').click();
 	});
 	

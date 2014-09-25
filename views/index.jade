@@ -3,29 +3,28 @@ extends header
 block content
 
 	if grid.length != 0
+		mixin tabs(id, url, title, icon, name, j)
+			li.tabs(data-item=j)
+				form.TABForm(action='/remove' method='post' enctype='multipart/form-data')
+					div
+						a(href=url title=title?title:name)
+							if icon
+								img.icon(src=icon)
+							div.img-container
+								if icon
+									img.pic(src='uploads/' + id+'.png')
+							h5= name
+							input(type='hidden' name='tabId' value=id)
+						if user
+							i.btn-edit.fa.fa-pencil(title='Edit tab')
+							i.btn-del.fa.fa-times(title='Delete tab')
+		
 		ul#grid(data-length=grid.length)
 			each item, j in grid
-				li.tabs(data-item=j)
-					form.TABForm(action='/api/remove' method='post' enctype='multipart/form-data')
-						div
-							a(href=item.url title=item.title?item.title:item.name)
-								if item.icon
-									img.icon(src=item.icon)
-								div.img-container
-									if item.icon
-										img.pic(src='uploads/' + item._id+'.png')
-								h5= item.name
-								input(type='hidden' name='tabId' value=item._id)
-							if user
-								i.btn-edit.fa.fa-pencil(title='Edit tab')
-								i.btn-del.fa.fa-times(title='Delete tab')
+				+tabs(item._id, item.url, item.title, item.icon, item.name, j)
 	else
 		p.no-data
 			i.fa.fa-exclamation-circle.fa-fw
 			|No data available!
 
-	#foot
-		p
-			a(name='github' title='Github' href='https://github.com/valenz/tabgrid')
-				i.fa.fa-github
-				|tabgrid 2014
+	include footer

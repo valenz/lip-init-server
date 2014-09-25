@@ -4,10 +4,14 @@ var mongoose = require('mongoose')
 module.exports.index = function(req, res) {
 	mongoose.model('tabs').find(function(err, doc) {
 		if(err) return console.error(err);
-		res.render('index', {
-			grid: doc,
-			user: req.user,
-			message: req.flash('error')
+		mongoose.model('settings').find(function(err, set) {
+			if(err) return console.error(err);
+			res.render('index', {
+				grid: doc,
+				sets: set,
+				user: req.user,
+				message: req.flash('error')
+			});
 		});
 	});
 };
@@ -19,9 +23,18 @@ module.exports.index = function(req, res) {
   * login page.
   */
 module.exports.ensureAuthenticated = function(req, res, next) {
-	if (req.isAuthenticated()) { return next(); }
+	if (req.isAuthenticated()) return next();
 	res.redirect('/');
 }
+
+module.exports.secLogin = function(req, res) {
+	methods.secLogin(req.body, res, 'Settings has been updated successfully.');
+};
+
+module.exports.create = function(req, res) {
+	console.log(req.body);
+	methods.createUser(req.body, res, 'User has been created successfully.');
+};
 
 module.exports.login = function(req, res) {
 	res.redirect('/');
@@ -29,13 +42,18 @@ module.exports.login = function(req, res) {
 
 module.exports.settings = function(req, res) {
 	mongoose.model('tabs').find(function(err, tab) {
+		if(err) return console.error(err);
 		mongoose.model('accounts').find(function(err, acc) {
 			if(err) return console.error(err);
-			res.render('settings', {
-				accs: acc,
-				tabs: tab,
-				user: req.user,
-				message: req.flash('error')
+			mongoose.model('settings').find(function(err, set) {
+				if(err) return console.error(err);
+				res.render('settings', {
+					sets: set,
+					accs: acc,
+					tabs: tab,
+					user: req.user,
+					message: req.flash('error')
+				});
 			});
 		});
 	});

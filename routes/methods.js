@@ -1,8 +1,9 @@
-var Tab = require('../models/tab')
-  , fs = require('fs')
+var fs = require('fs')
   , phantom = require('phantom'), _page
   , uploadPath = 'public/uploads/'
-  , Tab = require('../models/tab');
+  , Tab = require('../models/tab')
+  , Acc = require('../models/account')
+  , Set = require('../models/setting');
   
 
 
@@ -113,6 +114,7 @@ module.exports.updateDbData = function(tmp, msg, res) {
 					doc.url = tmp.url;
 					doc.title = result.title;
 					doc.icon = result.icon;
+					doc.__v = doc.__v + 1;
 					
 					console.log('UPDATE.DATA: '+doc);
 					doc.save(function(err, doc) {
@@ -135,6 +137,7 @@ module.exports.updateDbData = function(tmp, msg, res) {
 				doc.url = tmp.url;
 				doc.title = tmp.url;
 				doc.icon = "";
+				doc.__v = doc.__v + 1;
 
 				console.log('UPDATE.DATA: '+doc);
 				doc.save(function(err, doc) {
@@ -181,6 +184,56 @@ module.exports.deleteData = function(id, res) {
 	});
 };
 
+module.exports.secLogin = function(req, res, msg) {
+	var login = req.login ? true : false;
+	
+	Set.findOne({login: !login}, function(err, doc) {
+		if(err) return console.error(err);
+		if(login) {
+			doc.login = true;
+			doc.save(function(err, doc) {
+				if(err) {
+					ressend('error', 'Error No: '+err.errno+"; Can't save changes. "+err+'.', res);
+					return console.error(err);
+				} else {
+					ressend('message', msg, res);
+				}
+			});
+		} else {
+			doc.login = false;
+			doc.save(function(err, doc) {
+				if(err) {
+					ressend('error', 'Error No: '+err.errno+"; Can't save changes. "+err+'.', res);
+					return console.error(err);
+				} else {
+					ressend('message', msg, res);
+				}
+			});
+		}
+	});
+};
+
+module.exports.createUser = function(req, res, msg) {
+	// The passport-local-mongoose package automatically takes care of salting and hashing the password. 
+	var user = new Object({
+		username: req.username
+	});
+	if(req.password === req.confirm) {
+		Acc.register(new Acc(user), req.password, function(err, account) {
+			if(err) {
+				ressend('error', err.name+': '+err.message+'.', res);
+				return console.error(err);
+			} else {
+				ressend('message', msg, res);
+			}
+		});
+	} else {
+		ressend('error', 'User could not be created. Passwords do not match.', res);
+	}
+};
+
 function ressend(message, msg, res) {
-	res.send({message: msg});
+	var obj = new Object();
+	obj[message] = msg;
+	res.send(obj);
 }
