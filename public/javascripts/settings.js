@@ -38,7 +38,7 @@
 
 	/** Shows a message */
     function status(message) {
-		$('#note-add').click();
+		$('#createnote').click();
 		if(message.error) {    
 			$('.message').html('<i class="fa fa-exclamation-circle fa-fw"></i>');
 			$('.message').append(message.error).show();

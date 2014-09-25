@@ -4,11 +4,11 @@ ul.fa-ul
 			a(title='Log off' href='/logout')
 				i.fa.fa-sign-out
 		else
-			a#log-in(rel='leanModal' name='login' title='Log in' href='#login')
+			a#login(rel='leanModal' name='login' title='Log in' href='#former')
 				i.fa.fa-sign-in
 	if user
 		li
-			a#tab-add(rel='leanModal' name='createtab' title='New tab' href='#createtab')
+			a#createtab(rel='leanModal' name='createtab' title='New tab' href='#former')
 				i.fa.fa-plus-circle
 	li
 		a(title='Settings' href='/settings')
@@ -20,4 +20,4 @@ ul.fa-ul
 		a#reload(title='Reload grid' href='#reload')
 			i.fa.fa-refresh
 	li
-		a#note-add(rel='leanModal' name='note' href='#note')
+		a#createnote(rel='leanModal' name='createnote' href='#note')

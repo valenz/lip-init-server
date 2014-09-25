@@ -8,8 +8,8 @@ html(lang='en')
 		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Lato')
 		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Audiowide')
 		link(rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css')
+		link(rel='stylesheet', type='text/css', href='/stylesheets/former.css')
 		link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
-		link(rel='stylesheet', type='text/css', href='/stylesheets/form.css')
 		link(rel='shortcut icon', type='favicon', href='/images/favicon.ico')
 		block scripts
 			script(type='text/javascript' src='//code.jquery.com/jquery-latest.min.js')
@@ -27,7 +27,7 @@ html(lang='en')
 		#head
 			#logo: a(name='tabgrid' title='Tabgrid' href='/')| Tabgrid
 			include menu
-			include form
+			include former
 
 	if message.length != 0
 		p.login
@@ -37,7 +37,7 @@ html(lang='en')
 		.status#note
 			p.message
 			span
-			a.modal_closeNote(href='#' title='Close')
+			a.note-close(href='#' title='Close')
 				i.fa.fa-times.fa-lg
 
 		block content

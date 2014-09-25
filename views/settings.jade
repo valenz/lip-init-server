@@ -38,7 +38,7 @@ block content
 				= accs.length
 				| ) Accounts
 			.adj.clearfix
-				a#create-user(rel='leanModal' name='createUser' title='Create user' href='#createUser')
+				a#createuser(rel='leanModal' name='createuser' title='Create user' href='#former')
 					.item.itemfloat| +
 				each item, j in accs
 					a(href="settings/"+item._id)

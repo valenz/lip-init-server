@@ -115,9 +115,9 @@ mongoose.connect('mongodb://localhost/test');
  */
 app.get('/', routes.index);
 
-app.post('/create', routes.create);
+app.post('/createuser', routes.createuser);
 
-app.post('/login', passport.authenticate('local', {failureRedirect:'/', failureFlash:true}), routes.login);
+app.post('/login', passport.authenticate('local', { failureRedirect:'/', failureFlash:true }), routes.login);
 app.get('/logout', routes.ensureAuthenticated, routes.logout);
 
 app.post('/security', routes.ensureAuthenticated, routes.secLogin);
