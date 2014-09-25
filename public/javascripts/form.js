@@ -45,7 +45,7 @@ $(document).ready(function() {
 				if($('#field1').val() === $('#field3').val() && ($('#field1').val() || $('#field3').val())) {
 					$(this).parent().parent().find('span').text('');
 					$('#field1, #field3').css('border-color', '#17313A');
-					$('#field1, #field3').css('background-color', '#FFFFFF');
+					$('#field1, #field3').css('background-color', '#D9FFCC');
 					$('input:first-child').attr('disabled', false);
 				} else {
 					$(this).parent().parent().find('span').text('Passwords do not match.');
