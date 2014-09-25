@@ -184,7 +184,7 @@ module.exports.deleteData = function(id, res) {
 	});
 };
 
-module.exports.secLogin = function(req, res, msg) {
+module.exports.secLogin = function(req, msg, res) {
 	var login = req.login ? true : false;
 	
 	Set.findOne({login: !login}, function(err, doc) {
@@ -213,7 +213,7 @@ module.exports.secLogin = function(req, res, msg) {
 	});
 };
 
-module.exports.createUser = function(req, res, msg) {
+module.exports.createuser = function(req, msg, res) {
 	// The passport-local-mongoose package automatically takes care of salting and hashing the password. 
 	var user = new Object({
 		username: req.username
@@ -230,6 +230,10 @@ module.exports.createUser = function(req, res, msg) {
 	} else {
 		ressend('error', 'User could not be created. Passwords do not match.', res);
 	}
+};
+
+module.exports.login = function(msg, res) {
+	ressend('message', msg, res);
 };
 
 function ressend(message, msg, res) {
