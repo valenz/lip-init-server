@@ -12,7 +12,7 @@
     z-index: 11000;
     left: 50%;
     opacity: 1;
-    height: 315px;
+    height: auto;
     width: 500px;
     background: #FFF9E5;
     display: none;
@@ -57,7 +57,7 @@
 
 
 
-.modal_close {
+.modal_close, .modal_closeNote {
 	color: #FFF9E5;
 	z-index: 2;
 	width: 14px;

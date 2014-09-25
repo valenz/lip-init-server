@@ -112,7 +112,7 @@ body {
 .message, .message+span, .no-data, .login {
 	text-align: center;
 	font-size: 13px;
-	color: #bbb;
+	color: #BBBBBB;
 }
 
 .fa-check-circle {
