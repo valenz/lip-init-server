@@ -107,53 +107,21 @@ $(document).ready(function() {
 			$('#username').find('input').focus();
 		});
 	}
-    
-    /** Cancel form */
-    $('.former-close, #lean_overlay').click(function() {
-		$('.form').find('[type=hidden]').attr('name', 'upload');
-		$('[id^=field]').each(function() {
-			$(this).val('');
-		});
-		$('#former').hide();
-		$('#lean_overlay').hide();
-		formerReset();
-	});
-	
-	/** Cancel note */
-    $('.note-close').click(function() {
-		$('#note').hide();
-	});
 	
     
     
-    /** Submit form to update settings */
-    $('.SETForm').submit(function(e) {
-		e.preventDefault();
-		var fd = $(this);
-		$.ajax({
-			type: fd.attr('method'),
-			url: fd.attr('action'),
-			data: new FormData(fd[0]),
-			processData: false,
-			contentType: false,
-			error: function(xhr, text, desc) {
-				status(text +' '+ xhr.status +' '+ desc);
-			},
-			success: function(data) {
-				if(data.message) {
-					status(data);
-				} else {
-					status(data);
-				}
-			}
-		});
-    });
+	/** Submit to login, upload and edit tabs */
+    $('#submit').click(function() {
+		$('.submit').find('[type=submit]').click();
+	});
+	
+    /** Submit to update settings */
     $('#seclog').click(function() {
-		$('.SETForm').submit();
+		$('.setting-form').submit();
 	});
     
-    /** Submit form to create users */
-	$('.form').submit(function(e) {
+    /** Submit form */
+	$('.form, .tab-form, .setting-form').submit(function(e) {
 		e.preventDefault();
 		var fd = $(this);
 		$.ajax({
@@ -173,33 +141,24 @@ $(document).ready(function() {
 			}
 		});
 	});
-    $('#submit').click(function() {
-		$('.submit').find('[type=submit]').click();
+    
+	
+	
+    /** Cancel form */
+    $('.former-close, #lean_overlay').click(function() {
+		$('.form').find('[type=hidden]').attr('name', 'upload');
+		$('[id^=field]').each(function() {
+			$(this).val('');
+		});
+		$('#former').hide();
+		$('#lean_overlay').hide();
+		formerReset();
 	});
 	
-    /** Submit form to delete tabs */
-    $('.TABForm').submit(function(e) {
-		e.preventDefault();
-		var fd = $(this);
-		$.ajax({
-			type: fd.attr('method'),
-			url: fd.attr('action'),
-			data: new FormData(fd[0]),
-			processData: false,
-			contentType: false,
-			error: function(xhr, text, desc) {
-				status(text +' '+ xhr.status +' '+ desc);
-			},
-			success: function(data) {
-				if(data.message) {
-					fd.parents('.tabs').hide();
-					status(data);
-				} else {
-					status(data);
-				}
-			}
-		});
-    });
+	/** Cancel note */
+    $('.note-close').click(function() {
+		$('#note').hide();
+	});
     
     
     
@@ -236,39 +195,4 @@ $(document).ready(function() {
 			$('.form').children()[i].remove();
 		}
 	}
-    
-    
-    
-    /** Spinning load icon while submit */
-    var $loading = $('#loading').hide();
-	$(document).ajaxStart(function() {
-		$('.submit').find('[type=submit]').attr('disabled', true);
-		$('#submit').hide();
-		$loading.show();
-	}).ajaxStop(function() {
-		$('.submit').find('[type=submit]').attr('disabled', false);
-		$('#submit').show();
-		$loading.hide();
-    });
-    
-    var options = {
-		lines: 7, // The number of lines to draw
-		length: 0, // The length of each line
-		width: 7, // The line thickness
-		radius: 7, // The radius of the inner circle
-		corners: 1, // Corner roundness (0..1)
-		rotate: 0, // The rotation offset
-		direction: 1, // 1: clockwise, -1: counterclockwise
-		color: '#FFF9E5', // #rgb or #rrggbb or array of colors
-		speed: 1.4, // Rounds per second
-		trail: 60, // Afterglow percentage
-		shadow: false, // Whether to render a shadow
-		hwaccel: false, // Whether to use hardware acceleration
-		className: 'spinner', // The CSS class to assign to the spinner
-		zIndex: 2e9, // The z-index (defaults to 2000000000)
-		top: '19px', // Top position relative to parent in px
-		left: '395px' // Left position relative to parent in px
-    };
-    
-    var spinner = new Spinner(options).spin($loading[0]);
 });
