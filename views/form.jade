@@ -12,9 +12,14 @@ if !sets[0].login || user
 			#field2-container.field.f_100
 				label
 					|Password:
-				input#field2(type='password' name='password' title='Password' required='required')
+				input#field1(type='password' name='password' title='Password' required='required')
+			#field2-container.field.f_100
+				label
+					|Confirm Password:
+				input#field3(type='password' name='confirm' title='Confirm Password' required='required')
 			.form-submit.field.f_100.clearfix.submit
 				input(type='submit')
+				span
 				#loadingUSE
 				#submitUSE
 					i.fa.fa-sign-in.fa-2x(title='Create')
@@ -37,6 +42,7 @@ if user
 				input#field2(type='hidden' name='upload')
 			.form-submit.field.f_100.clearfix.submit
 				input(type='submit')
+				span
 				#loadingTTW
 				#submitTTW
 					i.fa.fa-upload.fa-2x(title='Upload')
@@ -57,6 +63,7 @@ else
 				input#field2(type='password' name='password' title='Password' required='required')
 			.form-submit.field.f_100.clearfix.submit
 				input(type='submit')
+				span
 				#loadingLOG
 				#submitLOG
 					i.fa.fa-sign-in.fa-2x(title='Login')
