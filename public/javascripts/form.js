@@ -1,6 +1,6 @@
 $(document).ready(function() {
     /** Connect leanModal trigger to target ID */
-    $('#note-add').leanModal({ top : 100, overlay : 0.0, closeButton: ".modal_close" });
+    $('#note-add').leanModal({ top : 100, overlay : 0.0, closeButton: ".modal_closeNote" });
 	
     
     
@@ -39,8 +39,21 @@ $(document).ready(function() {
 		/** Create user screen */
 		$('#create-user').click(function() {
 			$('.USEForm').show();
-			$('#submitUSE').show();
 			$('.focus').focus();
+			
+			$('#field1, #field3').keyup(function() {
+				if($('#field1').val() === $('#field3').val() && ($('#field1').val() || $('#field3').val())) {
+					$(this).parent().parent().find('span').text('');
+					$('#field1, #field3').css('border-color', '#17313A');
+					$('#field1, #field3').css('background-color', '#FFFFFF');
+					$('input:first-child').attr('disabled', false);
+				} else {
+					$(this).parent().parent().find('span').text('Passwords do not match.');
+					$(this).css('border-color', '#FF0000');
+					$(this).css('background-color', '#FFF2E5');
+					$('input:first-child').attr('disabled', true);
+				}
+			});
 		});
 	}
 	
@@ -78,24 +91,26 @@ $(document).ready(function() {
     
     
     /** Cancel form */
-    $('#lean_overlay').click(function() {
-		$('.TTWForm').find('[type=hidden]').attr('name', 'upload');
+    $('.modal_close').click(function() {
+		$('[class^=Form]').find('[type=hidden]').attr('name', 'upload');
 		$('[id^=field]').each(function() {
 			$(this).val('');
 		});
-		$('[id^=submit]').show();
+		$('[class^=submit]').show();
 		$('.TTWForm-container').hide();
 		$('#lean_overlay').hide();
-    });
-    $('.modal_close').click(function() {
-		$('#lean_overlay').click();
+	});
+	
+	/** Cancel note */
+    $('.modal_closeNote').click(function() {
+		$('#note').hide();
 	});
 	
 	
 	
 	
-	/** Submit to log in */
-	$('.LOGForm').submit(function(e) {
+	/** Submit */
+	$('.LOGForm, .TTWForm, .USEForm, .SETForm').submit(function(e) {
 		$('[id^=submit]').hide();
 		$loading0.show();
 		$loading1.show();
@@ -135,7 +150,7 @@ $(document).ready(function() {
     
     
     /** Submit form to create users */
-    $('.USEForm').submit(function(e) {
+	$('.USEForm').submit(function(e) {
 		e.preventDefault();
 		var fd = $(this);
 		$.ajax({
@@ -154,9 +169,12 @@ $(document).ready(function() {
 				} else {
 					status(data);
 				}
+			},
+			complete: function() {
+				$('[id^=submit]').show();
 			}
 		});
-    });
+	});
 	
 	
 	
@@ -188,7 +206,7 @@ $(document).ready(function() {
 			complete: function() {
 				$('#lean_overlay').hide();
 				$('.TTWForm-container').hide();
-				$('.submit').show();
+				$('[id^=submit]').show();
 			}
 		});
     });
@@ -233,25 +251,19 @@ $(document).ready(function() {
 			$('.message').html('<i class="fa fa-exclamation-circle fa-fw"></i>');
 			$('.message').append(message.error).show();
 		} else {
-			var counter = 3;
 			$('.message').html('<i class="fa fa-check-circle fa-fw"></i>');
 			$('.message').append(message.message).show();
-			setInterval(function() {
-				$('.message+span').html('<p>Page will be updated in few seconds. ('+counter+')</p>');
-				--counter;
-			}, 1000);
 			setTimeout(function() {
 				$('#lean_overlay').hide();
 				$('.status').hide();
-				setTimeout(function() {location.reload();}, 1000);
-			}, (counter+1)*1000);
+			}, 3000);
 		}
     }
 	
 	
 	
 	
-	/** Validates the state of your login */
+	/** Validates the state of login */
 	function validateLogin() {
 		if($('#log-in').attr('name') == 'login') {
 			return false;
@@ -268,12 +280,12 @@ $(document).ready(function() {
     var $loading1 = $('#loadingLOG').hide();
     var $loading2 = $('#loadingUSE').hide();
 	$(document).ajaxStart(function() {
-		$('[id^=submit]').hide();
+		$('input:first-child').attr('disabled', true);
 		$loading0.show();
 		$loading1.show();
 		$loading2.show();
 	}).ajaxStop(function() {
-		$('[id^=submit]').show();
+		$('input:first-child').attr('disabled', false);
 		$loading0.hide();
 		$loading1.hide();
 		$loading2.hide();
