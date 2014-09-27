@@ -1,0 +1,8 @@
+if message.length != 0
+	p.login
+		i.fa.fa-exclamation-circle.fa-fw= ' ' + message
+else
+	.status#note
+		p.message
+		span
+		a.note-close(href='#' title='Close'): i.fa.fa-times.fa-lg

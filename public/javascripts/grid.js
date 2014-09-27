@@ -10,14 +10,14 @@ $(document).ready(function() {
 	
 	
 	/** Tabs range settings */
-	var liWidth = parseInt($('#grid li').css('width'));
-	var imgContainerWidth = parseInt($('.img-container').css('width'));
-	var imgContainerHeight = parseInt($('.img-container').css('height'));
-	var h5Width = parseInt($('li h5').css('width'));
-	var h5Size = parseInt($('li h5').css('font-size'));
-	var h5Bottom = parseInt($('li h5').css('bottom'));
+	var liWidth = 146;
+	var imgContainerWidth = 144;
+	var imgContainerHeight = 81;
+	var h5Width = 146;
+	var h5Size = 12;
+	var h5Bottom = 2;
 	var factor = Modernizr.localstorage && localStorage.getItem('range') ? localStorage.getItem('range') : 1;
-	$('#grid li').each(function(key) {
+	$('.tabs').each(function(key) {
 		$(this).css('width', Math.floor(liWidth*factor)+'px');
 	});
 	$('.img-container').each(function(key) {
@@ -28,7 +28,7 @@ $(document).ready(function() {
 		$(this).css('width', Math.floor(imgContainerWidth*factor)+'px');
 		$(this).css('height', Math.floor(imgContainerHeight*factor)+'px');
 	});
-	$('li h5').each(function(key) {
+	$('.tabs h5').each(function(key) {
 		$(this).css('width', Math.floor(h5Width*factor)+'px');
 		$(this).css('font-size', Math.floor(h5Size*factor)+'px');
 		$(this).css('bottom', Math.floor(h5Size/factor)+'px');
