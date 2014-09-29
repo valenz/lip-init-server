@@ -1,10 +1,10 @@
 ul.fa-ul
 	li
 		if user
-			a(title='Log off' href='/logout')
+			a(title='Sign out' href='/logout')
 				i.fa.fa-sign-out
 		else
-			a#login(rel='leanModal' name='login' title='Log in' href='#former')
+			a#login(rel='leanModal' name='login' title='Sign in' href='#former')
 				i.fa.fa-sign-in
 	li
 		if user
@@ -17,7 +17,7 @@ ul.fa-ul
 		a(title='Write email' href='mailto:your@email.com')
 			i.fa.fa-envelope
 	li
-		a#reload(title='Reload grid' href='#reload')
+		a#reload(title='Reload' href='#reload')
 			i.fa.fa-refresh
 	li
 		a#createnote(rel='leanModal' name='createnote' href='#note')
