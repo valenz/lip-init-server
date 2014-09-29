@@ -84,14 +84,10 @@ passport.deserializeUser(Account.deserializeUser());
 
 Settings.findOne({login: false}, function(err, set) {
 	if(err) return console.error(err);
-	if(set) {
-		return console.log(set);
-	} else {
+	if(!set) {
 		Settings.findOne({login: true}, function(err, set) {
 			if(err) return console.error(err);
-			if(set) {
-				return console.log(set);
-			} else {
+			if(!set) {
 				var data = new Settings({login: false});
 				data.save(function(err, doc) {
 					if(err) return console.error(err);

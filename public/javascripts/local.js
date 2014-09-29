@@ -6,37 +6,39 @@ $(document).ready(function() {
 		stop: handleDragStop
 	});
 	
+	var obj = new Object(),
+		grid = new String();
 	
 	
 	
-	function handleDragStart(event, ui) {
-		$('[class^=btn]').hide();
-		
-	}
-	function handleDragStop(event, ui) {
+	if(localStorage.getItem('modified')) {
+		/** Get local storage */
+		for(var i = 0; i < $('#grid').attr('data-length'); i++) {
+			if(String(i).length == 1) i = '0'+String(i);
+			grid += localStorage[i];
+		}
+		$('#grid').html(grid);
+	} else {
+		/** Initialize default grid */
 		$('li.tabs').each(function(key, value) {
-			$(this).attr('id', key);
+			if(String(key).length == 1) key = '0'+String(key);
 			localStorage.setItem(key, value.outerHTML);
+			obj[key] = value.outerHTML;
 		});
 	}
 	
 	
 	
-	
-	if(localStorage.length > 0) {
-		if(localStorage.length < $('#grid').attr('data-length')) {
-			$('li.tabs').each(function(key, value) {
-				if(key == $('#grid').attr('data-length')-1) {
-					localStorage.setItem(key, value.outerHTML);
-				}
-			});
-		}
-		var grid = '';
-		for(var i in localStorage) {
-			grid += localStorage.getItem(i);
-		}
-		$('#grid').html(grid);
+	function handleDragStart(event, ui) {
+		//TODO
 	}
 	
-	console.log(localStorage.getItem(0));
+	function handleDragStop(event, ui) {
+		$('li.tabs').each(function(key, value) {
+			if(String(key).length == 1) key = '0'+String(key);
+			localStorage.setItem(key, value.outerHTML);
+			obj[key] = value.outerHTML;
+		});
+		localStorage.setItem('modified', true);
+	}
 });

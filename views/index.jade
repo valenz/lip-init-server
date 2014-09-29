@@ -17,14 +17,14 @@ block content
 							input(type='hidden' name='tabId' value=id)
 						if user
 							i.btn-edit.fa.fa-pencil(title='Edit tab')
-							i.btn-del.fa.fa-times(title='Delete tab')
+							i.btn-del.fa.fa-times(title='Remove tab')
 		
 		ul#grid(data-length=grid.length)
 			each item, j in grid
 				+tabs(item._id, item.url, item.title, item.icon, item.name, j)
 	else
 		p.no-data
-			i.fa.fa-exclamation-circle.fa-fw
-			|No data available!
+			i.fa.fa-info-circle.fa-fw
+			| Currently no tabs are available, but you can add one now by sign in and simply clicking on the plus icon in the menu.
 
-	include includes/footer
+	include includes/foot
