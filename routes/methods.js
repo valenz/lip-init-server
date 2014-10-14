@@ -206,7 +206,7 @@ module.exports.secLogin = function(req, msg, res) {
 					ressend('error', 'Error No: '+err.errno+"; Can't save changes. "+err+'.', res);
 					return console.error(err);
 				} else {
-					ressend('message', msg, res);
+					ressend('error', msg, res);
 				}
 			});
 		}
@@ -234,6 +234,10 @@ module.exports.createuser = function(req, msg, res) {
 
 module.exports.login = function(msg, res) {
 	ressend('message', msg, res);
+};
+
+module.exports.ensure = function(msg, res) {
+	ressend('error', msg, res);
 };
 
 function ressend(message, msg, res) {

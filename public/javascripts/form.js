@@ -119,6 +119,8 @@ $(document).ready(function() {
     $('#seclog').click(function() {
 		$('.setting-form').submit();
 	});
+	
+	
     
     /** Submit form */
 	$('.form, .tab-form, .setting-form').submit(function(e) {
@@ -137,7 +139,7 @@ $(document).ready(function() {
 				status(data);
 			},
 			complete: function() {
-				$('#former').hide();
+				formerReset();
 			}
 		});
 	});
@@ -150,8 +152,6 @@ $(document).ready(function() {
 		$('[id^=field]').each(function() {
 			$(this).val('');
 		});
-		$('#former').hide();
-		$('#lean_overlay').hide();
 		formerReset();
 	});
 	
@@ -194,5 +194,7 @@ $(document).ready(function() {
 		for(var i = $('.form').children().length-2; i >= 0; i--) {
 			$('.form').children()[i].remove();
 		}
+		$('#former').hide();
+		$('#lean_overlay').hide();
 	}
 });

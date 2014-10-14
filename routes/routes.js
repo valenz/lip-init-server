@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
   , methods = require('./methods');
 
 module.exports.index = function(req, res) {
-	mongoose.model('tabs').find(function(err, doc) {
+	mongoose.model('tabs').find({}, null, {sort:{name:1}, skip:0, limit:0}, function(err, doc) {
 		if(err) return console.error(err);
 		mongoose.model('settings').find(function(err, set) {
 			if(err) return console.error(err);
@@ -24,7 +24,8 @@ module.exports.index = function(req, res) {
   */
 module.exports.ensureAuthenticated = function(req, res, next) {
 	if (req.isAuthenticated()) return next();
-	res.redirect('/');
+	methods.ensure('Not allowed!', res);
+	//res.redirect('/');
 }
 
 module.exports.secLogin = function(req, res) {
@@ -36,7 +37,7 @@ module.exports.createuser = function(req, res) {
 };
 
 module.exports.login = function(req, res) {
-	methods.login('Logged in successfully.', res);
+	methods.login('Login successfully.', res);
 };
 
 module.exports.logout = function(req, res) {
