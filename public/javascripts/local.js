@@ -7,7 +7,7 @@ $(document).ready(function() {
 	});
 	
 	var obj = new Object(),
-		grid = new String();
+	grid = new String();
 	
 	
 	
