@@ -6,8 +6,8 @@ ul.fa-ul
 		else
 			a#login(rel='leanModal' name='login' title='Sign in' href='#former')
 				i.fa.fa-sign-in
-	li
-		if user
+	if user
+		li
 			a#createtab(rel='leanModal' name='createtab' title='New tab' href='#former')
 				i.fa.fa-plus-circle
 	li
@@ -19,5 +19,4 @@ ul.fa-ul
 	li
 		a#reload(title='Reload' href='#reload')
 			i.fa.fa-refresh
-	li
 		a#createnote(rel='leanModal' name='createnote' href='#note')
