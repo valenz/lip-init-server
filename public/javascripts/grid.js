@@ -32,6 +32,7 @@ $(document).ready(function() {
 		$(this).css('bottom', Math.floor(h5Size/factor)+'px');
 	});
 	
+	/* Sets different stylesheets for different sized browser windows */
 	function adjustStyle(width) {
 		width = parseInt(width);
 		if (width < 480) {
