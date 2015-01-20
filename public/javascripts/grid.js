@@ -31,4 +31,26 @@ $(document).ready(function() {
 		$(this).css('font-size', Math.floor(h5Size*factor)+'px');
 		$(this).css('bottom', Math.floor(h5Size/factor)+'px');
 	});
+	
+	function adjustStyle(width) {
+		width = parseInt(width);
+		if (width < 480) {
+			$("#size-stylesheet").attr("href", "/stylesheets/tiny.css"); //320
+		} else if ((width >= 481) && (width < 640)) {
+			$("#size-stylesheet").attr("href", "/stylesheets/small.css"); //480
+		} else if ((width >= 641) && (width < 800)) {
+			$("#size-stylesheet").attr("href", "/stylesheets/medium.css"); //640
+		} else if ((width >= 801) && (width < 1024)) {
+			$("#size-stylesheet").attr("href", "/stylesheets/style.css"); //800
+		} else {
+			$("#size-stylesheet").attr("href", "/stylesheets/wide.css"); //1024
+		} 
+	}
+
+	$(function() {
+		adjustStyle($(this).width());
+		$(window).resize(function() {
+			adjustStyle($(this).width());
+		});
+	});
 });

@@ -50,7 +50,7 @@ body {
 .fa-ul {
 	margin: 0 auto;
 	text-align: center;
-	width: 900px;
+	width: auto;
 }
 
 .fa-ul li {
@@ -129,7 +129,7 @@ p.error, p.info, p.success, p.no-data, p.no-script {
 	margin: 0 auto;
 	padding-left: 0;
 	text-align: center;
-	width: 1100px;
+	width: 800px;
 }
 
 #grid li {
@@ -401,10 +401,10 @@ form button:active {
 
 .adj {
 	margin: 0 auto;
-	width: 800px;
+	width: auto;
 }
 .adj input[type=range] {
-	width: 100%;
+	width: 800px;
 	position: relative;
 	top:6px;
 }

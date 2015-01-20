@@ -2,19 +2,26 @@ doctype html
 html(lang='en')
 	head
 		meta(charset='utf-8')
-		
+
 		title LIP-Support | #{title}
-		
+
 		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Lato')
 		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Audiowide')
 		link(rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css')
-		link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
+		link(rel='stylesheet' type='text/css' href='/stylesheets/style.css')
+		link(id='size-stylesheet' rel='stylesheet' type='text/css' href='/stylesheets/style.css')
+		noscript
+			link(rel='stylesheet' media='screen and (max-width: 480px)' href='/stylesheets/tiny.css')
+			link(rel='stylesheet' media='screen and (min-width: 481px) and (max-width: 640px)' href='/stylesheets/small.css')
+			link(rel='stylesheet' media='screen and (min-width: 641px) and (max-width: 800px)' href='/stylesheets/medium.css')
+			link(rel='stylesheet' media='screen and (min-width: 801px) and (max-width: 1024px)' href='/stylesheets/style.css')
+			link(rel='stylesheet' media='screen and (min-width: 1025px)' href='/stylesheets/wide.css')
 		block scripts
 			script(type='text/javascript' src='//code.jquery.com/jquery-latest.min.js')
 			script(type='text/javascript' src='/javascripts/settings.js')
 			script(type='text/javascript' src='/javascripts/grid.js')
 			//script(type='text/javascript' src='/javascripts/sort.js')
-		
+
 	body
 		#head
 			include logo
