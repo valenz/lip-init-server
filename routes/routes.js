@@ -9,7 +9,7 @@ var url = require('url')
  *********************************** GET ***********************************
  */
 module.exports.index = function(req, res) {
-	mongoose.model('tab').find({}, null, {sort:{name:1}, skip:0, limit:0}, function(err, tab) {
+	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
 		res.render('index', {
 			title: 'Index',
@@ -23,7 +23,7 @@ module.exports.index = function(req, res) {
 };
 
 module.exports.user = function(req, res) {
-	mongoose.model('tab').find({}, null, {sort:{name:1}, skip:0, limit:0}, function(err, tab) {
+	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
 		res.render('sites/user', {
 			title: req.user.username,
@@ -37,9 +37,9 @@ module.exports.user = function(req, res) {
 };
 
 module.exports.settings = function(req, res) {
-	mongoose.model('tab').find({}, null, {sort:{name:1}, skip:0, limit:0}, function(err, tab) {
+	mongoose.model('tab').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		mongoose.model('account').find({}, null, {sort:{name:1}, skip:0, limit:0}, function(err, acc) {
+		mongoose.model('account').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, acc) {
 			if(err) return console.error(err);
 			res.render('sites/settings', {
 				title: 'Settings',
@@ -251,7 +251,7 @@ module.exports.postCreateTab = function(req, res) {
 			/** Upload: Url is valid */
 			var Tab = mongoose.model('tab');
 			if(stat == 'success') {
-				var name = req.body.name ? req.body.name.length > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : result.title.length > 20 ? result.title.substring(0, 20)+'...' : result.title;
+				var name = req.body.name ? req.body.name.length > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : result.title.length > 50 ? result.title.substring(0, 50)+'...' : result.title;
 
 				var data = new Tab({
 					name: name,
