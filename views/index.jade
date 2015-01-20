@@ -14,8 +14,7 @@ block content
 								div.img-container
 									if icon
 										img.pic(src='uploads/' + id+'.png')
-								if icon
-									img.icon(src=icon)
+								img.icon(src=icon)
 								.name= name
 								input(type='hidden' name='id' value=id data-check='unchecked')
 							if user
