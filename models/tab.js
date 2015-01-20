@@ -2,11 +2,15 @@ var mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
 var Tab = new Schema({
-	tab: String,
     name: String,
     url: String,
     title: String,
-    icon: String
+    icon: String,
+    check: Boolean,
+	whoCreated: String,
+	whoUpdated: String,
+	whenCreated: Date,
+	whenUpdated: Date
 });
 
-module.exports = mongoose.model('tabs', Tab);
+module.exports = mongoose.model('tab', Tab);

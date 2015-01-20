@@ -1,0 +1,23 @@
+doctype html 
+html(lang='en')
+	head
+		meta(charset='utf-8')
+		
+		title LIP-Support | #{title}
+		
+		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Lato')
+		link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Audiowide')
+		link(rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css')
+		link(rel='stylesheet', type='text/css', href='/stylesheets/style.css')
+		block scripts
+			script(type='text/javascript' src='//code.jquery.com/jquery-latest.min.js')
+			script(type='text/javascript' src='/javascripts/settings.js')
+			script(type='text/javascript' src='/javascripts/grid.js')
+			//script(type='text/javascript' src='/javascripts/sort.js')
+		
+	body
+		#head
+			include logo
+			include menu
+
+		block content

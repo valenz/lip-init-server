@@ -1,0 +1,20 @@
+extends ../includes/header
+
+block content
+
+	include ../includes/message
+
+	form.form(action='/createtab' method='post' enctype='multipart/form-data')
+		h3= title
+
+		label| Address (required):
+		input.field(type='url' name='address' title='Address (required)' required='required' placeholder='Address (required)' autofocus)
+		label| Name (optional):
+		input.field(type='text' name='name' title='Name (optional)' placeholder='Name (optional)')
+		.check
+			span| Admin only?
+			input(type='checkbox' name='check' title='Access only for admins')
+
+		button#submit| Create
+
+	include ../includes/foot

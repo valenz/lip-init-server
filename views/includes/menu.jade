@@ -4,19 +4,29 @@ ul.fa-ul
 			a(title='Sign out' href='/logout')
 				i.fa.fa-sign-out
 		else
-			a#login(rel='leanModal' name='login' title='Sign in' href='#former')
+			a(title='Sign in' href='/login')
 				i.fa.fa-sign-in
+
 	if user
 		li
-			a#createtab(rel='leanModal' name='createtab' title='New tab' href='#former')
+			a(title='New tab' href='/createtab')
 				i.fa.fa-plus-circle
+	li
+		a(title='Intranet' href='http://intra.mpib-berlin.mpg.de')
+			| Intranet
+	li
+		a(title='MPIB-Berlin' href='http://www.mpib-berlin.mpg.de')
+			| MPIB-Berlin
+	if user
+		li
+			a(title= user.username href='/user')
+				= user.username
 	li
 		a(title='Settings' href='/settings')
 			i.fa.fa-cog
 	li
-		a(title='Write email' href='mailto:your@email.com')
+		a(title='E-Mail' href='mailto:lipsupport@mpib-berlin.mpg.de')
 			i.fa.fa-envelope
 	li
-		a#reload(title='Reload' href='#reload')
-			i.fa.fa-refresh
-		a#createnote(rel='leanModal' name='createnote' href='#note')
+		a(title='Help' href='/help')
+			i.fa.fa-question

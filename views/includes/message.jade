@@ -1,0 +1,37 @@
+if grid
+	- var check_i = 0
+	- var check_a = 0
+		each i in grid
+			- i.check ? check_a++ : check_i++
+
+if error != 0
+	p.error
+		each i in error
+			i.fa.fa-exclamation-circle
+			= i
+			| <br />
+
+if info != 0
+	p.info
+		each i in info
+			i.fa.fa-info-circle
+			= i
+			| <br />
+
+if success != 0
+	p.success
+		each i in success
+			i.fa.fa-check-circle
+			= i
+			| <br />
+
+if( title == 'Index' && check_i == 0 ) || user && ( title == user.username && check_a == 0 )
+	p.no-data
+		i.fa.fa-info-circle.fa-fw
+		| There are currently no Tabs available.
+
+if( title == 'Index' && check_i > 0 ) || ( title == 'Settings' ) || user && ( title == user.username && check_a > 0 )
+	noscript
+		p.no-script
+			i.fa.fa-info-circle
+			| You need to enable Javascript in order to use all features.

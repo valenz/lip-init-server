@@ -1,14 +1,14 @@
-extends includes/header
+extends ../includes/header
 
 block content
 
-	include includes/message
+	include ../includes/message
 
 	if grid.length > 0
 		mixin tabs(id, url, title, icon, name, check, j)
-			if !check
+			if check
 				li.tabs(data-item=j)
-					form.tab-form(action='/deletetab' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+					form(action='/deletetab' method='post' enctype='multipart/form-data')
 						div
 							a(href=url title=title?title:name)
 								if icon
@@ -17,15 +17,14 @@ block content
 									if icon
 										img.pic(src='uploads/' + id+'.png')
 								h5= name
-								input(type='hidden' name='id' value=id data-check='unchecked')
+								input(type='hidden' name='id' value=id data-check='checked')
 							if user
-								a(href='/updatetab/?id='+id+'&url='+url+'&name='+name)
+								a(href='/updatetab/?id='+id+'&url='+url+'&name='+name+'&check='+check)
 									i.btn-edit.fa.fa-pencil(title='Edit tab')
-								button.btn-del
-									i.fa.fa-times(title='Remove tab')
+								i.btn-del.fa.fa-times(title='Remove tab')
 
 		ul#grid(data-length=grid.length)
 			each item, j in grid
 				+tabs(item._id, item.url, item.title, item.icon, item.name, item.check, j)
 
-	include includes/foot
+	include ../includes/foot

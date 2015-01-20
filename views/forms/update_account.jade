@@ -1,0 +1,21 @@
+extends ../includes/header
+
+block content
+
+	include ../includes/message
+
+	form.form(action='/updateaccount' method='post' enctype='multipart/form-data')
+		h3= title
+
+		a#detailsLink(title='Account details and delete' href='/user/details')
+			| Details
+		label| Old Password (required):
+		input.field(type='password' name='oldPassword' title='Old Password (required)' required='required' placeholder='Old Password (required)' autofocus)
+		label| New Password (required):
+		input.field(type='password' name='newPassword' title='New Password (required)' required='required' placeholder='New Password (required)')
+		label| Confirm New Password (required):
+		input.field(type='password' name='confirm' title='Confirm New Password (required)' required='required' placeholder='Confirm New Password (required)')
+
+		button| Update
+
+	include ../includes/foot

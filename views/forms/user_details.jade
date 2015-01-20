@@ -1,0 +1,32 @@
+extends ../includes/header
+
+block content
+
+	include ../includes/message
+
+	form.form(action='/deleteaccount' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+		h3= title
+
+		label| Username:
+		input.details(type='text' name='username' value= user.username readonly)
+
+		label| Who Created:
+		input.details(type='text' name='whoCreated' value= user.whoCreated readonly)
+		label| When Created:
+		input.details(type='text' name='whenCreated' value= user.whenCreated readonly)
+		label| When Updated:
+		input.details(type='text' name='whenUpdated' value= user.whenUpdated readonly)
+
+		label| Salt Key:
+		textarea.details.salt(name='salt' readonly)= user.salt
+		label| Hash Key:
+		textarea.details.hash(name='hash' readonly)= user.hash
+
+		label| Identifier:
+		input.details(type='text' name='id' value= user.id readonly)
+		label| Revision:
+		input.details(type='text' name='rev' value= user.__v readonly)
+
+		button| Delete
+
+	include ../includes/foot

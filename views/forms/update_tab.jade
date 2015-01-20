@@ -1,0 +1,21 @@
+extends ../includes/header
+
+block content
+
+	include ../includes/message
+
+	form.form(action='/updatetab' method='post' enctype='multipart/form-data')
+		h3= title
+
+		label| Address (required):
+		input.field(type='url' name='address' title='Address (required)' value= query.url required='required' placeholder='Address (required)' autofocus)
+		label| Name (optional):
+		input.field(type='text' name='name' title='Name (optional)' value= query.name placeholder='Name (optional)')
+		input(type='hidden' name='id' value= query.id)
+		.check
+			span| Admin only?
+			input(type='checkbox', name='check', title='Access only for admins', checked= query.check ? true : false)
+
+		button| Update
+
+	include ../includes/foot

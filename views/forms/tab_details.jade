@@ -1,0 +1,41 @@
+extends ../includes/header
+
+block content
+
+	include ../includes/message
+
+	form.form(action='/deletetab' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+		h3= title
+
+		a(href='../../uploads/'+query.id+'.png')
+			img(src='../../uploads/'+query.id+'.png' width='250px')
+
+		#detailsForm
+			label| Name:
+			input.details(type='text' name='name' value= query.name readonly)
+			label| Address:
+			input.details(type='url' name='address' value= query.url readonly)
+			label| Title:
+			input.details(type='text' name='title' value= query.title readonly)
+			label| Icon:
+			input.details(type='text' name='icon' value= query.icon readonly)
+			label| Admin View:
+			input.details(type='text' name='check' value= query.check readonly)
+
+			label| Who Created:
+			input.details(type='text' name='whoCreated' value= query.whoCreated readonly)
+			label| Who Updated:
+			input.details(type='text' name='whoUpdated' value= query.whoUpdated readonly)
+			label| When Created:
+			input.details(type='text' name='whenCreated' value= query.whenCreated readonly)
+			label| When Updated:
+			input.details(type='text' name='whenUpdated' value= query.whenUpdated readonly)
+
+			label| Identifier:
+			input.details(type='text' name='id' value= query.id readonly)
+			label| Revision:
+			input.details(type='text' name='rev' value= query.rev readonly)
+
+		button| Delete
+
+	include ../includes/foot

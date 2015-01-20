@@ -1,0 +1,17 @@
+extends ../includes/header
+
+block content
+
+	include ../includes/message
+
+	form.form(action='/login' method='post' enctype='multipart/form-data')
+		h3= title
+
+		label| Username:
+		input.field(type='text' name='username' title='Username' required='required' placeholder='Username' autofocus)
+		label| Password:
+		input.field(type='password' name='password' title='Password' required='required' placeholder='Password')
+
+		button| Login
+
+	include ../includes/foot
