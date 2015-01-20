@@ -8,14 +8,14 @@ block content
 		h3= title
 
 		label| Username:
-		input.details(type='text' name='username' value= user.username readonly)
+		input.details(type='text' name='username' title= user.username value= user.username readonly)
 
 		label| Who Created:
-		input.details(type='text' name='whoCreated' value= user.whoCreated readonly)
+		input.details(type='text' name='whoCreated' title= user.whoCreated value= user.whoCreated readonly)
 		label| When Created:
-		input.details(type='text' name='whenCreated' value= user.whenCreated readonly)
+		input.details(type='text' name='whenCreated' title= user.whenCreated value= user.whenCreated readonly)
 		label| When Updated:
-		input.details(type='text' name='whenUpdated' value= user.whenUpdated readonly)
+		input.details(type='text' name='whenUpdated' title= user.whenUpdated value= user.whenUpdated readonly)
 
 		label| Salt Key:
 		textarea.details.salt(name='salt' readonly)= user.salt
@@ -23,10 +23,10 @@ block content
 		textarea.details.hash(name='hash' readonly)= user.hash
 
 		label| Identifier:
-		input.details(type='text' name='id' value= user.id readonly)
+		input.details(type='text' name='id' title= user.id value= user.id readonly)
 		label| Revision:
-		input.details(type='text' name='rev' value= user.__v readonly)
+		input.details(type='text' name='rev' title= user.__v value= user.__v readonly)
 
-		button| Delete
+		button(title='Submit')| Delete
 
 	include ../includes/foot
