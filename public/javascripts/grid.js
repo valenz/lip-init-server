@@ -35,15 +35,17 @@ $(document).ready(function() {
 	function adjustStyle(width) {
 		width = parseInt(width);
 		if (width < 480) {
-			$("#size-stylesheet").attr("href", "/stylesheets/tiny.css"); //320
+			$("#size-stylesheet").attr("href", "/stylesheets/320.css");
 		} else if ((width >= 481) && (width < 640)) {
-			$("#size-stylesheet").attr("href", "/stylesheets/small.css"); //480
+			$("#size-stylesheet").attr("href", "/stylesheets/480.css");
 		} else if ((width >= 641) && (width < 800)) {
-			$("#size-stylesheet").attr("href", "/stylesheets/medium.css"); //640
+			$("#size-stylesheet").attr("href", "/stylesheets/640.css");
 		} else if ((width >= 801) && (width < 1024)) {
-			$("#size-stylesheet").attr("href", "/stylesheets/style.css"); //800
+			$("#size-stylesheet").attr("href", "/stylesheets/style.css");
+		} else if ((width >= 1025) && (width < 1152)) {
+			$("#size-stylesheet").attr("href", "/stylesheets/1024.css");
 		} else {
-			$("#size-stylesheet").attr("href", "/stylesheets/wide.css"); //1024
+			$("#size-stylesheet").attr("href", "/stylesheets/1152.css");
 		} 
 	}
 
