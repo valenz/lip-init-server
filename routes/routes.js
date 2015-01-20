@@ -251,7 +251,7 @@ module.exports.postCreateTab = function(req, res) {
 			/** Upload: Url is valid */
 			var Tab = mongoose.model('tab');
 			if(stat == 'success') {
-				var name = req.body.name ? req.body.name > 19 ? req.body.name.substring(0, 19)+'...' : req.body.name : result.title.length > 19 ? result.title.substring(0, 19)+'...' : result.title;
+				var name = req.body.name ? req.body.name.length > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : result.title.length > 20 ? result.title.substring(0, 20)+'...' : result.title;
 
 				var data = new Tab({
 					name: name,
@@ -265,7 +265,7 @@ module.exports.postCreateTab = function(req, res) {
 					whenUpdated: undefined
 				});
 			} else {
-				var name = req.body.name ? req.body.name > 19 ? req.body.name.substring(0, 19)+'...' : req.body.name : req.body.address.length > 19 ? req.body.address.substring(0, 19)+'...' : req.body.address;
+				var name = req.body.name ? req.body.name.length > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : req.body.address.length > 20 ? req.body.address.substring(0, 20)+'...' : req.body.address;
 
 				var data = new Tab({
 					name: name,
@@ -333,7 +333,7 @@ module.exports.postUpdateTab = function(req, res) {
 			}, function(result) {
 				/** Edit: Url is valid */
 				if(stat == 'success') {
-					var name = req.body.name ? req.body.name > 19 ? req.body.name.substring(0, 19)+'...' : req.body.name : result.title.length > 19 ? result.title.substring(0, 19)+'...' : result.title;
+					var name = req.body.name ? req.body.name.length > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : result.title.length > 50 ? result.title.substring(0, 50)+'...' : result.title;
 
 					doc.name = name;
 					doc.url = req.body.address;
@@ -346,7 +346,7 @@ module.exports.postUpdateTab = function(req, res) {
 					doc.whenUpdated = new Date();
 					doc.__v = doc.__v + 1;
 				} else {
-					var name = req.body.name ? req.body.name > 19 ? req.body.name.substring(0, 19)+'...' : req.body.name : req.body.address.length > 19 ? req.body.address.substring(0, 19)+'...' : req.body.address;
+					var name = req.body.name ? req.body.name > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : req.body.address.length > 20 ? req.body.address.substring(0, 20)+'...' : req.body.address;
 
 					doc.name = name;
 					doc.url = req.body.address;

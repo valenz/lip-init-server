@@ -11,12 +11,12 @@ block content
 					form(action='/deletetab' method='post' enctype='multipart/form-data')
 						div
 							a(href=url title=title?title:name)
-								if icon
-									img.icon(src=icon)
 								div.img-container
 									if icon
 										img.pic(src='uploads/' + id+'.png')
-								h5= name
+								if icon
+									img.icon(src=icon)
+								.name= name
 								input(type='hidden' name='id' value=id data-check='checked')
 							if user
 								a(href='/updatetab/?id='+id+'&url='+url+'&name='+name+'&check='+check)

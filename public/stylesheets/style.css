@@ -135,7 +135,7 @@ p.error, p.info, p.success, p.no-data, p.no-script {
 #grid li {
 	width: 146px;
 	vertical-align: top;
-	padding: 35px 15px 35px 15px;
+	padding: 35px 15px 0px 15px;
 	zoom: 1;
 	position: relative;
 	*display: inline;
@@ -146,9 +146,8 @@ p.error, p.info, p.success, p.no-data, p.no-script {
 }
 
 li .icon {
-	position: absolute;
-	bottom: 32px;
-	left: 47%;
+	position: relative;
+	top: -9px;
 	height: 14px;
 }
 
@@ -166,15 +165,15 @@ li .pic, li .img-container {
 	min-height: 81px;
 }
 
-li h5 {
-	position: absolute;
-	bottom: 2px;
+.name {
 	text-align: center;
 	background: transparent;
 	color: #FFF9E5;
 	width: 146px;
 	margin: 0;
-	font-size: 12px;
+	position: relative;
+	top: -10px;
+	font-size: 15px;
 	font-weight: normal;
 }
 
@@ -202,14 +201,14 @@ li a {
 	right: 19px;
 	background-color: transparent;
 	border: 0px solid transparent;
-    box-shadow: 0 0 0 0px transparent;
-    -moz-box-shadow: 0 0 0 0px transparent;
-    -webkit-box-shadow: 0 0 0 0px transparent;
-    border-radius: 0px;
-    -webkit-border-radius: 0px;
-    -moz-border-radius: 0px;
-    -webkit-transition: .1s ease-in-out;
-    -moz-transition: .1s ease-in-out;
+	box-shadow: 0 0 0 0px transparent;
+    	-moz-box-shadow: 0 0 0 0px transparent;
+    	-webkit-box-shadow: 0 0 0 0px transparent;
+    	border-radius: 0px;
+    	-webkit-border-radius: 0px;
+    	-moz-border-radius: 0px;
+    	-webkit-transition: .1s ease-in-out;
+    	-moz-transition: .1s ease-in-out;
 }
 
 .btn-del:active {
