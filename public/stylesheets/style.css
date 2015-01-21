@@ -123,7 +123,7 @@ p.error, p.info, p.success, p.no-data, p.no-script {
 }
 
 #grid li {
-	width: 146px;
+	width: 182px;
 	vertical-align: top;
 	padding: 35px 15px 0px 15px;
 	zoom: 1;
@@ -131,8 +131,6 @@ p.error, p.info, p.success, p.no-data, p.no-script {
 	*display: inline;
 	display: -moz-inline-stack;
 	display: inline-block;
-	min-height: 81px;
-	_height: 83px;
 }
 
 li .icon {
@@ -150,9 +148,9 @@ li .pic, li .img-container {
 	box-shadow: 0 0 0 1px #17313A;
 	-moz-box-shadow: 0 0 0 1px #17313A;
 	-webkit-box-shadow: 0 0 0 1px #17313A;
-	width: 144px;
-	height: 81px;
-	min-height: 81px;
+	width: 182px;
+	height: 101px;
+	min-height: 101px;
 }
 
 .name {

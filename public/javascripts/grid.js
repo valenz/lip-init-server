@@ -8,12 +8,9 @@ $(document).ready(function() {
 	});
 
 	/** Tabs range settings */
-	var liWidth = 146;
-	var imgContainerWidth = 144;
-	var imgContainerHeight = 81;
-	var h5Width = 146;
-	var h5Size = 12;
-	var h5Bottom = 2;
+	var liWidth = 182;
+	var imgContainerWidth = 182;
+	var imgContainerHeight = 101;
 	var factor = localStorage.getItem('range') ? localStorage.getItem('range') : 1;
 	$('.tabs').each(function(key) {
 		$(this).css('width', Math.floor(liWidth*factor)+'px');
@@ -25,11 +22,6 @@ $(document).ready(function() {
 	$('.pic').each(function(key) {
 		$(this).css('width', Math.floor(imgContainerWidth*factor)+'px');
 		$(this).css('height', Math.floor(imgContainerHeight*factor)+'px');
-	});
-	$('.tabs h5').each(function(key) {
-		$(this).css('width', Math.floor(h5Width*factor)+'px');
-		$(this).css('font-size', Math.floor(h5Size*factor)+'px');
-		$(this).css('bottom', Math.floor(h5Size/factor)+'px');
 	});
 	
 	/* Sets different stylesheets for different sized browser windows */
