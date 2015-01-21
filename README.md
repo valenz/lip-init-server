@@ -8,7 +8,7 @@
 
 
 ## Requirements
-You need default MongoDB service up and running, PhantomJS and the NodeJS engine (0.10).
+You need default MongoDB service up and running, PhantomJS and the NodeJS engine (0.10.x).
 
 
 ## Installation
@@ -31,4 +31,4 @@ For running your app in background and save all log files into folder 'logs' typ
 ## Checking
 Finally open your web browser and type:
 
-	http://localhost:9090
+	http://localhost:9002
