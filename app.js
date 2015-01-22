@@ -87,7 +87,7 @@ app.post('/deletetab', routes.postDeleteTab);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-	var err = new Error('Not Found');
+	var err = new Error('Failed to load resource: the server responded with a status of 404 (Not Found)');
 	err.status = 404;
 	next(err);
 });
@@ -101,22 +101,24 @@ if (app.get('env') === 'development') {
 		res.status(err.status || 500);
 		console.error(err);
 		res.render('index', {
-			error: err.message,
-			info: err
+			info: req.flash('info', JSON.stringify(err)),
+			error: req.flash('error', err.message)
 		});
 	});
 }
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-	res.status(err.status || 500);
-	console.error(err);
-	res.render('index', {
-		error: err.message,
-		info: {}
+if (app.get('env') === 'production') {
+	app.use(function(err, req, res, next) {
+		res.status(err.status || 500);
+		console.error(err);
+		res.render('index', {
+			info: req.flash('info', JSON.stringify({})),
+			error: req.flash('error', err.message)
+		});
 	});
-});
+}
 
 /**
  * Fires the server.

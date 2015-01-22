@@ -4,7 +4,7 @@ block content
 
 	include includes/message
 
-	if grid.length > 0
+	if grid && grid != 0
 		mixin tabs(id, url, title, icon, name, check, j)
 			if !check
 				li.tabs(data-item=j)

@@ -1,24 +1,24 @@
-if grid
+if grid && grid != 0
 	- var check_i = 0
 	- var check_a = 0
 		each i in grid
 			- i.check ? check_a++ : check_i++
 
-if error != 0
+if error && error != 0
 	p.error
 		each i in error
 			i.fa.fa-exclamation-circle
 			= i
 			| <br />
 
-if info != 0
+if info && info != 0
 	p.info
 		each i in info
 			i.fa.fa-info-circle
 			= i
 			| <br />
 
-if success != 0
+if success && success != 0
 	p.success
 		each i in success
 			i.fa.fa-check-circle

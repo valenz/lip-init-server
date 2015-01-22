@@ -9,7 +9,7 @@ var url = require('url')
 /**
  *********************************** GET ***********************************
  */
- 
+
 /**
  * Selects all documents in collection tab, sorted by the field whenCreated
  * in descending order and pass a local variable to the user page.
