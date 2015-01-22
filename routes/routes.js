@@ -254,7 +254,7 @@ module.exports.tabDetails = function(req, res) {
  * @param {Object} res
  */
 module.exports.postLogin = function(req, res) {
-	console.log('LOGIN: '+req.user.username +' has been logged in.');
+	console.log('LOGIN: '+ req.user.username +' has been logged in.');
 	req.flash('success', 'You are logged in. Welcome, '+req.user.username+'!');
 	res.redirect('/user');
 };
@@ -379,7 +379,7 @@ module.exports.postCreateTab = function(req, res) {
 	console.log('CREATE.TAB: body request');
 	console.log(req.body);
 	page.open(req.body.address, function(stat) {
-		/** Get title and icon from a webpage */
+		// Get title and icon from a webpage
 		page.evaluate(function() {
 			var data = new Object();
 			document.body.bgColor = '#F6F6F6';
@@ -398,7 +398,7 @@ module.exports.postCreateTab = function(req, res) {
 				}
 			}
 		}, function(result) {
-			/** Url is valid */
+			// Url is valid
 			var Tab = mongoose.model('tab');
 			if(stat == 'success') {
 				var data = new Tab({
@@ -434,6 +434,10 @@ module.exports.postCreateTab = function(req, res) {
 						return console.error(err);
 					} else {
 						console.log('CREATE.TAB: url status['+ stat +'] "'+ doc.name +'" has been created.');
+						// defines the rectangular area of the web page to be rasterized when page.render is invoked
+						page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
+						// sets the size of the viewport for the layout process
+						page.set('viewportSize', { width: 960, height: 540 });
 						// Renders the web page to an image buffer and saves it as the specified filename.
 						page.render(uploadPath+doc._id + '.png');
 						req.flash('success', 'Tab has been created successfully.');
@@ -465,7 +469,7 @@ module.exports.postUpdateTab = function(req, res) {
 	mongoose.model('tab').findOne(query, function(err, doc) {
 		if(err) return console.error(err);
 		page.open(req.body.address, function(stat) {
-			/** Get title and icon from a webpage */
+			// Get title and icon from a webpage
 			page.evaluate(function() {
 				var data = new Object();
 				document.body.bgColor = '#F6F6F6';
@@ -484,7 +488,7 @@ module.exports.postUpdateTab = function(req, res) {
 					}
 				}
 			}, function(result) {
-				/** Url is valid */
+				// Url is valid
 				if(stat == 'success') {
 					doc.name = req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(result.title, 42);
 					doc.url = req.body.address;
@@ -517,6 +521,10 @@ module.exports.postUpdateTab = function(req, res) {
 							return console.error(err);
 						} else {
 							console.log('UPDATE.TAB: url status['+ stat +'] "'+ doc.name +'" has been updated.');
+							// defines the rectangular area of the web page to be rasterized when page.render is invoked
+							page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
+							// sets the size of the viewport for the layout process
+							page.set('viewportSize', { width: 960, height: 540 });
 							// Renders the web page to an image buffer and saves it as the specified filename.
 							page.render(uploadPath+req.body.id + '.png');
 							req.flash('success', 'Tab has been updated successfully.');
@@ -590,10 +598,6 @@ phantom.create('--config=config.json', function(ph) {
 	ph.createPage(function(p) {
 		p.set('settings.javascriptEnabled', true); // default: true
 		p.set('settings.resourceTimeout', 60 * 1000); // 60 seconds
-		// defines the rectangular area of the web page to be rasterized when page.render is invoked
-		p.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
-		// sets the size of the viewport for the layout process
-		p.set('viewportSize', { width: 960, height: 540 });
 
 		console.log('PHANTOM.PROCESS.PID:', ph.process.pid);
 		page = p;
