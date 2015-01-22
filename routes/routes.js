@@ -1,7 +1,8 @@
 var url = require('url')
   , phantom = require('phantom')
   , mongoose = require('mongoose')
-  , methods = require('./methods')
+  , methods = require('../classes/methods/methods')
+  , RenderObject = require('../classes/render')
   , uploadPath = 'public/uploads/'
   , page;
 
@@ -20,7 +21,8 @@ var url = require('url')
 module.exports.index = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		res.render('index', {
+		var ro = new RenderObject();
+		ro.set({
 			title: 'Index',
 			grid: tab,
 			user: req.user,
@@ -28,6 +30,7 @@ module.exports.index = function(req, res) {
 			error: req.flash('error'),
 			success: req.flash('success')
 		});
+		res.render('index', ro.get());
 	});
 };
 
@@ -42,7 +45,8 @@ module.exports.index = function(req, res) {
 module.exports.user = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		res.render('sites/user', {
+		var ro = new RenderObject();
+		ro.set({
 			title: req.user.username,
 			grid: tab,
 			user: req.user,
@@ -50,6 +54,7 @@ module.exports.user = function(req, res) {
 			error: req.flash('error'),
 			success: req.flash('success')
 		});
+		res.render('sites/user', ro.get());
 	});
 };
 
@@ -66,7 +71,8 @@ module.exports.settings = function(req, res) {
 		if(err) return console.error(err);
 		mongoose.model('account').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, acc) {
 			if(err) return console.error(err);
-			res.render('sites/settings', {
+			var ro = new RenderObject();
+			ro.set({
 				title: 'Settings',
 				accs: acc,
 				tabs: tab,
@@ -75,6 +81,7 @@ module.exports.settings = function(req, res) {
 				error: req.flash('error'),
 				success: req.flash('success')
 			});
+			res.render('sites/settings', ro.get());
 		});
 	});
 };
@@ -86,13 +93,15 @@ module.exports.settings = function(req, res) {
  * @param {Object} res
  */
 module.exports.help = function(req, res) {
-	res.render('sites/help', {
+	var ro = new RenderObject();
+	ro.set({
 		title: 'Help',
 		user: req.user,
 		info: req.flash('info'),
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
+	res.render('sites/help', ro.get());
 };
 
 /**
@@ -102,13 +111,15 @@ module.exports.help = function(req, res) {
  * @param {Object} res
  */
 module.exports.login = function(req, res) {
-	res.render('forms/login', {
+	var ro = new RenderObject();
+	ro.set({
 		title: 'Login',
 		user: req.user,
 		info: req.flash('info'),
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
+	res.render('forms/login', ro.get());
 };
 
 /**
@@ -129,13 +140,15 @@ module.exports.logout = function(req, res) {
  * @param {Object} res
  */
 module.exports.createAccount = function(req, res) {
-	res.render('forms/create_account', {
+	var ro = new RenderObject();
+	ro.set({
 		title: 'Create Account',
 		user: req.user,
 		info: req.flash('info'),
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
+	res.render('forms/create_account', ro.get());
 };
 
 /**
@@ -145,13 +158,15 @@ module.exports.createAccount = function(req, res) {
  * @param {Object} res
  */
 module.exports.updateAccount = function(req, res) {
-	res.render('forms/update_account', {
+	var ro = new RenderObject();
+	ro.set({
 		title: 'Update Account',
 		user: req.user,
 		info: req.flash('info'),
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
+	res.render('forms/update_account', ro.get());
 };
 
 /**
@@ -161,13 +176,15 @@ module.exports.updateAccount = function(req, res) {
  * @param {Object} res
  */
 module.exports.createTab = function(req, res) {
-	res.render('forms/create_tab', {
+	var ro = new RenderObject();
+	ro.set({
 		title: 'Create Tab',
 		user: req.user,
 		info: req.flash('info'),
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
+	res.render('forms/create_tab', ro.get());
 };
 
 /**
@@ -177,7 +194,8 @@ module.exports.createTab = function(req, res) {
  * @param {Object} res
  */
 module.exports.updateTab = function(req, res) {
-	res.render('forms/update_tab', {
+	var ro = new RenderObject();
+	ro.set({
 		title: 'Update Tab',
 		query: req.query,
 		user: req.user,
@@ -185,6 +203,7 @@ module.exports.updateTab = function(req, res) {
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
+	res.render('forms/update_tab', ro.get());
 };
 
 /**
@@ -194,13 +213,15 @@ module.exports.updateTab = function(req, res) {
  * @param {Object} res
  */
 module.exports.userDetails = function(req, res) {
-	res.render('forms/user_details', {
+	var ro = new RenderObject();
+	ro.set({
 		title: 'User Details',
 		user: req.user,
 		info: req.flash('info'),
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
+	res.render('forms/user_details', ro.get());
 };
 
 /**
@@ -210,7 +231,8 @@ module.exports.userDetails = function(req, res) {
  * @param {Object} res
  */
 module.exports.tabDetails = function(req, res) {
-	res.render('forms/tab_details', {
+	var ro = new RenderObject();
+	ro.set({
 		title: 'Tab Details',
 		query: req.query,
 		user: req.user,
@@ -218,6 +240,7 @@ module.exports.tabDetails = function(req, res) {
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
+	res.render('forms/tab_details', ro.get());
 };
 
 /**
@@ -347,7 +370,7 @@ module.exports.postCreateTab = function(req, res) {
 		/** Get title and icon from a webpage */
 		page.evaluate(function() {
 			var data = new Object();
-			document.body.bgColor = 'white';
+			document.body.bgColor = '#F6F6F6';
 			data['title'] = document.title;
 			var icon = document.getElementsByTagName('link');
 			for(var i in icon) {
@@ -366,10 +389,8 @@ module.exports.postCreateTab = function(req, res) {
 			/** Url is valid */
 			var Tab = mongoose.model('tab');
 			if(stat == 'success') {
-				var name = req.body.name ? req.body.name.length > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : result.title.length > 50 ? result.title.substring(0, 50)+'...' : result.title;
-
 				var data = new Tab({
-					name: name,
+					name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(result.title, 42),
 					url: req.body.address,
 					title: result.title,
 					icon: result.icon,
@@ -380,10 +401,8 @@ module.exports.postCreateTab = function(req, res) {
 					whenUpdated: undefined
 				});
 			} else {
-				var name = req.body.name ? req.body.name.length > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : req.body.address.length > 20 ? req.body.address.substring(0, 20)+'...' : req.body.address;
-
 				var data = new Tab({
-					name: name,
+					name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(req.body.address, 42),
 					url: req.body.address,
 					title: req.body.address,
 					icon: '',
@@ -437,7 +456,7 @@ module.exports.postUpdateTab = function(req, res) {
 			/** Get title and icon from a webpage */
 			page.evaluate(function() {
 				var data = new Object();
-				document.body.bgColor = 'white';
+				document.body.bgColor = '#F6F6F6';
 				data['title'] = document.title;
 				var icon = document.getElementsByTagName('link');
 				for(var i in icon) {
@@ -455,9 +474,7 @@ module.exports.postUpdateTab = function(req, res) {
 			}, function(result) {
 				/** Url is valid */
 				if(stat == 'success') {
-					var name = req.body.name ? req.body.name.length > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : result.title.length > 50 ? result.title.substring(0, 50)+'...' : result.title;
-
-					doc.name = name;
+					doc.name = req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(result.title, 42);
 					doc.url = req.body.address;
 					doc.title = result.title;
 					doc.icon = result.icon;
@@ -468,9 +485,7 @@ module.exports.postUpdateTab = function(req, res) {
 					doc.whenUpdated = new Date();
 					doc.__v = doc.__v + 1;
 				} else {
-					var name = req.body.name ? req.body.name > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : req.body.address.length > 20 ? req.body.address.substring(0, 20)+'...' : req.body.address;
-
-					doc.name = name;
+					doc.name = req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(req.body.address, 20);
 					doc.url = req.body.address;
 					doc.title = req.body.address;
 					doc.icon = '';

@@ -16,6 +16,16 @@ module.exports.logout = function(req, res) {
 };
 
 /**
+ * Extracts the characters from a string, between two specified indices,
+ * (where n is the last one) and returns the new sub string.
+ * @param {str} String
+ * @param {n} Number
+ */
+module.exports.shorter = function(str, n) {
+	return str.length > n ? str.substring(0, n)+'...' : str;
+};
+
+/**
  * Test whether or not the given path exists by checking with the file system
  * and try to delete the path file.
  * @param {Object} req 
