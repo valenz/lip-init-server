@@ -61,7 +61,7 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // Connect mongoose
-mongoose.connect('mongodb://localhost/lipinit', function(err) {
+mongoose.connect('mongodb://localhost/tabgrid', function(err) {
 	if (err) {
 		console.log('Could not connect to mongodb on localhost. Ensure that you have mongodb running on localhost and mongodb accepts connections on standard ports!');
 	}

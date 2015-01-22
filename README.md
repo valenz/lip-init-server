@@ -32,3 +32,7 @@ For running your app in background and save all log files into folder 'logs' typ
 Finally open your web browser and type:
 
 	http://localhost:9002
+
+To create an account go to:
+
+	http://localhost:9002/createaccount

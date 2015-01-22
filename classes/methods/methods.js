@@ -1,10 +1,6 @@
 var fs = require('fs');
 
 /**
- ********************************* METHODS *********************************
- */
-
-/**
  * Set a flash message by passing the key, followed by the value, to req.flash()
  * and remove the req.user property and clear the login session.
  * @param {Object} req 
