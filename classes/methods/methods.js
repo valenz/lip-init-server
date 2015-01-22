@@ -48,6 +48,7 @@ module.exports.clear = function(req) {
 				req.flash('error', e.message);
 			}
 		} else {
+			console.error('Incorrect '+ path +' or '+ file +' does not exists.');
 			req.flash('note', 'Incorrect '+ path +' or '+ file +' does not exists.');
 		}
 	});

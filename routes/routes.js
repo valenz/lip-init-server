@@ -254,6 +254,7 @@ module.exports.tabDetails = function(req, res) {
  * @param {Object} res
  */
 module.exports.postLogin = function(req, res) {
+	console.log('LOGIN: '+req.user.username +' has been logged in.');
 	req.flash('success', 'You are logged in. Welcome, '+req.user.username+'!');
 	res.redirect('/user');
 };
@@ -271,7 +272,7 @@ module.exports.postCreateAccount = function(req, res) {
 		username: req.body.username,
 		whoCreated: req.user ? req.user.username : req.body.username,
 		whenCreated: new Date(),
-		whenUpdated: 0
+		whenUpdated: undefined
 	});
 	var Account = mongoose.model('account');
 	if(req.body.password === req.body.confirm) {
@@ -282,6 +283,7 @@ module.exports.postCreateAccount = function(req, res) {
 					res.redirect('/createaccount');
 					return console.error(err);
 				} else {
+					console.log('CREATE.ACCOUNT: '+ user.username +' has been created successfully.');
 					req.flash('success', 'Account has been created successfully.');
 					res.redirect('/createaccount');
 				}
@@ -304,21 +306,31 @@ module.exports.postCreateAccount = function(req, res) {
  */
 module.exports.postUpdateAccount = function(req, res) {
 	var query = new Object({ _id: req.user._id });
-	console.log('REQUEST.USER: '+req.user);
-	console.log('REQUEST.BODY: ');
-	console.log(req.body);
-	mongoose.model('account').findOne(query, function(err, doc) {
-		if(err) {
-			req.flash('error', err);
-			res.redirect('/settings');
-			return console.error(err);
-		} else {
-			console.log('FOUND.DOC: '+doc);
-			req.flash('info', 'Not yet implemented.');
-			//req.flash('success', JSON.stringify(doc));
-			res.redirect('/settings');
-		}
-	});
+	if(req.body.newPassword === req.body.confirm) {
+		mongoose.model('account').findOne(query, function(err, doc) {
+			if(err) return console.error(err);
+			doc.setPassword(req.body.newPassword, function(err, doc) {
+				if(err) return console.error(err);
+				doc.whenUpdated = new Date();
+				try {
+					doc.save(function(err, doc) {
+						if(err) {
+							req.flash('error', err);
+							res.redirect('/updateaccount');
+							return console.error(err);
+						} else {
+							console.log('UPDATE.ACCOUNT: '+ doc.username +' was updated successfully.');
+							req.flash('success', 'Your new password has been set successfully.');
+							res.redirect('/updateaccount');
+						}
+					});
+				} catch(e) {
+					console.error(e.stack);
+					res.redirect('/updateaccount');
+				}
+			});
+		});
+	}
 };
 
 /**
@@ -341,7 +353,7 @@ module.exports.postDeleteAccount = function(req, res) {
 					res.redirect('/');
 					return console.error(err);
 				} else {
-					console.log('Account '+doc+' was deleted successfully from the database.');
+					console.log('DELETE.ACCOUNT: '+ doc.username +' was deleted successfully.');
 					req.flash('success', 'Your Account has been deleted successfully.');
 					methods.logout(req, res);
 					res.redirect('/');
@@ -364,7 +376,7 @@ module.exports.postDeleteAccount = function(req, res) {
  * @return {String} err
  */
 module.exports.postCreateTab = function(req, res) {
-	console.log('REQUEST.BODY: ');
+	console.log('CREATE.TAB: body request');
 	console.log(req.body);
 	page.open(req.body.address, function(stat) {
 		/** Get title and icon from a webpage */
@@ -413,7 +425,7 @@ module.exports.postCreateTab = function(req, res) {
 					whenUpdated: undefined
 				});
 			}
-			console.log('UPLOAD.DATA: '+data);
+			console.log('CREATE.TAB: response ' + data);
 			try {
 				data.save(function(err, doc) {
 					if(err) {
@@ -421,7 +433,7 @@ module.exports.postCreateTab = function(req, res) {
 						res.redirect('/createtab');
 						return console.error(err);
 					} else {
-						console.log('Tab '+ doc +' was created successfully with URL-Status: ['+ stat +']');
+						console.log('CREATE.TAB: url status['+ stat +'] "'+ doc.name +'" has been created.');
 						// Renders the web page to an image buffer and saves it as the specified filename.
 						page.render(uploadPath+doc._id + '.png');
 						req.flash('success', 'Tab has been created successfully.');
@@ -447,7 +459,7 @@ module.exports.postCreateTab = function(req, res) {
  * @return {String} err
  */
 module.exports.postUpdateTab = function(req, res) {
-	console.log('REQUEST.BODY: ');
+	console.log('UPDATE.TAB: body request');
 	console.log(req.body);
 	var query = new Object({ _id: req.body.id });
 	mongoose.model('tab').findOne(query, function(err, doc) {
@@ -496,7 +508,7 @@ module.exports.postUpdateTab = function(req, res) {
 					doc.whenUpdated = new Date();
 					doc.__v = doc.__v + 1;
 				}
-				console.log('UPDATE.DATA: '+doc);
+				console.log('UPDATE.TAB: response ' + doc);
 				try {
 					doc.save(function(err, doc) {
 						if(err) {
@@ -504,7 +516,7 @@ module.exports.postUpdateTab = function(req, res) {
 							res.redirect('/');
 							return console.error(err);
 						} else {
-							console.log('Tab '+ doc +' was updated successfully with URL-Status: ['+ stat +']');
+							console.log('UPDATE.TAB: url status['+ stat +'] "'+ doc.name +'" has been updated.');
 							// Renders the web page to an image buffer and saves it as the specified filename.
 							page.render(uploadPath+req.body.id + '.png');
 							req.flash('success', 'Tab has been updated successfully.');
@@ -541,7 +553,7 @@ module.exports.postDeleteTab = function(req, res) {
 					return console.error(err);
 				} else {
 					methods.clear(req);
-					console.log('Tab '+ doc +' was deleted successfully from the database.');
+					console.log('DELETE.TAB: '+ doc +' was deleted successfully.');
 					req.flash('success', 'Tab has been deleted successfully.');
 					res.redirect('back');
 				}
