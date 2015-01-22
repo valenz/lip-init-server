@@ -5,15 +5,11 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
-//var session = require('cookie-session');
-var bodyParser = require('body-parser');
 
 var pkg = require('./package');
 var flash = require('connect-flash');
 var http = require('http');
 var expressSession = require('express-session');
-//var errorHandler = require('errorhandler');
 var multer = require('multer');
   
 var mongoose = require('mongoose');
@@ -34,9 +30,6 @@ app.set('view options', { layout: false });
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(multer());
 app.use(morgan('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 app.use(expressSession({
 	resave: false, // don't save session if unmodified
