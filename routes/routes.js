@@ -3,10 +3,19 @@ var url = require('url')
   , mongoose = require('mongoose')
   , methods = require('./methods')
   , uploadPath = 'public/uploads/'
-  , _page;
+  , page;
 
 /**
  *********************************** GET ***********************************
+ */
+ 
+/**
+ * Selects all documents in collection tab, sorted by the field whenCreated
+ * in descending order and pass a local variable to the user page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ * @return {String} err
  */
 module.exports.index = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
@@ -22,6 +31,14 @@ module.exports.index = function(req, res) {
 	});
 };
 
+/**
+ * Selects all documents in collection tab, sorted by the field whenCreated
+ * in descending order and pass a local variable to the user page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ * @return {String} err
+ */
 module.exports.user = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
@@ -36,6 +53,14 @@ module.exports.user = function(req, res) {
 	});
 };
 
+/**
+ * Selects all documents in collection tab and account, sorted by the field name
+ * in ascending order and pass a local variable to the settings page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ * @return {String} err
+ */
 module.exports.settings = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
@@ -54,6 +79,12 @@ module.exports.settings = function(req, res) {
 	});
 };
 
+/**
+ * Pass a local variable to the help page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ */
 module.exports.help = function(req, res) {
 	res.render('sites/help', {
 		title: 'Help',
@@ -64,6 +95,12 @@ module.exports.help = function(req, res) {
 	});
 };
 
+/**
+ * Pass a local variable to the login form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ */
 module.exports.login = function(req, res) {
 	res.render('forms/login', {
 		title: 'Login',
@@ -74,11 +111,23 @@ module.exports.login = function(req, res) {
 	});
 };
 
+/**
+ * Calls the exported function logout in methods
+ * and redirect to the given url.
+ * @param {Object} req 
+ * @param {Object} res
+ */
 module.exports.logout = function(req, res) {
 	methods.logout(req, res);
 	res.redirect('/');
 };
 
+/**
+ * Pass a local variable to the create_account form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ */
 module.exports.createAccount = function(req, res) {
 	res.render('forms/create_account', {
 		title: 'Create Account',
@@ -89,6 +138,12 @@ module.exports.createAccount = function(req, res) {
 	});
 };
 
+/**
+ * Pass a local variable to the update_account form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ */
 module.exports.updateAccount = function(req, res) {
 	res.render('forms/update_account', {
 		title: 'Update Account',
@@ -99,6 +154,12 @@ module.exports.updateAccount = function(req, res) {
 	});
 };
 
+/**
+ * Pass a local variable to the create_tab form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ */
 module.exports.createTab = function(req, res) {
 	res.render('forms/create_tab', {
 		title: 'Create Tab',
@@ -109,6 +170,12 @@ module.exports.createTab = function(req, res) {
 	});
 };
 
+/**
+ * Pass a local variable to the update_tab form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ */
 module.exports.updateTab = function(req, res) {
 	res.render('forms/update_tab', {
 		title: 'Update Tab',
@@ -120,6 +187,12 @@ module.exports.updateTab = function(req, res) {
 	});
 };
 
+/**
+ * Pass a local variable to the user_details form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ */
 module.exports.userDetails = function(req, res) {
 	res.render('forms/user_details', {
 		title: 'User Details',
@@ -130,6 +203,12 @@ module.exports.userDetails = function(req, res) {
 	});
 };
 
+/**
+ * Pass a local variable to the tab_details form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ */
 module.exports.tabDetails = function(req, res) {
 	res.render('forms/tab_details', {
 		title: 'Tab Details',
@@ -144,11 +223,25 @@ module.exports.tabDetails = function(req, res) {
 /**
  *********************************** POST ***********************************
  */
+
+/**
+ * Sets a flash message by passing the key, followed by the value, to req.flash()
+ * and redirect to the given url.
+ * @param {Object} req 
+ * @param {Object} res
+ */
 module.exports.postLogin = function(req, res) {
 	req.flash('success', 'You are logged in. Welcome, '+req.user.username+'!');
 	res.redirect('/user');
 };
 
+/**
+ * Creates a new object with request parameters from the submitted form name attributes
+ * and try to save the object to the collection account as a new document.
+ * @param {Object} req 
+ * @param {Object} res
+ * @return {String} err
+ */
 module.exports.postCreateAccount = function(req, res) {
 	// The passport-local-mongoose package automatically takes care of salting and hashing the password.
 	var user = new Object({
@@ -172,7 +265,7 @@ module.exports.postCreateAccount = function(req, res) {
 			});
 		} catch(e) {
 			console.error(e.stack);
-			req.flash('error', e.message);
+			res.redirect('/createaccount');
 		}
 	} else {
 		req.flash('info', 'Account could not be created. Passwords did not match.');
@@ -182,6 +275,9 @@ module.exports.postCreateAccount = function(req, res) {
 
 /**
  * TODO
+ * @param {Object} req 
+ * @param {Object} res
+ * @return {String} err
  */
 module.exports.postUpdateAccount = function(req, res) {
 	var query = new Object({ _id: req.user._id });
@@ -191,6 +287,7 @@ module.exports.postUpdateAccount = function(req, res) {
 	mongoose.model('account').findOne(query, function(err, doc) {
 		if(err) {
 			req.flash('error', err);
+			res.redirect('/settings');
 			return console.error(err);
 		} else {
 			console.log('FOUND.DOC: '+doc);
@@ -201,6 +298,15 @@ module.exports.postUpdateAccount = function(req, res) {
 	});
 };
 
+/**
+ * Selects all documents in collection account with queried object
+ * and try to remove the document from the collection.
+ * Calls the exported function logout in methods
+ * and redirect to the given url.
+ * @param {Object} req 
+ * @param {Object} res
+ * @return {String} err
+ */
 module.exports.postDeleteAccount = function(req, res) {
 	var query = new Object({ _id: req.body.id });
 	mongoose.model('account').findOne(query, function(err, doc) {
@@ -209,6 +315,7 @@ module.exports.postDeleteAccount = function(req, res) {
 			doc.remove(function(err) {
 				if(err) {
 					req.flash('error', err);
+					res.redirect('/');
 					return console.error(err);
 				} else {
 					console.log('Account '+doc+' was deleted successfully from the database.');
@@ -219,22 +326,29 @@ module.exports.postDeleteAccount = function(req, res) {
 			});
 		} catch(e) {
 			console.error(e.stack);
-			req.flash('error', e.message);
 			res.redirect('/');
 		}
 	});
 };
 
+/**
+ * Creates a new Tab with request parameters from the submitted form name attributes.
+ * Opens the given url and loads it to the page and provides the page status to the
+ * function ('success' or 'fail'). Evaluates the given function in the
+ * context of the web page and try to save the document to the collection.
+ * @param {Object} req 
+ * @param {Object} res
+ * @return {String} err
+ */
 module.exports.postCreateTab = function(req, res) {
 	console.log('REQUEST.BODY: ');
 	console.log(req.body);
-	_page.open(req.body.address, function(stat) {
+	page.open(req.body.address, function(stat) {
 		/** Get title and icon from a webpage */
-		_page.evaluate(function() {
+		page.evaluate(function() {
 			var data = new Object();
 			document.body.bgColor = 'white';
 			data['title'] = document.title;
-			//data['url'] = window.location.origin;
 			var icon = document.getElementsByTagName('link');
 			for(var i in icon) {
 				try {
@@ -243,12 +357,13 @@ module.exports.postCreateTab = function(req, res) {
 						return data;
 					}
 				} catch(e) {
-					data['icon'] = 'https://plus.google.com/_/favicon?domain_url='+window.location.origin;
+					data['icon'] = 'https://plus.google.com/_/favicon?domain_url=' + window.location.origin;
+					console.error(e.stack);
 					return data;
 				}
 			}
 		}, function(result) {
-			/** Upload: Url is valid */
+			/** Url is valid */
 			var Tab = mongoose.model('tab');
 			if(stat == 'success') {
 				var name = req.body.name ? req.body.name.length > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : result.title.length > 50 ? result.title.substring(0, 50)+'...' : result.title;
@@ -284,40 +399,46 @@ module.exports.postCreateTab = function(req, res) {
 				data.save(function(err, doc) {
 					if(err) {
 						req.flash('error', err);
+						res.redirect('/createtab');
 						return console.error(err);
 					} else {
-						console.log('Tab '+doc+' was created successfully with URL-Status: ['+stat+']');
-
-						_page.set('viewportSize', {width:960,height:540});
-						_page.set('clipRect', {top:0,left:0,width:960,height:540});
-						_page.render(uploadPath+doc._id+'.png');
-
+						console.log('Tab '+ doc +' was created successfully with URL-Status: ['+ stat +']');
+						// Renders the web page to an image buffer and saves it as the specified filename.
+						page.render(uploadPath+doc._id + '.png');
 						req.flash('success', 'Tab has been created successfully.');
-						res.redirect(url.parse(req.url).pathname);
+						res.redirect('/createtab');
 					}
 				});
 			} catch(e) {
 				console.error(e.stack);
-				req.flash('error', e.message);
-				res.redirect(url.parse(req.url).pathname);
+				res.redirect('/createtab');
 			}
 		}, 'title');
 	});
 };
 
+/**
+ * Updated the given Tab with request parameters from the submitted form name
+ * attributes.
+ * Opens the given url and loads it to the page and provides the page status to the
+ * function ('success' or 'fail'). Evaluates the given function in the
+ * context of the web page and try to save the document to the collection.
+ * @param {Object} req 
+ * @param {Object} res
+ * @return {String} err
+ */
 module.exports.postUpdateTab = function(req, res) {
 	console.log('REQUEST.BODY: ');
 	console.log(req.body);
 	var query = new Object({ _id: req.body.id });
 	mongoose.model('tab').findOne(query, function(err, doc) {
 		if(err) return console.error(err);
-		_page.open(req.body.address, function(stat) {
+		page.open(req.body.address, function(stat) {
 			/** Get title and icon from a webpage */
-			_page.evaluate(function() {
+			page.evaluate(function() {
 				var data = new Object();
 				document.body.bgColor = 'white';
 				data['title'] = document.title;
-				//data['url'] = window.location.origin;
 				var icon = document.getElementsByTagName('link');
 				for(var i in icon) {
 					try {
@@ -326,12 +447,13 @@ module.exports.postUpdateTab = function(req, res) {
 							return data;
 						}
 					} catch(e) {
-						data['icon'] = 'https://plus.google.com/_/favicon?domain_url='+window.location.origin;
+						data['icon'] = 'https://plus.google.com/_/favicon?domain_url=' + window.location.origin;
+						console.error(e.stack);
 						return data;
 					}
 				}
 			}, function(result) {
-				/** Edit: Url is valid */
+				/** Url is valid */
 				if(stat == 'success') {
 					var name = req.body.name ? req.body.name.length > 50 ? req.body.name.substring(0, 50)+'...' : req.body.name : result.title.length > 50 ? result.title.substring(0, 50)+'...' : result.title;
 
@@ -364,69 +486,109 @@ module.exports.postUpdateTab = function(req, res) {
 					doc.save(function(err, doc) {
 						if(err) {
 							req.flash('error', err);
+							res.redirect('/');
 							return console.error(err);
 						} else {
-							console.log('Tab '+doc+' was updated successfully with URL-Status: ['+stat+']');
-
-							_page.set('viewportSize', {width:960,height:540});
-							_page.set('clipRect', {top:0,left:0,width:960,height:540});
-							_page.render(uploadPath+req.body.id+'.png');
-
+							console.log('Tab '+ doc +' was updated successfully with URL-Status: ['+ stat +']');
+							// Renders the web page to an image buffer and saves it as the specified filename.
+							page.render(uploadPath+req.body.id + '.png');
 							req.flash('success', 'Tab has been updated successfully.');
 							req.body.check ? res.redirect('/user') : res.redirect('/');
 						}
 					});
 				} catch(e) {
 					console.error(e.stack);
-					req.flash('error', e.message);
-					res.redirect(url.parse(req.url).pathname);
+					res.redirect('/');
 				}
 			}, 'title');
 		});
 	});
 };
 
+/**
+ * Selects all documents in collection tab with queried object
+ * and try to remove the document from the collection.
+ * Calls the exported function clear in methods
+ * and redirect to the given url.
+ * @param {Object} req 
+ * @param {Object} res
+ * @return {String} err
+ */
 module.exports.postDeleteTab = function(req, res) {
 	var query = new Object({ _id: req.body.id });
-	methods.clear(req);
 	mongoose.model('tab').findOne(query, function(err, doc) {
 		if(err) return console.error(err);
 		try {
 			doc.remove(function(err) {
 				if(err) {
 					req.flash('error', err);
+					res.redirect('back');
 					return console.error(err);
 				} else {
-					console.log('Tab '+doc+' was deleted successfully from the database.');
+					methods.clear(req);
+					console.log('Tab '+ doc +' was deleted successfully from the database.');
 					req.flash('success', 'Tab has been deleted successfully.');
-					res.redirect('/');
+					res.redirect('back');
 				}
 			});
 		} catch(e) {
 			console.error(e.stack);
-			req.flash('error', e.message);
-			res.redirect('/');
+			res.redirect('back');
 		}
 	});
 };
 
-/** Simple route middleware to ensure user is authenticated.
+/**
+ * Simple route middleware to ensure user is authenticated.
  * Use this route middleware on any resource that needs to be protected.  If
  * the request is authenticated (typically via a persistent login session),
  * the request will proceed.  Otherwise, the user will be redirected to the
- * login page.
+ * login form page.
+ * @param {Object} req 
+ * @param {Object} res
+ * @param {Function} next
+ * @return {return} next
  */
 module.exports.ensureAuthenticated = function(req, res, next) {
 	if (req.isAuthenticated()) return next();
 	res.redirect('/login');
 }
 
-phantom.create('--web-security=no','--ignore-ssl-errors=true','--ssl-protocol=tlsv1', function(ph) {
-	ph.createPage(function(page) {
-		_page = page;
+/**
+ * Makes new PhantomJS WebPage objects. Pass command line switches to the
+ * phantomjs process by specifying additional args.
+ * @param {Object} ph
+ */
+phantom.create('--config=config.json', function(ph) {
+	ph.createPage(function(p) {
+		p.set('settings.javascriptEnabled', true); // default: true
+		p.set('settings.resourceTimeout', 60 * 1000); // 60 seconds
+		// defines the rectangular area of the web page to be rasterized when page.render is invoked
+		p.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
+		// sets the size of the viewport for the layout process
+		p.set('viewportSize', { width: 960, height: 540 });
 
-		_page.set('onResourceError',function(resourceError) {
-			console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #' + resourceError.id + ' URL:' + resourceError.url + ')');
+		console.log('PHANTOM.PROCESS.PID:', ph.process.pid);
+		page = p;
+
+		// This callback is invoked when the page requests a resource.
+		page.onResourceRequested = function(requestData, networkRequest) {
+			console.log('ON.RESOURCE.REQUESTED: Request (ID: #' + requestData.id + '): ' + JSON.stringify(requestData));
+		};
+
+		// This callback is invoked when a resource requested by the page is received (for every chuck if supported).
+		page.onResourceReceived = function(response) {
+			console.log('ON.RESOURCE.RECEIVED: Response (ID: #' + response.id + ', STAGE: "' + response.stage + '"): ' + JSON.stringify(response));
+		};
+
+		// This callback is invoked when a resource requested by the page timeout.
+		page.onResourceTimeout = function(request) {
+			console.log('ON.RESOURCE.TIMEOUT: Response (ID: #' + request.id + '): ' + JSON.stringify(request));
+		};
+
+		// This callback is invoked when a web page was unable to load resource.
+		page.set('onResourceError', function(resourceError) {
+			console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #' + resourceError.id + ' URL: ' + resourceError.url + ')');
 			console.log('ON.RESOURCE.ERROR: Error code: ' + resourceError.errorCode + '. Description: ' + resourceError.errorString);
 		});
 	});

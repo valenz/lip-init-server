@@ -3,32 +3,32 @@ var fs = require('fs');
 /**
  ********************************* METHODS *********************************
  */
-module.exports.date = function() {
-	var date = new Date();
-	var d = date.getDate();
-	var M = date.getMonth();
-	var y = date.getFullYear();
-	var h = date.getHours();
-	var m = date.getMinutes();
-	var s = date.getSeconds();
-	var today = new Date(y, M, d, h, m, s);
-	return today;
-};
 
+/**
+ * Set a flash message by passing the key, followed by the value, to req.flash()
+ * and remove the req.user property and clear the login session.
+ * @param {Object} req 
+ * @param {Object} res
+ */
 module.exports.logout = function(req, res) {
 	req.flash('success', 'You are logged out.');
 	req.logout();
 };
 
 /**
- * Deletes file in the file system from given id.
+ * Test whether or not the given path exists by checking with the file system
+ * and try to delete the path file.
+ * @param {Object} req 
+ * @param {Object} res
+ * @return {String} err
  */
 module.exports.clear = function(req) {
-	var name = 'public/uploads/'+req.body.id+'.png';
-	fs.exists(name, function(exists) {
+	var path = 'public/uploads/';
+	var file = req.body.id+'.png';
+	fs.exists(path + file, function(exists) {
 		if(exists) {
 			try {
-				fs.unlink(name, function(err) {
+				fs.unlink(path + file, function(err) {
 					req.flash('error', err);
 					if(err) return console.error(err);
 					console.log('DELETE.FILE: '+req.body.id);
@@ -38,7 +38,7 @@ module.exports.clear = function(req) {
 				req.flash('error', e.message);
 			}
 		} else {
-			req.flash('note', 'Incorrect path or file "'+ req.body.id +'.png" does not exists.');
+			req.flash('note', 'Incorrect '+ path +' or '+ file +' does not exists.');
 		}
 	});
 };
