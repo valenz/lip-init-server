@@ -31,9 +31,9 @@ $(document).ready(function() {
 			$("#size-stylesheet").attr("href", "/stylesheets/320.css");
 		} else if ((width >= 481) && (width < 640)) {
 			$("#size-stylesheet").attr("href", "/stylesheets/480.css");
-		} else if ((width >= 641) && (width < 800)) {
+		} else if ((width >= 641) && (width < 820)) {
 			$("#size-stylesheet").attr("href", "/stylesheets/640.css");
-		} else if ((width >= 801) && (width < 1024)) {
+		} else if ((width >= 821) && (width < 1024)) {
 			$("#size-stylesheet").attr("href", "/stylesheets/style.css");
 		} else if ((width >= 1025) && (width < 1152)) {
 			$("#size-stylesheet").attr("href", "/stylesheets/1024.css");
