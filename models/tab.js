@@ -7,6 +7,7 @@ var Tab = new Schema({
     url: String,
     icon: String,
     check: Boolean,
+	category: String,
     whoCreated: String,
     whoUpdated: String,
     whenCreated: Date,

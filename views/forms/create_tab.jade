@@ -11,6 +11,13 @@ block content
 		input.field(type='url' name='address' title='Address (required)' required='required' placeholder='Address (required)' autofocus)
 		label| Name (optional):
 		input.field(type='text' name='name' title='Name (optional)' placeholder='Name (optional)')
+		a#detailsLink(title='Create a category' href='/createcategory')
+			| Create Category
+		label| Category (optional):
+		select.category(name='category')
+			option(selected disabled)| Choose a category
+			option(value='value1')| value1
+			option(value='value2')| value2
 		.check
 			span| Admin only?
 			input(type='checkbox' name='check' title='Access only for admins')

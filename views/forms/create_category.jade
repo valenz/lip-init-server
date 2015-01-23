@@ -1,0 +1,20 @@
+extends ../includes/header
+
+block content
+
+	include ../includes/message
+
+	form.form(action='/createaccount' method='post' enctype='multipart/form-data')
+		h3= title
+
+		label| Username (required):
+		input.field(type='text' name='username' title='Username (required)' required='required' placeholder='Username (required)' autofocus)
+		label| Password (required):
+		input.field(type='password' name='password' title='Password (required)' required='required' placeholder='Password (required)')
+		label| Confirm Password (required):
+		input.field(type='password' name='confirm' title='Confirm Password (required)' required='required' placeholder='Confirm Password (required)')
+
+		button(title='Submit')| Create
+		a.cancel(href='..' title='Cancel')| Cancel
+
+	include ../includes/foot

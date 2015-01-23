@@ -37,7 +37,7 @@ block content
 				| ) Tabs
 			.adj.clearfix
 				each item, j in tabs
-					a(href='settings/details/?name='+item.name+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
+					a(href='settings/details/?name='+item.name+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
 						.item.itemfloat(data-item=j)= item.name
 
 	include ../includes/foot

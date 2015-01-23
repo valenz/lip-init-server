@@ -406,9 +406,9 @@ module.exports.postCreateTab = function(req, res) {
 					url: req.body.address,
 					title: result.title,
 					icon: result.icon,
+					category: req.body.category,
 					check: req.body.check ? true : false,
 					whoCreated: req.user.username,
-					whoUpdated: '-',
 					whenCreated: new Date(),
 					whenUpdated: undefined
 				});
@@ -418,9 +418,9 @@ module.exports.postCreateTab = function(req, res) {
 					url: req.body.address,
 					title: req.body.address,
 					icon: '',
+					category: req.body.category,
 					check: req.body.check ? true : false,
 					whoCreated: req.user.username,
-					whoUpdated: '-',
 					whenCreated: new Date(),
 					whenUpdated: undefined
 				});
@@ -433,7 +433,7 @@ module.exports.postCreateTab = function(req, res) {
 						res.redirect('/createtab');
 						return console.error(err);
 					} else {
-						console.log('CREATE.TAB: url status['+ stat +'] "'+ doc.name +'" has been created.');
+						console.log('CREATE.TAB: url status ['+ stat +'] "'+ doc.name +'" has been created.');
 						// defines the rectangular area of the web page to be rasterized when page.render is invoked
 						page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
 						// sets the size of the viewport for the layout process
@@ -494,6 +494,7 @@ module.exports.postUpdateTab = function(req, res) {
 					doc.url = req.body.address;
 					doc.title = result.title;
 					doc.icon = result.icon;
+					doc.category = req.body.category;
 					doc.check = req.body.check ? true : false;
 					doc.whoCreated = doc.whoCreated;
 					doc.whoUpdated = req.user.username;
@@ -505,6 +506,7 @@ module.exports.postUpdateTab = function(req, res) {
 					doc.url = req.body.address;
 					doc.title = req.body.address;
 					doc.icon = '';
+					doc.category = req.body.category;
 					doc.check = req.body.check;
 					doc.whoCreated = doc.whoCreated;
 					doc.whoUpdated = req.user.username;
