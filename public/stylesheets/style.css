@@ -83,8 +83,12 @@ body {
 	padding-right: 10px;
 }
 
+.message { /*.fa-info-circle*/
+	color: #F6F6F6;
+}
+
 .success { /*.fa-check-circle*/
-	color: #47D147; /*#2EB82E;*/
+	color: #47D147;
 }
 
 .info { /*.fa-info-circle*/
@@ -92,7 +96,11 @@ body {
 }
 
 .error { /*.fa-exclamation-circle*/
-	color: #FF6600; /*#E65C00;*/
+	color: #FF6600;
+}
+
+.fallover { /*.fa-exclamation-circle*/
+	color: #FF6600;
 }
 
 p.no-data {
@@ -103,7 +111,7 @@ p.no-data {
 	color: #FFFF00;
 }
 
-p.error, p.info, p.success, p.no-data, p.no-script {
+p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
 	text-align: center;
 	font-size: 16px;
 	width: 100%;
