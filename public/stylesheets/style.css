@@ -250,6 +250,10 @@ li a {
 	text-decoration: none;
 }
 
+#detailsLink:hover {
+	text-decoration: underline;
+}
+
 .form img {
 	padding: 25px 0 25px 7px;
 }
@@ -376,6 +380,19 @@ form button:active {
 	box-shadow: inset 1px 1px 2px 0 #101010;
 	-moz-box-shadow: inset 1px 1px 2px 0 #101010;
 	-webkit-box-shadow: inset 1px 1px 2px 0 #101010;
+}
+
+.cancel {
+	position: relative;
+	top: -25px;
+	left: 100px;
+	color: #FFF9E5;
+	font-size: 13px;
+	text-decoration: none;
+}
+
+.cancel:hover {
+	text-decoration: underline;
 }
 
 
