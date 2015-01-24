@@ -4,7 +4,7 @@ block content
 
 	include ../includes/message
 
-	form.form(action='/updateaccount' method='post' enctype='multipart/form-data')
+	form.form(action='/updateaccount' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
 		h3= title
 
 		a#detailsLink(title='Account details and delete' href='/user/details')
@@ -14,7 +14,7 @@ block content
 		label| Confirm New Password (required):
 		input.field(type='password' name='confirm' title='Confirm New Password (required)' required='required' placeholder='Confirm New Password (required)')
 
-		button(title='Submit')| Update
+		button#submit(title='Submit')| Update
 		a.cancel(href='..' title='Cancel')| Cancel
 
 	include ../includes/foot

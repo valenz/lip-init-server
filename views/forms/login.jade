@@ -4,7 +4,7 @@ block content
 
 	include ../includes/message
 
-	form.form(action='/login' method='post' enctype='multipart/form-data')
+	form.form(action='/login' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
 		h3= title
 
 		label| Username:
@@ -12,7 +12,7 @@ block content
 		label| Password:
 		input.field(type='password' name='password' title='Password' required='required' placeholder='Password')
 
-		button(title='Submit')| Login
+		button#submit(title='Submit')| Login
 		a.cancel(href='..' title='Cancel')| Cancel
 
 	include ../includes/foot

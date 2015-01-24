@@ -4,7 +4,7 @@ block content
 
 	include ../includes/message
 
-	form.form(action='/createaccount' method='post' enctype='multipart/form-data')
+	form.form(action='/createaccount' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
 		h3= title
 
 		label| Username (required):
@@ -14,7 +14,7 @@ block content
 		label| Confirm Password (required):
 		input.field(type='password' name='confirm' title='Confirm Password (required)' required='required' placeholder='Confirm Password (required)')
 
-		button(title='Submit')| Create
+		button#submit(title='Submit')| Create
 		a.cancel(href='..' title='Cancel')| Cancel
 
 	include ../includes/foot

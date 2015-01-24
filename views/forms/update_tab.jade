@@ -4,7 +4,7 @@ block content
 
 	include ../includes/message
 
-	form.form(action='/updatetab' method='post' enctype='multipart/form-data')
+	form.form(action='/updatetab' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
 		h3= title
 
 		label| Address (required):
@@ -16,7 +16,7 @@ block content
 			span| Admin only?
 			input(type='checkbox', name='check', title='Access only for admins', checked= query.check ? true : false)
 
-		button(title='Submit')| Update
+		button#submit(title='Submit')| Update
 		a.cancel(href='..' title='Cancel')| Cancel
 
 	include ../includes/foot
