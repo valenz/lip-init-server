@@ -21,16 +21,20 @@ var url = require('url')
 module.exports.index = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		var ro = new RenderObject();
-		ro.set({
-			title: 'Index',
-			grid: tab,
-			user: req.user,
-			info: req.flash('info'),
-			error: req.flash('error'),
-			success: req.flash('success')
+		mongoose.model('category').find(function(err, list) {
+			if(err) return console.error(err);
+			var ro = new RenderObject();
+			ro.set({
+				title: 'Index',
+				grid: tab,
+				//list: list[0].list.sort(),
+				user: req.user,
+				info: req.flash('info'),
+				error: req.flash('error'),
+				success: req.flash('success')
+			});
+			res.render('index', ro.get());
 		});
-		res.render('index', ro.get());
 	});
 };
 
@@ -45,16 +49,20 @@ module.exports.index = function(req, res) {
 module.exports.user = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		var ro = new RenderObject();
-		ro.set({
-			title: req.user.username,
-			grid: tab,
-			user: req.user,
-			info: req.flash('info'),
-			error: req.flash('error'),
-			success: req.flash('success')
+		mongoose.model('category').find(function(err, list) {
+			if(err) return console.error(err);
+			var ro = new RenderObject();
+			ro.set({
+				title: req.user.username,
+				grid: tab,
+				//list: list[0].list.sort(),
+				user: req.user,
+				info: req.flash('info'),
+				error: req.flash('error'),
+				success: req.flash('success')
+			});
+			res.render('sites/user', ro.get());
 		});
-		res.render('sites/user', ro.get());
 	});
 };
 
@@ -170,21 +178,26 @@ module.exports.updateAccount = function(req, res) {
 };
 
 /**
- * Pass a local variable to the create_tab form page.
- * Get an array of flash messages by passing the keys to req.flash().
+ * Selects all documents in collection category and pass a local variable to
+ * the create_tab page. Get an array of flash messages by passing the keys to
+ * req.flash().
  * @param {Object} req 
  * @param {Object} res
  */
 module.exports.createTab = function(req, res) {
-	var ro = new RenderObject();
-	ro.set({
-		title: 'Create Tab',
-		user: req.user,
-		info: req.flash('info'),
-		error: req.flash('error'),
-		success: req.flash('success')
+	mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, list) {
+		if(err) return console.error(err);
+		var ro = new RenderObject();
+		ro.set({
+			title: 'Create Tab',
+			list: list,
+			user: req.user,
+			info: req.flash('info'),
+			error: req.flash('error'),
+			success: req.flash('success')
+		});
+		res.render('forms/create_tab', ro.get());
 	});
-	res.render('forms/create_tab', ro.get());
 };
 
 /**
@@ -204,6 +217,24 @@ module.exports.updateTab = function(req, res) {
 		success: req.flash('success')
 	});
 	res.render('forms/update_tab', ro.get());
+};
+
+/**
+ * Pass a local variable to the create_category form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req 
+ * @param {Object} res
+ */
+module.exports.createCategory = function(req, res) {
+	var ro = new RenderObject();
+	ro.set({
+		title: 'Create Category',
+		user: req.user,
+		info: req.flash('info'),
+		error: req.flash('error'),
+		success: req.flash('success')
+	});
+	res.render('forms/create_category', ro.get());
 };
 
 /**
@@ -433,6 +464,27 @@ module.exports.postCreateTab = function(req, res) {
 						res.redirect('/createtab');
 						return console.error(err);
 					} else {
+						
+						var query = new Object({ name: req.body.category });
+						mongoose.model('category').findOne(query, function(err, cat) {
+							if(err) return console.error(err);
+							data = cat, list = cat.list;
+							list.push(doc._id);
+							data.list = list;
+							try {
+								data.save(function(err, doc) {
+									if(err) {
+										req.flash('error', err);
+										res.redirect('/createtab');
+										return console.error(err);
+									}
+								});
+							} catch(e) {
+								console.error(e.stack);
+								res.redirect('/createtab');
+							}
+						});
+					
 						console.log('CREATE.TAB: url status ['+ stat +'] "'+ doc.name +'" has been created.');
 						// defines the rectangular area of the web page to be rasterized when page.render is invoked
 						page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
@@ -573,6 +625,37 @@ module.exports.postDeleteTab = function(req, res) {
 			res.redirect('back');
 		}
 	});
+};
+
+/**
+ * Creates a new Category with request parameters from the submitted form name
+ * attributes and try to save the object to the collection category list.
+ * @param {Object} req 
+ * @param {Object} res
+ * @return {String} err
+ */
+module.exports.postCreateCategory = function(req, res) {
+	var Category = mongoose.model('category');
+	var data = new Category({
+		name: req.body.categoryname,
+		list: new Array()
+	});
+	try {
+		data.save(function(err, doc) {
+			if(err) {
+				req.flash('error', err);
+				res.redirect('/createcategory');
+				return console.error(err);
+			} else {
+				console.log('CREATE.CATEGORY: Array "'+ doc +'" has been created.');
+				req.flash('success', 'Category has been created successfully.');
+				res.redirect('/createcategory');
+			}
+		});
+	} catch(e) {
+		console.error(e.stack);
+		res.redirect('/createcategory');
+	}
 };
 
 /**

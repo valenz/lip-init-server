@@ -48,6 +48,7 @@ app.use(passport.session());
 // Configure passport-local to use account model for authentication
 var Tab = require('./models/tab');
 var Account = require('./models/account');
+var Category = require('./models/category');
 passport.use(new LocalStrategy(Account.authenticate()));
 
 passport.serializeUser(Account.serializeUser());
@@ -76,6 +77,7 @@ app.get('/createaccount', routes.createAccount); // Add 'routes.ensureAuthentica
 app.get('/updateaccount', routes.ensureAuthenticated, routes.updateAccount);
 app.get('/createtab', routes.ensureAuthenticated, routes.createTab);
 app.get('/updatetab', routes.ensureAuthenticated, routes.updateTab);
+app.get('/createcategory', /*routes.ensureAuthenticated,*/ routes.createCategory);
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), routes.postLogin);
 app.post('/createaccount', routes.postCreateAccount);
@@ -84,6 +86,7 @@ app.post('/deleteaccount', routes.postDeleteAccount);
 app.post('/createtab', routes.postCreateTab);
 app.post('/updatetab', routes.postUpdateTab);
 app.post('/deletetab', routes.postDeleteTab);
+app.post('/createcategory', routes.postCreateCategory);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

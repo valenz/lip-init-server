@@ -2,6 +2,7 @@ var mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
 var Category = new Schema({
+	name: String,
     list: Array
 });
 

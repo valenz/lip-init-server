@@ -123,14 +123,14 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
 /**
  * GRID
  */
-#grid {
+.grid {
 	margin: 0 auto;
 	padding-left: 0;
 	text-align: center;
 	width: 800px;
 }
 
-#grid li {
+.grid li {
 	width: 182px;
 	vertical-align: top;
 	padding: 35px 15px 0px 15px;

@@ -4,17 +4,13 @@ block content
 
 	include ../includes/message
 
-	form.form(action='/createaccount' method='post' enctype='multipart/form-data')
+	form.form(action='/createcategory' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
 		h3= title
 
-		label| Username (required):
-		input.field(type='text' name='username' title='Username (required)' required='required' placeholder='Username (required)' autofocus)
-		label| Password (required):
-		input.field(type='password' name='password' title='Password (required)' required='required' placeholder='Password (required)')
-		label| Confirm Password (required):
-		input.field(type='password' name='confirm' title='Confirm Password (required)' required='required' placeholder='Confirm Password (required)')
+		label| Category Name (required):
+		input.field(type='text' name='categoryname' title='Category Name (required)' required='required' placeholder='Category Name (required)' autofocus)
 
-		button(title='Submit')| Create
-		a.cancel(href='..' title='Cancel')| Cancel
+		button#submit(title='Submit')| Create
+		a.cancel(href='/createtab' title='Cancel')| Cancel
 
 	include ../includes/foot
