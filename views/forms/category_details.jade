@@ -1,0 +1,24 @@
+extends ../includes/header
+
+block content
+
+  include ../includes/message
+
+  - var l = query.list.replace(new RegExp(',', 'g'), '\n');
+
+  form.form(action='/deletecategory' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+    h3= title
+
+    label| Name:
+    input.details(type='text' name='name' title=  query.name value= query.name readonly)
+    label| List:
+    textarea.details.list(name='list' readonly)= l
+
+    label| Identifier:
+    input.details(type='text' name='id' title=  query.id value= query.id readonly)
+    label| Revision:
+    input.details(type='text' name='rev' title=  query.rev value= query.rev readonly)
+
+    button(title='Submit')| Delete
+
+  include ../includes/foot

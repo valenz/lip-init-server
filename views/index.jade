@@ -6,15 +6,13 @@ block content
 
 	if grid && grid != 0
 		- for (var i = list.length; i >= 0 ; --i) {
-			if list[i]
-				h3= list[i]
-			else
-				h3| Unassigned
-			ul.grid(name= list[i] data-length=grid.length)
+			if list[i] && list[i].list.length > 0
+				h3.categoryHeadline= list[i].name
+			ul.grid(name= list[i] ? list[i].name : 'unassigned' data-length= list[i] ? list[i].list.length : 0)
 				each item, j in grid
-					if list[i] == item.category
+					if list[i] && list[i].name == item.category
 						+tabs(item._id, item.url, item.title, item.icon, item.name, item.category, item.check, j)
-					else if item.category == ''
+					else if !list[i] && !item.category
 						+tabs(item._id, item.url, item.title, item.icon, item.name, item.category, item.check, j)
 		- }
 

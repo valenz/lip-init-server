@@ -1,10 +1,55 @@
-var url = require('url')
-  , phantom = require('phantom')
-  , mongoose = require('mongoose')
+var Entities = require('html-entities').AllHtmlEntities
   , methods = require('../classes/methods/methods')
   , RenderObject = require('../classes/render')
-  , uploadPath = 'public/uploads/'
-  , page;
+  , pageInfo = require('webpage-info')
+  , mongoose = require('mongoose')
+  , webshot = require('webshot')
+  , url = require('url');
+
+var uploadPath = 'public/uploads/';
+var entities = new Entities();
+var options = {
+    screenSize: {
+      width: 720,
+      height: 405
+    },
+    shotSize: {
+      width: 720,
+      height: 405
+    },
+    phantomConfig: {
+      'config': 'config.json'
+      //'ignore-ssl-errors': 'true',
+      //'output-encoding': 'utf8',
+      //'ssl-protocol': 'tlsv1',
+      //'web-security': 'false'
+    },
+    siteType: 'url',
+    timeout: 10*1000, // 10 sec
+    renderDelay: 1000, // 1 sec
+    defaultWhiteBackground: true,
+    settings: {
+      javascriptEnabled: true,
+      XSSAuditingEnabled: true
+    },
+    // This callback is invoked when a web page was unable to load resource.
+    onResourceError: function(resourceError) {
+      console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
+      console.log('ON.RESOURCE.ERROR: Error code: '+ resourceError.errorCode +'. Description: '+ resourceError.errorString);
+    },
+    // This callback is invoked when a resource requested by the page timeout.
+    onResourceTimeout: function(request) {
+			console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
+    },
+    // This callback is invoked when a resource requested by the page is received (for every chuck if supported).
+    onResourceReceived: function(response) {
+			console.log('ON.RESOURCE.RECEIVED: Response (ID: #'+ response.id +', STAGE: "'+ response.stage +'"): '+ JSON.stringify(response));
+    },
+    // This callback is invoked when the page requests a resource.
+    onResourceRequested: function(requestData, networkRequest) {
+			console.log('ON.RESOURCE.REQUESTED: Request (ID: #'+ requestData.id+ '): '+ JSON.stringify(requestData));
+    }
+  };
 
 /**
  *********************************** GET ***********************************
@@ -14,20 +59,20 @@ var url = require('url')
  * Selects all documents in collection tab, sorted by the field whenCreated
  * in descending order and pass a local variable to the user page.
  * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  * @return {String} err
  */
 module.exports.index = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		mongoose.model('category').find(function(err, list) {
+		mongoose.model('category').find(function(err, category) {
 			if(err) return console.error(err);
 			var ro = new RenderObject();
 			ro.set({
 				title: 'Index',
 				grid: tab,
-				//list: list[0].list.sort(),
+				list: category,
 				user: req.user,
 				info: req.flash('info'),
 				error: req.flash('error'),
@@ -42,20 +87,20 @@ module.exports.index = function(req, res) {
  * Selects all documents in collection tab, sorted by the field whenCreated
  * in descending order and pass a local variable to the user page.
  * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  * @return {String} err
  */
 module.exports.user = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		mongoose.model('category').find(function(err, list) {
+		mongoose.model('category').find(function(err, category) {
 			if(err) return console.error(err);
 			var ro = new RenderObject();
 			ro.set({
 				title: req.user.username,
 				grid: tab,
-				//list: list[0].list.sort(),
+				list: category,
 				user: req.user,
 				info: req.flash('info'),
 				error: req.flash('error'),
@@ -70,7 +115,7 @@ module.exports.user = function(req, res) {
  * Selects all documents in collection tab and account, sorted by the field name
  * in ascending order and pass a local variable to the settings page.
  * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  * @return {String} err
  */
@@ -79,17 +124,21 @@ module.exports.settings = function(req, res) {
 		if(err) return console.error(err);
 		mongoose.model('account').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, acc) {
 			if(err) return console.error(err);
-			var ro = new RenderObject();
-			ro.set({
-				title: 'Settings',
-				accs: acc,
-				tabs: tab,
-				user: req.user,
-				info: req.flash('info'),
-				error: req.flash('error'),
-				success: req.flash('success')
-			});
-			res.render('sites/settings', ro.get());
+      mongoose.model('category').find(function(err, category) {
+        if(err) return console.error(err);
+        var ro = new RenderObject();
+        ro.set({
+          title: 'Settings',
+          list: category,
+          accs: acc,
+          tabs: tab,
+          user: req.user,
+          info: req.flash('info'),
+          error: req.flash('error'),
+          success: req.flash('success')
+        });
+        res.render('sites/settings', ro.get());
+      });
 		});
 	});
 };
@@ -97,7 +146,7 @@ module.exports.settings = function(req, res) {
 /**
  * Pass a local variable to the help page.
  * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  */
 module.exports.help = function(req, res) {
@@ -115,7 +164,7 @@ module.exports.help = function(req, res) {
 /**
  * Pass a local variable to the login form page.
  * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  */
 module.exports.login = function(req, res) {
@@ -133,7 +182,7 @@ module.exports.login = function(req, res) {
 /**
  * Calls the exported function logout in methods
  * and redirect to the given url.
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  */
 module.exports.logout = function(req, res) {
@@ -144,7 +193,7 @@ module.exports.logout = function(req, res) {
 /**
  * Pass a local variable to the create_account form page.
  * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  */
 module.exports.createAccount = function(req, res) {
@@ -162,7 +211,7 @@ module.exports.createAccount = function(req, res) {
 /**
  * Pass a local variable to the update_account form page.
  * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  */
 module.exports.updateAccount = function(req, res) {
@@ -181,7 +230,7 @@ module.exports.updateAccount = function(req, res) {
  * Selects all documents in collection category and pass a local variable to
  * the create_tab page. Get an array of flash messages by passing the keys to
  * req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  */
 module.exports.createTab = function(req, res) {
@@ -203,26 +252,30 @@ module.exports.createTab = function(req, res) {
 /**
  * Pass a local variable to the update_tab form page.
  * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  */
 module.exports.updateTab = function(req, res) {
-	var ro = new RenderObject();
-	ro.set({
-		title: 'Update Tab',
-		query: req.query,
-		user: req.user,
-		info: req.flash('info'),
-		error: req.flash('error'),
-		success: req.flash('success')
+	mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, list) {
+		if(err) return console.error(err);
+		var ro = new RenderObject();
+		ro.set({
+			title: 'Update Tab',
+			list: list,
+			query: req.query,
+			user: req.user,
+			info: req.flash('info'),
+			error: req.flash('error'),
+			success: req.flash('success')
+		});
+		res.render('forms/update_tab', ro.get());
 	});
-	res.render('forms/update_tab', ro.get());
 };
 
 /**
  * Pass a local variable to the create_category form page.
  * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  */
 module.exports.createCategory = function(req, res) {
@@ -240,7 +293,7 @@ module.exports.createCategory = function(req, res) {
 /**
  * Pass a local variable to the user_details form page.
  * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  */
 module.exports.userDetails = function(req, res) {
@@ -258,7 +311,7 @@ module.exports.userDetails = function(req, res) {
 /**
  * Pass a local variable to the tab_details form page.
  * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  */
 module.exports.tabDetails = function(req, res) {
@@ -275,13 +328,32 @@ module.exports.tabDetails = function(req, res) {
 };
 
 /**
+ * Pass a local variable to the category_details form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+module.exports.categoryDetails = function(req, res) {
+	var ro = new RenderObject();
+	ro.set({
+		title: 'Category Details',
+		query: req.query,
+		user: req.user,
+		info: req.flash('info'),
+		error: req.flash('error'),
+		success: req.flash('success')
+	});
+	res.render('forms/category_details', ro.get());
+};
+
+/**
  *********************************** POST ***********************************
  */
 
 /**
  * Sets a flash message by passing the key, followed by the value, to req.flash()
  * and redirect to the given url.
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  */
 module.exports.postLogin = function(req, res) {
@@ -293,7 +365,7 @@ module.exports.postLogin = function(req, res) {
 /**
  * Creates a new object with request parameters from the submitted form name attributes
  * and try to save the object to the collection account as a new document.
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  * @return {String} err
  */
@@ -330,8 +402,9 @@ module.exports.postCreateAccount = function(req, res) {
 };
 
 /**
- * TODO
- * @param {Object} req 
+ * Selects all documents in collection account with queried object
+ * and try to update the document from the collection.
+ * @param {Object} req
  * @param {Object} res
  * @return {String} err
  */
@@ -369,7 +442,7 @@ module.exports.postUpdateAccount = function(req, res) {
  * and try to remove the document from the collection.
  * Calls the exported function logout in methods
  * and redirect to the given url.
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  * @return {String} err
  */
@@ -402,106 +475,66 @@ module.exports.postDeleteAccount = function(req, res) {
  * Opens the given url and loads it to the page and provides the page status to the
  * function ('success' or 'fail'). Evaluates the given function in the
  * context of the web page and try to save the document to the collection.
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  * @return {String} err
  */
 module.exports.postCreateTab = function(req, res) {
 	console.log('CREATE.TAB: body request');
 	console.log(req.body);
-	page.open(req.body.address, function(stat) {
-		// Get title and icon from a webpage
-		page.evaluate(function() {
-			var data = new Object();
-			document.body.bgColor = '#F6F6F6';
-			data['title'] = document.title;
-			var icon = document.getElementsByTagName('link');
-			for(var i in icon) {
-				try {
-					if(icon[i].rel.toLowerCase().indexOf('icon') > -1) {
-						data['icon'] = icon[i].href;
-						return data;
-					}
-				} catch(e) {
-					data['icon'] = 'https://plus.google.com/_/favicon?domain_url=' + window.location.origin;
-					console.error(e.stack);
-					return data;
-				}
-			}
-		}, function(result) {
-			// Url is valid
-			var Tab = mongoose.model('tab');
-			if(stat == 'success') {
-				var data = new Tab({
-					name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(result.title, 42),
-					url: req.body.address,
-					title: result.title,
-					icon: result.icon,
-					category: req.body.category,
-					check: req.body.check ? true : false,
-					whoCreated: req.user.username,
-					whenCreated: new Date(),
-					whenUpdated: undefined
-				});
-			} else {
-				var data = new Tab({
-					name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(req.body.address, 42),
-					url: req.body.address,
-					title: req.body.address,
-					icon: '',
-					category: req.body.category,
-					check: req.body.check ? true : false,
-					whoCreated: req.user.username,
-					whenCreated: new Date(),
-					whenUpdated: undefined
-				});
-			}
-			console.log('CREATE.TAB: response ' + data);
-			try {
-				data.save(function(err, doc) {
-					if(err) {
-						req.flash('error', err);
-						res.redirect('/createtab');
-						return console.error(err);
-					} else {
-						
-						var query = new Object({ name: req.body.category });
-						mongoose.model('category').findOne(query, function(err, cat) {
-							if(err) return console.error(err);
-							data = cat, list = cat.list;
-							list.push(doc._id);
-							data.list = list;
-							try {
-								data.save(function(err, doc) {
-									if(err) {
-										req.flash('error', err);
-										res.redirect('/createtab');
-										return console.error(err);
-									}
-								});
-							} catch(e) {
-								console.error(e.stack);
-								res.redirect('/createtab');
-							}
-						});
-					
-						console.log('CREATE.TAB: url status ['+ stat +'] "'+ doc.name +'" has been created.');
-						// defines the rectangular area of the web page to be rasterized when page.render is invoked
-						page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
-						// sets the size of the viewport for the layout process
-						page.set('viewportSize', { width: 960, height: 540 });
-						// Renders the web page to an image buffer and saves it as the specified filename.
-						page.render(uploadPath+doc._id + '.png');
-						req.flash('success', 'Tab has been created successfully.');
-						res.redirect('/createtab');
-					}
-				});
-			} catch(e) {
-				console.error(e.stack);
-				res.redirect('/createtab');
-			}
-		}, 'title');
-	});
+
+  pageInfo.parse(req.body.address, function(info) {
+    if(info.error) {
+      req.flash('error', info.error.toString());
+      res.redirect('/createtab');
+      return console.error(info.error);
+    } else {
+      var title = entities.decode(info.title);
+      var Tab = mongoose.model('tab');
+      var data = new Tab({
+        name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42),
+        url: req.body.address,
+        title: title,
+        icon: info.favicon,
+        category: req.body.category,
+        check: req.body.check ? true : false,
+        whoCreated: req.user.username,
+        whenCreated: new Date(),
+        whenUpdated: undefined
+      });
+      console.log('CREATE.TAB: response ' + data);
+      try {
+        data.save(function(err, doc) {
+          if(err) return console.error(err);
+          webshot(req.body.address, uploadPath+doc._id+'.png', options, function(err) {
+            if(err) return console.error(err);
+            var query = new Object({ name: req.body.category });
+            mongoose.model('category').findOne(query, function(err, cat) {
+              if(err) {
+                req.flash('error', err);
+                res.redirect('/createtab');
+                return console.error(err);
+              }
+              var data = methods.paste(doc._id, cat);
+              data.save(function(err, doc) {
+                if(err) {
+                  req.flash('error', err);
+                  res.redirect('/createtab');
+                  return console.error(err);
+                }
+              });
+            });
+            console.log('CREATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been created.');
+            req.flash('success', 'Tab has been created successfully.');
+            res.redirect('/createtab');
+          });
+        });
+      } catch(e) {
+        console.error(e.stack);
+        res.redirect('/createtab');
+      }
+    }
+  }, 10*1000); // 10 sec timeout
 };
 
 /**
@@ -510,87 +543,86 @@ module.exports.postCreateTab = function(req, res) {
  * Opens the given url and loads it to the page and provides the page status to the
  * function ('success' or 'fail'). Evaluates the given function in the
  * context of the web page and try to save the document to the collection.
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  * @return {String} err
  */
 module.exports.postUpdateTab = function(req, res) {
 	console.log('UPDATE.TAB: body request');
 	console.log(req.body);
-	var query = new Object({ _id: req.body.id });
+
+  var query = new Object({ _id: req.body.id });
 	mongoose.model('tab').findOne(query, function(err, doc) {
 		if(err) return console.error(err);
-		page.open(req.body.address, function(stat) {
-			// Get title and icon from a webpage
-			page.evaluate(function() {
-				var data = new Object();
-				document.body.bgColor = '#F6F6F6';
-				data['title'] = document.title;
-				var icon = document.getElementsByTagName('link');
-				for(var i in icon) {
-					try {
-						if(icon[i].rel.toLowerCase().indexOf('icon') > -1) {
-							data['icon'] = icon[i].href;
-							return data;
-						}
-					} catch(e) {
-						data['icon'] = 'https://plus.google.com/_/favicon?domain_url=' + window.location.origin;
-						console.error(e.stack);
-						return data;
-					}
-				}
-			}, function(result) {
-				// Url is valid
-				if(stat == 'success') {
-					doc.name = req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(result.title, 42);
-					doc.url = req.body.address;
-					doc.title = result.title;
-					doc.icon = result.icon;
-					doc.category = req.body.category;
-					doc.check = req.body.check ? true : false;
-					doc.whoCreated = doc.whoCreated;
-					doc.whoUpdated = req.user.username;
-					doc.whenCreated = doc.whenCreated;
-					doc.whenUpdated = new Date();
-					doc.__v = doc.__v + 1;
-				} else {
-					doc.name = req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(req.body.address, 20);
-					doc.url = req.body.address;
-					doc.title = req.body.address;
-					doc.icon = '';
-					doc.category = req.body.category;
-					doc.check = req.body.check;
-					doc.whoCreated = doc.whoCreated;
-					doc.whoUpdated = req.user.username;
-					doc.whenCreated = doc.whenCreated;
-					doc.whenUpdated = new Date();
-					doc.__v = doc.__v + 1;
-				}
-				console.log('UPDATE.TAB: response ' + doc);
-				try {
-					doc.save(function(err, doc) {
-						if(err) {
-							req.flash('error', err);
-							res.redirect('/');
-							return console.error(err);
-						} else {
-							console.log('UPDATE.TAB: url status['+ stat +'] "'+ doc.name +'" has been updated.');
-							// defines the rectangular area of the web page to be rasterized when page.render is invoked
-							page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
-							// sets the size of the viewport for the layout process
-							page.set('viewportSize', { width: 960, height: 540 });
-							// Renders the web page to an image buffer and saves it as the specified filename.
-							page.render(uploadPath+req.body.id + '.png');
-							req.flash('success', 'Tab has been updated successfully.');
-							req.body.check ? res.redirect('/user') : res.redirect('/');
-						}
-					});
-				} catch(e) {
-					console.error(e.stack);
-					res.redirect('/');
-				}
-			}, 'title');
-		});
+
+    pageInfo.parse(req.body.address, function(info) {
+      if(info.error) {
+        req.flash('error', info.error.toString());
+        res.redirect('/');
+        return console.error(info.error);
+      } else {
+
+        var query = new Object({ name: doc.category });
+        mongoose.model('category').findOne(query, function(err, cat) {
+          if(err) return console.error(err);
+          var data = methods.detach(doc._id, cat);
+          data.save(function(err, doc) {
+            if(err) {
+              req.flash('error', err);
+              res.redirect('/updatetab');
+              return console.error(err);
+            }
+          });
+        });
+
+        var query = new Object({ name: req.body.category });
+        mongoose.model('category').findOne(query, function(err, cat) {
+          if(err) return console.error(err);
+          var data = methods.paste(doc._id, cat);
+          data.save(function(err, doc) {
+            if(err) {
+              req.flash('error', err);
+              res.redirect('/updatetab');
+              return console.error(err);
+            }
+          });
+        });
+
+        var title = entities.decode(info.title);
+        doc.name = req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42);
+        doc.url = req.body.address;
+        doc.title = title;
+        doc.icon = info.icon;
+        doc.category = req.body.category;
+        doc.check = req.body.check ? true : false;
+        doc.whoCreated = doc.whoCreated;
+        doc.whoUpdated = req.user.username;
+        doc.whenCreated = doc.whenCreated;
+        doc.whenUpdated = new Date();
+        doc.__v = doc.__v + 1;
+
+        console.log('UPDATE.TAB: response ' + doc);
+
+        try {
+          doc.save(function(err, doc) {
+            if(err) return console.error(err);
+            webshot(req.body.address, uploadPath+doc._id+'.png', options, function(err) {
+              if(err) {
+                req.flash('error', err);
+                res.redirect('/updatetab');
+                return console.error(err);
+              }
+              console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
+              req.flash('success', 'Tab has been updated successfully.');
+              req.body.check ? res.redirect('/user') : res.redirect('/');
+            });
+          });
+        } catch(e) {
+          console.error(e.stack);
+          res.redirect('/updatetab');
+        }
+      }
+    }, 10*1000); // 10 sec timeout
 	});
 };
 
@@ -599,45 +631,61 @@ module.exports.postUpdateTab = function(req, res) {
  * and try to remove the document from the collection.
  * Calls the exported function clear in methods
  * and redirect to the given url.
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  * @return {String} err
  */
 module.exports.postDeleteTab = function(req, res) {
 	var query = new Object({ _id: req.body.id });
-	mongoose.model('tab').findOne(query, function(err, doc) {
+	mongoose.model('tab').findOne(query, function(err, tab) {
 		if(err) return console.error(err);
-		try {
-			doc.remove(function(err) {
-				if(err) {
-					req.flash('error', err);
-					res.redirect('back');
-					return console.error(err);
-				} else {
-					methods.clear(req);
-					console.log('DELETE.TAB: '+ doc +' was deleted successfully.');
-					req.flash('success', 'Tab has been deleted successfully.');
-					res.redirect('back');
+		query = new Object({ name: tab.category });
+		mongoose.model('category').findOne(query, function(err, cat) {
+			if(err) return console.error(err);
+			try {
+				if(tab.category) {
+          var data = methods.detach(req.body.id, cat);
+					data.save(function(err, doc) {
+						if(err) {
+							req.flash('error', err);
+							res.redirect('back');
+							return console.error(err);
+						}
+					});
 				}
-			});
-		} catch(e) {
-			console.error(e.stack);
-			res.redirect('back');
-		}
+				tab.remove(function(err, doc) {
+					if(err) {
+						req.flash('error', err);
+						res.redirect('back');
+						return console.error(err);
+					} else {
+						methods.clear(req);
+						console.log('DELETE.TAB: '+ doc +' was deleted successfully.');
+						req.flash('success', 'Tab has been deleted successfully.');
+						res.redirect('back');
+					}
+				});
+			} catch(e) {
+				console.error(e.stack);
+				res.redirect('back');
+			}
+		});
 	});
 };
 
 /**
  * Creates a new Category with request parameters from the submitted form name
  * attributes and try to save the object to the collection category list.
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  * @return {String} err
  */
 module.exports.postCreateCategory = function(req, res) {
+	var category = req.body.categoryname;
+	category = category.substr(0, 1).toUpperCase() + category.substr(1, category.length);
 	var Category = mongoose.model('category');
 	var data = new Category({
-		name: req.body.categoryname,
+		name: category,
 		list: new Array()
 	});
 	try {
@@ -647,7 +695,7 @@ module.exports.postCreateCategory = function(req, res) {
 				res.redirect('/createcategory');
 				return console.error(err);
 			} else {
-				console.log('CREATE.CATEGORY: Array "'+ doc +'" has been created.');
+				console.log('CREATE.CATEGORY: "'+ doc.name +'" ('+ doc._id +') has been created.');
 				req.flash('success', 'Category has been created successfully.');
 				res.redirect('/createcategory');
 			}
@@ -664,7 +712,7 @@ module.exports.postCreateCategory = function(req, res) {
  * the request is authenticated (typically via a persistent login session),
  * the request will proceed.  Otherwise, the user will be redirected to the
  * login form page.
- * @param {Object} req 
+ * @param {Object} req
  * @param {Object} res
  * @param {Function} next
  * @return {return} next
@@ -673,39 +721,3 @@ module.exports.ensureAuthenticated = function(req, res, next) {
 	if (req.isAuthenticated()) return next();
 	res.redirect('/login');
 }
-
-/**
- * Makes new PhantomJS WebPage objects. Pass command line switches to the
- * phantomjs process by specifying additional args.
- * @param {Object} ph
- */
-phantom.create('--config=config.json', function(ph) {
-	ph.createPage(function(p) {
-		p.set('settings.javascriptEnabled', true); // default: true
-		p.set('settings.resourceTimeout', 60 * 1000); // 60 seconds
-
-		console.log('PHANTOM.PROCESS.PID:', ph.process.pid);
-		page = p;
-
-		// This callback is invoked when the page requests a resource.
-		page.onResourceRequested = function(requestData, networkRequest) {
-			console.log('ON.RESOURCE.REQUESTED: Request (ID: #' + requestData.id + '): ' + JSON.stringify(requestData));
-		};
-
-		// This callback is invoked when a resource requested by the page is received (for every chuck if supported).
-		page.onResourceReceived = function(response) {
-			console.log('ON.RESOURCE.RECEIVED: Response (ID: #' + response.id + ', STAGE: "' + response.stage + '"): ' + JSON.stringify(response));
-		};
-
-		// This callback is invoked when a resource requested by the page timeout.
-		page.onResourceTimeout = function(request) {
-			console.log('ON.RESOURCE.TIMEOUT: Response (ID: #' + request.id + '): ' + JSON.stringify(request));
-		};
-
-		// This callback is invoked when a web page was unable to load resource.
-		page.set('onResourceError', function(resourceError) {
-			console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #' + resourceError.id + ' URL: ' + resourceError.url + ')');
-			console.log('ON.RESOURCE.ERROR: Error code: ' + resourceError.errorCode + '. Description: ' + resourceError.errorString);
-		});
-	});
-});

@@ -11,7 +11,7 @@ var flash = require('connect-flash');
 var http = require('http');
 var expressSession = require('express-session');
 var multer = require('multer');
-  
+
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -70,23 +70,26 @@ app.get('/help', routes.help);
 app.get('/login', routes.login);
 app.get('/logout', routes.logout);
 app.get('/settings', routes.settings);
-app.get('/settings/:id?', routes.ensureAuthenticated, routes.tabDetails);
+app.get('/settings/tab/:id?', routes.ensureAuthenticated, routes.tabDetails);
+app.get('/settings/category/:id?', routes.ensureAuthenticated, routes.categoryDetails);
 app.get('/user', routes.ensureAuthenticated, routes.user);
-app.get('/user/details', routes.ensureAuthenticated, routes.userDetails);
-app.get('/createaccount', routes.createAccount); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
-app.get('/updateaccount', routes.ensureAuthenticated, routes.updateAccount);
+app.get('/settings/user/details', routes.ensureAuthenticated, routes.userDetails);
+app.get('/settings/createaccount', routes.createAccount); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
+app.get('/settings/user/updateaccount', routes.ensureAuthenticated, routes.updateAccount);
 app.get('/createtab', routes.ensureAuthenticated, routes.createTab);
 app.get('/updatetab', routes.ensureAuthenticated, routes.updateTab);
 app.get('/createcategory', /*routes.ensureAuthenticated,*/ routes.createCategory);
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), routes.postLogin);
+app.post('/createcategory', routes.postCreateCategory);
+//app.post('/updatecategory', routes.postUpdateCategory);
+//app.post('/deletecategory', routes.postDeleteCategory);
 app.post('/createaccount', routes.postCreateAccount);
 app.post('/updateaccount', routes.postUpdateAccount);
 app.post('/deleteaccount', routes.postDeleteAccount);
 app.post('/createtab', routes.postCreateTab);
 app.post('/updatetab', routes.postUpdateTab);
 app.post('/deletetab', routes.postDeleteTab);
-app.post('/createcategory', routes.postCreateCategory);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

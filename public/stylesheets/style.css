@@ -127,7 +127,7 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
 	margin: 0 auto;
 	padding-left: 0;
 	text-align: center;
-	width: 800px;
+	width: 900px;
 }
 
 .grid li {
@@ -139,6 +139,14 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
 	*display: inline;
 	display: -moz-inline-stack;
 	display: inline-block;
+}
+
+.categoryHeadline {
+  margin-bottom: -17.55px;
+  text-align: center;
+  width: auto;
+	font-weight: lighter;
+  font-size: 19px;
 }
 
 li .icon {
@@ -194,7 +202,7 @@ li a {
 	z-index: 10000;
 	width: 13px;
 	height: 15px;
-	top: 3px;
+	top: 2px;
 	right: 16px;
 	background-color: transparent;
 	border: 0px solid transparent;
@@ -326,6 +334,11 @@ form input[type=checkbox] {
 	resize: none;
 }
 
+.list {
+    height: 79px;
+	resize: none;
+}
+
 form span {
 	/*float: right;*/
 }
@@ -445,6 +458,9 @@ form button:active {
 #rangeMsg {
 	font-size: 12px;
 }
+#rangeFac {
+  padding-left: 5px;
+}
 #rangeLeft {
 	padding: 6px 0 0 0;
 	width: 50px;
@@ -490,7 +506,7 @@ form button:active {
 a .item {
 	text-decoration: none;
 	color: #FFF9E5;
-	
+
 }
 .item:hover {
 	border: 1px #FFF9E5 solid;

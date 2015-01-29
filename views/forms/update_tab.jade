@@ -12,6 +12,18 @@ block content
 		label| Name (optional):
 		input.field(type='text' name='name' title='Name (optional)' value= query.name placeholder='Name (optional)')
 		input(type='hidden' name='id' value= query.id)
+		a#detailsLink(title='Create a category' href='/createcategory')
+			| Create Category
+		label| Category (optional)
+		select.category(name='category')
+			if(list.length > 0)
+				each category in list
+					if category.name == query.category
+						option(value= category.name selected)= category.name
+					else
+						option(value= category.name)= category.name
+			else
+				option(selected disabled)| No category created yet
 		.check
 			span| Admin only?
 			input(type='checkbox', name='check', title='Access only for admins', checked= query.check ? true : false)

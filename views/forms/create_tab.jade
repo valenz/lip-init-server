@@ -15,9 +15,11 @@ block content
 			| Create Category
 		label| Category (optional):
 		select.category(name='category')
-			option(selected disabled)| Choose a category
-			each category in list
-				option(value= category.name)= category.name
+			if(list.length > 0)
+				each category in list
+					option(value= category.name)= category.name
+			else
+				option(selected disabled)| No category created yet
 		.check
 			span| Admin only?
 			input(type='checkbox' name='check' title='Access only for admins')
