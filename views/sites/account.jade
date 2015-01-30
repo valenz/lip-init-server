@@ -21,7 +21,7 @@ block content
 							.name= name
 							input(type='hidden' name='id' value=id data-check='checked')
 						if user
-							a(href='/updatetab/?id='+id+'&url='+url+'&name='+name+'&category='+category+'&check='+check)
+							a(href='/settings/tab/update/?id='+id+'&url='+url+'&name='+name+'&category='+category+'&check='+check)
 								i.btn-edit.fa.fa-pencil(title='Edit tab')
 							button.btn-del
 								i.fa.fa-times(title='Remove tab')

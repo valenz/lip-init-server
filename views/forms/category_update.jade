@@ -1,0 +1,18 @@
+extends ../includes/header
+
+block content
+
+	include ../includes/message
+
+	form.form(action='/updatecategory' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+		h3= title
+
+		a#detailsLink(title='Category details and delete' href='/settings/category/details/?name='+query.name+'&list='+query.list+'&id='+query.id+'&rev='+query.rev)
+			| Details
+		label| Category Name (required):
+		input.field(type='text' name='categoryname' title='Category Name (required)' value= query.name required='required' placeholder='Category Name (required)' autofocus)
+
+		button#submit(title='Submit')| Update
+		a.cancel(href='/settings' title='Cancel')| Cancel
+
+	include ../includes/foot

@@ -83,7 +83,7 @@ module.exports.index = function(req, res) {
  * @param {Object} res
  * @return {String} err
  */
-module.exports.user = function(req, res) {
+module.exports.account = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
 		mongoose.model('category').find(function(err, category) {
@@ -98,7 +98,7 @@ module.exports.user = function(req, res) {
 				error: req.flash('error'),
 				success: req.flash('success')
 			});
-			res.render('sites/user', ro.get());
+			res.render('sites/account', ro.get());
 		});
 	});
 };
@@ -183,7 +183,7 @@ module.exports.logout = function(req, res) {
 };
 
 /**
- * Pass a local variable to the create_account form page.
+ * Pass a local variable to the account_create form page.
  * Get an array of flash messages by passing the keys to req.flash().
  * @param {Object} req
  * @param {Object} res
@@ -197,11 +197,11 @@ module.exports.createAccount = function(req, res) {
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
-	res.render('forms/create_account', ro.get());
+	res.render('forms/account_create', ro.get());
 };
 
 /**
- * Pass a local variable to the update_account form page.
+ * Pass a local variable to the account_update form page.
  * Get an array of flash messages by passing the keys to req.flash().
  * @param {Object} req
  * @param {Object} res
@@ -215,12 +215,12 @@ module.exports.updateAccount = function(req, res) {
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
-	res.render('forms/update_account', ro.get());
+	res.render('forms/account_update', ro.get());
 };
 
 /**
  * Selects all documents in collection category and pass a local variable to
- * the create_tab page. Get an array of flash messages by passing the keys to
+ * the tab_create page. Get an array of flash messages by passing the keys to
  * req.flash().
  * @param {Object} req
  * @param {Object} res
@@ -237,12 +237,12 @@ module.exports.createTab = function(req, res) {
 			error: req.flash('error'),
 			success: req.flash('success')
 		});
-		res.render('forms/create_tab', ro.get());
+		res.render('forms/tab_create', ro.get());
 	});
 };
 
 /**
- * Pass a local variable to the update_tab form page.
+ * Pass a local variable to the tab_update form page.
  * Get an array of flash messages by passing the keys to req.flash().
  * @param {Object} req
  * @param {Object} res
@@ -260,12 +260,12 @@ module.exports.updateTab = function(req, res) {
 			error: req.flash('error'),
 			success: req.flash('success')
 		});
-		res.render('forms/update_tab', ro.get());
+		res.render('forms/tab_update', ro.get());
 	});
 };
 
 /**
- * Pass a local variable to the create_category form page.
+ * Pass a local variable to the category_create form page.
  * Get an array of flash messages by passing the keys to req.flash().
  * @param {Object} req
  * @param {Object} res
@@ -279,7 +279,26 @@ module.exports.createCategory = function(req, res) {
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
-	res.render('forms/create_category', ro.get());
+	res.render('forms/category_create', ro.get());
+};
+
+/**
+ * Pass a local variable to the category_update form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+module.exports.updateCategory = function(req, res) {
+	var ro = new RenderObject();
+	ro.set({
+		title: 'Update Category',
+		query: req.query,
+		user: req.user,
+		info: req.flash('info'),
+		error: req.flash('error'),
+		success: req.flash('success')
+	});
+	res.render('forms/category_update', ro.get());
 };
 
 /**
@@ -297,7 +316,7 @@ module.exports.userDetails = function(req, res) {
 		error: req.flash('error'),
 		success: req.flash('success')
 	});
-	res.render('forms/user_details', ro.get());
+	res.render('forms/account_details', ro.get());
 };
 
 /**
@@ -351,7 +370,7 @@ module.exports.categoryDetails = function(req, res) {
 module.exports.postLogin = function(req, res) {
 	console.log('LOGIN: '+ req.user.username +' has been logged in.');
 	req.flash('success', 'You are logged in. Welcome, '+req.user.username+'!');
-	res.redirect('/user');
+	res.redirect('/account');
 };
 
 /**
@@ -375,12 +394,12 @@ module.exports.postCreateAccount = function(req, res) {
 			Account.register(new Account(user), req.body.password, function(err) {
 				if(err) {
 					req.flash('error', err.message);
-					res.redirect('/settings/createaccount');
+					res.redirect('/settings/account/create');
 					return console.error(err);
 				} else {
 					console.log('CREATE.ACCOUNT: '+ user.username +' has been created successfully.');
 					req.flash('success', 'Account has been created successfully.');
-					res.redirect('/settings/createaccount');
+					res.redirect('/settings/account/create');
 				}
 			});
 		} catch(e) {
@@ -388,7 +407,7 @@ module.exports.postCreateAccount = function(req, res) {
 		}
 	} else {
 		req.flash('info', 'Account could not be created. Passwords did not match.');
-		res.redirect('/settings/createaccount');
+		res.redirect('/settings/account/create');
 	}
 };
 
@@ -411,12 +430,12 @@ module.exports.postUpdateAccount = function(req, res) {
 					doc.save(function(err, doc) {
 						if(err) {
 							req.flash('error', err);
-							res.redirect('/settings/user/updateaccount');
+							res.redirect('/settings/account/update');
 							return console.error(err);
 						} else {
 							console.log('UPDATE.ACCOUNT: '+ doc.username +' was updated successfully.');
 							req.flash('success', 'Your new password has been set successfully.');
-							res.redirect('/settings/user/updateaccount');
+							res.redirect('/settings/account/update');
 						}
 					});
 				} catch(e) {
@@ -424,7 +443,11 @@ module.exports.postUpdateAccount = function(req, res) {
 				}
 			});
 		});
-	}
+  } else {
+    console.log('UPDATE.ACCOUNT: Account could not be updated. Passwords did not match.');
+    req.flash('info', 'Account could not be updated. Passwords did not match.');
+    res.redirect('/settings/account/update');
+  }
 };
 
 /**
@@ -476,7 +499,7 @@ module.exports.postCreateTab = function(req, res) {
   pageInfo.parse(url, function(info) {
     if(info.error) {
       req.flash('error', info.error.toString());
-      res.redirect('/settings/createtab');
+      res.redirect('/settings/tab/create');
       return console.error(info.error);
     } else {
       var title = info.title ? entities.decode(info.title) : url;
@@ -502,7 +525,7 @@ module.exports.postCreateTab = function(req, res) {
             mongoose.model('category').findOne(query, function(err, cat) {
               if(err) {
                 req.flash('error', err);
-                res.redirect('/settings/createtab');
+                res.redirect('/settings/tab/create');
                 return console.error(err);
               }
               var data = methods.paste(doc._id, cat);
@@ -510,7 +533,7 @@ module.exports.postCreateTab = function(req, res) {
                 data.save(function(err, doc) {
                   if(err) {
                     req.flash('error', err);
-                    res.redirect('/settings/createtab');
+                    res.redirect('/settings/tab/create');
                     return console.error(err);
                   }
                 });
@@ -518,7 +541,7 @@ module.exports.postCreateTab = function(req, res) {
             });
             console.log('CREATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been created.');
             req.flash('success', 'Tab has been created successfully.');
-            res.redirect('/settings/createtab');
+            res.redirect('/settings/tab/create');
           });
         });
       } catch(e) {
@@ -550,7 +573,7 @@ module.exports.postUpdateTab = function(req, res) {
     pageInfo.parse(url, function(info) {
       if(info.error) {
         req.flash('error', info.error.toString());
-        res.redirect('/settings/updatetab');
+        res.redirect('/settings/tab/update');
         return console.error(info.error);
       } else {
 
@@ -562,7 +585,7 @@ module.exports.postUpdateTab = function(req, res) {
             data.save(function(err, doc) {
               if(err) {
                 req.flash('error', err);
-                res.redirect('/settings/updatetab');
+                res.redirect('/settings/tab/update');
                 return console.error(err);
               }
             });
@@ -578,7 +601,7 @@ module.exports.postUpdateTab = function(req, res) {
               data.save(function(err, doc) {
                 if(err) {
                   req.flash('error', err);
-                  res.redirect('/settings/updatetab');
+                  res.redirect('/settings/tab/update');
                   return console.error(err);
                 }
               });
@@ -612,7 +635,7 @@ module.exports.postUpdateTab = function(req, res) {
               }
               console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
               req.flash('success', 'Tab has been updated successfully.');
-              req.body.check ? res.redirect('/user') : res.redirect('/');
+              req.body.check ? res.redirect('/account') : res.redirect('/');
             });
           });
         } catch(e) {
@@ -688,17 +711,22 @@ module.exports.postCreateCategory = function(req, res) {
 		data.save(function(err, doc) {
 			if(err) {
 				req.flash('error', err);
-				res.redirect('/settings/createcategory');
+				res.redirect('/settings/category/create');
 				return console.error(err);
 			} else {
 				console.log('CREATE.CATEGORY: "'+ doc.name +'" ('+ doc._id +') has been created.');
 				req.flash('success', 'Category has been created successfully.');
-				res.redirect('/settings/createcategory');
+				res.redirect('/settings/category/create');
 			}
 		});
 	} catch(e) {
 		console.error(e.stack);
 	}
+};
+
+module.exports.postUpdateCategory = function(req, res) {
+  req.flash('info', 'Category has been updated successfully very soon');
+  res.redirect('/settings');
 };
 
 module.exports.postDeleteCategory = function(req, res) {
