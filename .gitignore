@@ -16,5 +16,6 @@ node_modules/
 # misc
 README.html
 *.tgz
+*.log
 logs/
 docs/

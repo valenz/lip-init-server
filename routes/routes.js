@@ -25,7 +25,7 @@ var options = {
       //'web-security': 'false'
     },
     siteType: 'url',
-    timeout: 10*1000, // 10 sec
+    timeout: 60*1000, // 60 sec
     renderDelay: 1000, // 1 sec
     defaultWhiteBackground: true,
     settings: {
@@ -40,14 +40,6 @@ var options = {
     // This callback is invoked when a resource requested by the page timeout.
     onResourceTimeout: function(request) {
 			console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
-    },
-    // This callback is invoked when a resource requested by the page is received (for every chuck if supported).
-    onResourceReceived: function(response) {
-			console.log('ON.RESOURCE.RECEIVED: Response (ID: #'+ response.id +', STAGE: "'+ response.stage +'"): '+ JSON.stringify(response));
-    },
-    // This callback is invoked when the page requests a resource.
-    onResourceRequested: function(requestData, networkRequest) {
-			console.log('ON.RESOURCE.REQUESTED: Request (ID: #'+ requestData.id+ '): '+ JSON.stringify(requestData));
     }
   };
 
@@ -516,13 +508,15 @@ module.exports.postCreateTab = function(req, res) {
                 return console.error(err);
               }
               var data = methods.paste(doc._id, cat);
-              data.save(function(err, doc) {
-                if(err) {
-                  req.flash('error', err);
-                  res.redirect('/createtab');
-                  return console.error(err);
-                }
-              });
+              if(data) {
+                data.save(function(err, doc) {
+                  if(err) {
+                    req.flash('error', err);
+                    res.redirect('/createtab');
+                    return console.error(err);
+                  }
+                });
+              }
             });
             console.log('CREATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been created.');
             req.flash('success', 'Tab has been created successfully.');
@@ -534,7 +528,7 @@ module.exports.postCreateTab = function(req, res) {
         res.redirect('/createtab');
       }
     }
-  }, 10*1000); // 10 sec timeout
+  }, 60*1000); // 60 sec timeout
 };
 
 /**
@@ -566,33 +560,39 @@ module.exports.postUpdateTab = function(req, res) {
         mongoose.model('category').findOne(query, function(err, cat) {
           if(err) return console.error(err);
           var data = methods.detach(doc._id, cat);
-          data.save(function(err, doc) {
-            if(err) {
-              req.flash('error', err);
-              res.redirect('/updatetab');
-              return console.error(err);
-            }
-          });
+          if(data) {
+            data.save(function(err, doc) {
+              if(err) {
+                req.flash('error', err);
+                res.redirect('/updatetab');
+                return console.error(err);
+              }
+            });
+          }
         });
 
-        var query = new Object({ name: req.body.category });
-        mongoose.model('category').findOne(query, function(err, cat) {
-          if(err) return console.error(err);
-          var data = methods.paste(doc._id, cat);
-          data.save(function(err, doc) {
-            if(err) {
-              req.flash('error', err);
-              res.redirect('/updatetab');
-              return console.error(err);
+        if(!req.body.check) {
+          var query = new Object({ name: req.body.category });
+          mongoose.model('category').findOne(query, function(err, cat) {
+            if(err) return console.error(err);
+            var data = methods.paste(doc._id, cat);
+            if(data) {
+              data.save(function(err, doc) {
+                if(err) {
+                  req.flash('error', err);
+                  res.redirect('/updatetab');
+                  return console.error(err);
+                }
+              });
             }
           });
-        });
+        }
 
         var title = entities.decode(info.title);
         doc.name = req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42);
         doc.url = req.body.address;
         doc.title = title;
-        doc.icon = info.icon;
+        doc.icon = info.favicon;
         doc.category = req.body.category;
         doc.check = req.body.check ? true : false;
         doc.whoCreated = doc.whoCreated;
@@ -622,7 +622,7 @@ module.exports.postUpdateTab = function(req, res) {
           res.redirect('/updatetab');
         }
       }
-    }, 10*1000); // 10 sec timeout
+    }, 60*1000); // 60 sec timeout
 	});
 };
 
@@ -643,8 +643,8 @@ module.exports.postDeleteTab = function(req, res) {
 		mongoose.model('category').findOne(query, function(err, cat) {
 			if(err) return console.error(err);
 			try {
-				if(tab.category) {
           var data = methods.detach(req.body.id, cat);
+				if(data) {
 					data.save(function(err, doc) {
 						if(err) {
 							req.flash('error', err);

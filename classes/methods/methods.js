@@ -29,6 +29,7 @@ module.exports.shorter = function(str, n) {
  * @return {data} Object
  */
 module.exports.detach = function(str, obj) {
+  if(!obj) return false;
   var data = obj;
   var list = obj.list;
   var index = list.indexOf(str);
@@ -45,6 +46,7 @@ module.exports.detach = function(str, obj) {
  * @return {data} Object
  */
 module.exports.paste = function(str, obj) {
+  if(!obj) return false;
   var data = obj;
   var list = obj.list;
   list.push(str);
