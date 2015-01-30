@@ -76,14 +76,14 @@ app.get('/user', routes.ensureAuthenticated, routes.user);
 app.get('/settings/user/details', routes.ensureAuthenticated, routes.userDetails);
 app.get('/settings/createaccount', routes.createAccount); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/user/updateaccount', routes.ensureAuthenticated, routes.updateAccount);
-app.get('/createtab', routes.ensureAuthenticated, routes.createTab);
+app.get('/settings/createtab', routes.ensureAuthenticated, routes.createTab);
 app.get('/updatetab', routes.ensureAuthenticated, routes.updateTab);
-app.get('/createcategory', /*routes.ensureAuthenticated,*/ routes.createCategory);
+app.get('/settings/createcategory', /*routes.ensureAuthenticated,*/ routes.createCategory);
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), routes.postLogin);
 app.post('/createcategory', routes.postCreateCategory);
 //app.post('/updatecategory', routes.postUpdateCategory);
-//app.post('/deletecategory', routes.postDeleteCategory);
+app.post('/deletecategory', routes.postDeleteCategory);
 app.post('/createaccount', routes.postCreateAccount);
 app.post('/updateaccount', routes.postUpdateAccount);
 app.post('/deleteaccount', routes.postDeleteAccount);
