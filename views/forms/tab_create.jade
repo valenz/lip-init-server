@@ -17,6 +17,7 @@ block content
 		select.category(name='category')
 			if(list.length > 0)
 				each category in list
+					option(selected disabled)| Choose a category
 					option(value= category.name)= category.name
 			else
 				option(selected disabled)| No category created yet
