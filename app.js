@@ -5,17 +5,13 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
-//var session = require('cookie-session');
-var bodyParser = require('body-parser');
 
 var pkg = require('./package');
 var flash = require('connect-flash');
 var http = require('http');
 var expressSession = require('express-session');
-//var errorHandler = require('errorhandler');
 var multer = require('multer');
-  
+
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -34,9 +30,6 @@ app.set('view options', { layout: false });
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(multer());
 app.use(morgan('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 
 app.use(expressSession({
 	resave: false, // don't save session if unmodified
@@ -55,6 +48,7 @@ app.use(passport.session());
 // Configure passport-local to use account model for authentication
 var Tab = require('./models/tab');
 var Account = require('./models/account');
+var Category = require('./models/category');
 passport.use(new LocalStrategy(Account.authenticate()));
 
 passport.serializeUser(Account.serializeUser());
@@ -76,15 +70,20 @@ app.get('/help', routes.help);
 app.get('/login', routes.login);
 app.get('/logout', routes.logout);
 app.get('/settings', routes.settings);
-app.get('/settings/:id?', routes.ensureAuthenticated, routes.tabDetails);
+app.get('/settings/tab/:id?', routes.ensureAuthenticated, routes.tabDetails);
+app.get('/settings/category/:id?', routes.ensureAuthenticated, routes.categoryDetails);
 app.get('/user', routes.ensureAuthenticated, routes.user);
-app.get('/user/details', routes.ensureAuthenticated, routes.userDetails);
-app.get('/createaccount', routes.createAccount); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
-app.get('/updateaccount', routes.ensureAuthenticated, routes.updateAccount);
+app.get('/settings/user/details', routes.ensureAuthenticated, routes.userDetails);
+app.get('/settings/createaccount', routes.createAccount); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
+app.get('/settings/user/updateaccount', routes.ensureAuthenticated, routes.updateAccount);
 app.get('/createtab', routes.ensureAuthenticated, routes.createTab);
 app.get('/updatetab', routes.ensureAuthenticated, routes.updateTab);
+app.get('/createcategory', /*routes.ensureAuthenticated,*/ routes.createCategory);
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), routes.postLogin);
+app.post('/createcategory', routes.postCreateCategory);
+//app.post('/updatecategory', routes.postUpdateCategory);
+//app.post('/deletecategory', routes.postDeleteCategory);
 app.post('/createaccount', routes.postCreateAccount);
 app.post('/updateaccount', routes.postUpdateAccount);
 app.post('/deleteaccount', routes.postDeleteAccount);
@@ -94,7 +93,7 @@ app.post('/deletetab', routes.postDeleteTab);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-	var err = new Error('Not Found');
+	var err = new Error('Failed to load resource: the server responded with a status of 404 (Not Found)');
 	err.status = 404;
 	next(err);
 });
@@ -104,26 +103,30 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
+	app.enable('verbose errors');
 	app.use(function(err, req, res, next) {
 		res.status(err.status || 500);
 		console.error(err);
 		res.render('index', {
-			error: err.message,
-			info: err
+			fallover: err.message,
+			message: JSON.stringify(err)
 		});
 	});
 }
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-	res.status(err.status || 500);
-	console.error(err);
-	res.render('index', {
-		error: err.message,
-		info: {}
+if (app.get('env') === 'production') {
+	app.disable('verbose errors');
+	app.use(function(err, req, res, next) {
+		res.status(err.status || 500);
+		console.error(err);
+		res.render('index', {
+			fallover: err.message,
+			message: JSON.stringify({})
+		});
 	});
-});
+}
 
 /**
  * Fires the server.

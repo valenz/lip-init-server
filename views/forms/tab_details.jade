@@ -7,8 +7,8 @@ block content
 	form.form(action='/deletetab' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
 		h3= title
 
-		a(href='../../uploads/'+query.id+'.png')
-			img(src='../../uploads/'+query.id+'.png' width='250px')
+		a(href='../../../uploads/'+query.id+'.png')
+			img(src='../../../uploads/'+query.id+'.png' width='250px')
 
 		#detailsForm
 			label| Name:
@@ -19,6 +19,8 @@ block content
 			input.details(type='text' name='title' title=  query.title value= query.title readonly)
 			label| Icon:
 			input.details(type='text' name='icon' title=  query.icon value= query.icon readonly)
+			label| Category:
+			input.details(type='text' name='category' title=  query.category value= query.category readonly)
 			label| Admin View:
 			input.details(type='text' name='check' title=  query.check value= query.check readonly)
 
