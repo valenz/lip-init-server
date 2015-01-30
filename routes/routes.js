@@ -479,7 +479,7 @@ module.exports.postCreateTab = function(req, res) {
       res.redirect('/createtab');
       return console.error(info.error);
     } else {
-      var title = info.title ? entities.decode(info.title) : req.body.address;
+      var title = info.title ? entities.decode(info.title) : url;
       var Tab = mongoose.model('tab');
       var data = new Tab({
         name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42),
@@ -541,12 +541,13 @@ module.exports.postCreateTab = function(req, res) {
 module.exports.postUpdateTab = function(req, res) {
 	console.log('UPDATE.TAB: body request');
 	console.log(req.body);
+  var url = urlparse(req.body.address).normalize().toString();
 
   var query = new Object({ _id: req.body.id });
 	mongoose.model('tab').findOne(query, function(err, doc) {
 		if(err) return console.error(err);
 
-    pageInfo.parse(req.body.address, function(info) {
+    pageInfo.parse(url, function(info) {
       if(info.error) {
         req.flash('error', info.error.toString());
         res.redirect('/');
@@ -585,7 +586,7 @@ module.exports.postUpdateTab = function(req, res) {
           });
         }
 
-        var title = info.title ? entities.decode(info.title) : req.body.address;
+        var title = info.title ? entities.decode(info.title) : url;
         doc.name = req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42);
         doc.url = req.body.address;
         doc.title = title;
@@ -603,7 +604,7 @@ module.exports.postUpdateTab = function(req, res) {
         try {
           doc.save(function(err, doc) {
             if(err) return console.error(err);
-            webshot(req.body.address, uploadPath+doc._id+'.png', options, function(err) {
+            webshot(url, uploadPath+doc._id+'.png', options, function(err) {
               if(err) {
                 req.flash('error', err);
                 res.redirect('/updatetab');
