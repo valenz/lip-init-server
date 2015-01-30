@@ -77,7 +77,7 @@ app.get('/settings/user/details', routes.ensureAuthenticated, routes.userDetails
 app.get('/settings/createaccount', routes.createAccount); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/user/updateaccount', routes.ensureAuthenticated, routes.updateAccount);
 app.get('/settings/createtab', routes.ensureAuthenticated, routes.createTab);
-app.get('/updatetab', routes.ensureAuthenticated, routes.updateTab);
+app.get('/settings/updatetab', routes.ensureAuthenticated, routes.updateTab);
 app.get('/settings/createcategory', /*routes.ensureAuthenticated,*/ routes.createCategory);
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), routes.postLogin);
