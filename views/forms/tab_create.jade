@@ -15,9 +15,9 @@ block content
 			| Create Category
 		label| Category (optional):
 		select.category(name='category')
+			option(selected disabled)| Choose a category
 			if(list.length > 0)
 				each category in list
-					option(selected disabled)| Choose a category
 					option(value= category.name)= category.name
 			else
 				option(selected disabled)| No category created yet
