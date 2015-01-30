@@ -19,6 +19,7 @@ module.exports.logout = function(req, res) {
  * @return {str} String
  */
 module.exports.shorter = function(str, n) {
+  if(!str) return false;
 	return str.length > n ? str.substring(0, n)+'...' : str;
 };
 

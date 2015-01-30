@@ -3,8 +3,8 @@ var Entities = require('html-entities').AllHtmlEntities
   , RenderObject = require('../classes/render')
   , pageInfo = require('webpage-info')
   , mongoose = require('mongoose')
-  , webshot = require('webshot')
-  , url = require('url');
+  , urlparse = require('urlparse')
+  , webshot = require('webshot');
 
 var uploadPath = 'public/uploads/';
 var entities = new Entities();
@@ -385,7 +385,6 @@ module.exports.postCreateAccount = function(req, res) {
 			});
 		} catch(e) {
 			console.error(e.stack);
-			res.redirect('/createaccount');
 		}
 	} else {
 		req.flash('info', 'Account could not be created. Passwords did not match.');
@@ -422,7 +421,6 @@ module.exports.postUpdateAccount = function(req, res) {
 					});
 				} catch(e) {
 					console.error(e.stack);
-					res.redirect('/updateaccount');
 				}
 			});
 		});
@@ -457,7 +455,6 @@ module.exports.postDeleteAccount = function(req, res) {
 			});
 		} catch(e) {
 			console.error(e.stack);
-			res.redirect('/');
 		}
 	});
 };
@@ -474,14 +471,15 @@ module.exports.postDeleteAccount = function(req, res) {
 module.exports.postCreateTab = function(req, res) {
 	console.log('CREATE.TAB: body request');
 	console.log(req.body);
+  var url = urlparse(req.body.address).normalize().toString();
 
-  pageInfo.parse(req.body.address, function(info) {
+  pageInfo.parse(url, function(info) {
     if(info.error) {
       req.flash('error', info.error.toString());
       res.redirect('/createtab');
       return console.error(info.error);
     } else {
-      var title = entities.decode(info.title);
+      var title = info.title ? entities.decode(info.title) : req.body.address;
       var Tab = mongoose.model('tab');
       var data = new Tab({
         name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42),
@@ -498,7 +496,7 @@ module.exports.postCreateTab = function(req, res) {
       try {
         data.save(function(err, doc) {
           if(err) return console.error(err);
-          webshot(req.body.address, uploadPath+doc._id+'.png', options, function(err) {
+          webshot(url, uploadPath+doc._id+'.png', options, function(err) {
             if(err) return console.error(err);
             var query = new Object({ name: req.body.category });
             mongoose.model('category').findOne(query, function(err, cat) {
@@ -525,7 +523,6 @@ module.exports.postCreateTab = function(req, res) {
         });
       } catch(e) {
         console.error(e.stack);
-        res.redirect('/createtab');
       }
     }
   }, 60*1000); // 60 sec timeout
@@ -588,7 +585,7 @@ module.exports.postUpdateTab = function(req, res) {
           });
         }
 
-        var title = entities.decode(info.title);
+        var title = info.title ? entities.decode(info.title) : req.body.address;
         doc.name = req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42);
         doc.url = req.body.address;
         doc.title = title;
@@ -619,7 +616,6 @@ module.exports.postUpdateTab = function(req, res) {
           });
         } catch(e) {
           console.error(e.stack);
-          res.redirect('/updatetab');
         }
       }
     }, 60*1000); // 60 sec timeout
@@ -667,7 +663,6 @@ module.exports.postDeleteTab = function(req, res) {
 				});
 			} catch(e) {
 				console.error(e.stack);
-				res.redirect('back');
 			}
 		});
 	});
@@ -702,7 +697,6 @@ module.exports.postCreateCategory = function(req, res) {
 		});
 	} catch(e) {
 		console.error(e.stack);
-		res.redirect('/createcategory');
 	}
 };
 
