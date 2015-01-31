@@ -35,4 +35,4 @@ Finally open your web browser and type:
 
 To create an account go to:
 
-	http://localhost:9002/createaccount
+	http://localhost:9002/settings/account/create

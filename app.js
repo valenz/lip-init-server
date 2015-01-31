@@ -70,20 +70,21 @@ app.get('/help', routes.help);
 app.get('/login', routes.login);
 app.get('/logout', routes.logout);
 app.get('/settings', routes.settings);
-app.get('/settings/tab/:id?', routes.ensureAuthenticated, routes.tabDetails);
-app.get('/settings/category/:id?', routes.ensureAuthenticated, routes.categoryDetails);
-app.get('/user', routes.ensureAuthenticated, routes.user);
-app.get('/settings/user/details', routes.ensureAuthenticated, routes.userDetails);
-app.get('/settings/createaccount', routes.createAccount); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
-app.get('/settings/user/updateaccount', routes.ensureAuthenticated, routes.updateAccount);
-app.get('/createtab', routes.ensureAuthenticated, routes.createTab);
-app.get('/updatetab', routes.ensureAuthenticated, routes.updateTab);
-app.get('/createcategory', /*routes.ensureAuthenticated,*/ routes.createCategory);
+app.get('/account', routes.ensureAuthenticated, routes.account);
+app.get('/settings/tab/create', routes.ensureAuthenticated, routes.createTab);
+app.get('/settings/tab/update', routes.ensureAuthenticated, routes.updateTab);
+app.get('/settings/tab/details/:id?', routes.ensureAuthenticated, routes.tabDetails);
+app.get('/settings/account/create', routes.createAccount); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
+app.get('/settings/account/update', routes.ensureAuthenticated, routes.updateAccount);
+app.get('/settings/account/details/:id?', routes.ensureAuthenticated, routes.userDetails);
+app.get('/settings/category/create', routes.ensureAuthenticated, routes.createCategory);
+app.get('/settings/category/update', routes.ensureAuthenticated, routes.updateCategory);
+app.get('/settings/category/details/:id?', routes.ensureAuthenticated, routes.categoryDetails);
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), routes.postLogin);
 app.post('/createcategory', routes.postCreateCategory);
-//app.post('/updatecategory', routes.postUpdateCategory);
-//app.post('/deletecategory', routes.postDeleteCategory);
+app.post('/updatecategory', routes.postUpdateCategory);
+app.post('/deletecategory', routes.postDeleteCategory);
 app.post('/createaccount', routes.postCreateAccount);
 app.post('/updateaccount', routes.postUpdateAccount);
 app.post('/deleteaccount', routes.postDeleteAccount);

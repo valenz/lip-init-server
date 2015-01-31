@@ -7,7 +7,7 @@ block content
 	form.form(action='/updateaccount' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
 		h3= title
 
-		a#detailsLink(title='Account details and delete' href='details')
+		a#detailsLink(title='Account details and delete' href='/settings/account/details')
 			| Details
 		label| New Password (required):
 		input.field(type='password' name='newPassword' title='New Password (required)' required='required' placeholder='New Password (required)' autofocus)

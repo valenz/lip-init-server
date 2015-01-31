@@ -12,10 +12,11 @@ block content
 		label| Name (optional):
 		input.field(type='text' name='name' title='Name (optional)' value= query.name placeholder='Name (optional)')
 		input(type='hidden' name='id' value= query.id)
-		a#detailsLink(title='Create a category' href='/createcategory')
+		a#detailsLink(title='Create a category' href='/settings/category/create')
 			| Create Category
 		label| Category (optional)
 		select.category(name='category')
+			option(selected disabled)| Choose a category
 			if(list.length > 0)
 				each category in list
 					if category.name == query.category
@@ -29,6 +30,6 @@ block content
 			input(type='checkbox', name='check', title='Access only for admins', checked= query.check ? true : false)
 
 		button#submit(title='Submit')| Update
-		a.cancel(href='..' title='Cancel')| Cancel
+		a.cancel(href='/' title='Cancel')| Cancel
 
 	include ../includes/foot

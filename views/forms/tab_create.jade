@@ -11,10 +11,11 @@ block content
 		input.field(type='url' name='address' title='Address (required)' required='required' placeholder='Address (required)' autofocus)
 		label| Name (optional):
 		input.field(type='text' name='name' title='Name (optional)' placeholder='Name (optional)')
-		a#detailsLink(title='Create a category' href='/createcategory')
+		a#detailsLink(title='Create a category' href='/settings/category/create')
 			| Create Category
 		label| Category (optional):
 		select.category(name='category')
+			option(selected disabled)| Choose a category
 			if(list.length > 0)
 				each category in list
 					option(value= category.name)= category.name
@@ -25,6 +26,6 @@ block content
 			input(type='checkbox' name='check' title='Access only for admins')
 
 		button#submit(title='Submit')| Create
-		a.cancel(href='..' title='Cancel')| Cancel
+		a.cancel(href='/' title='Cancel')| Cancel
 
 	include ../includes/foot
