@@ -11,6 +11,7 @@ block content
 			| Details
 		label| Category Name (required):
 		input.field(type='text' name='categoryname' title='Category Name (required)' value= query.name required='required' placeholder='Category Name (required)' autofocus)
+		input(type='hidden' name='id' value= query.id)
 
 		button#submit(title='Submit')| Update
 		a.cancel(href='/settings' title='Cancel')| Cancel

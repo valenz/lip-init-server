@@ -725,8 +725,78 @@ module.exports.postCreateCategory = function(req, res) {
 };
 
 module.exports.postUpdateCategory = function(req, res) {
-  req.flash('info', 'Category has been updated successfully very soon');
-  res.redirect('/settings');
+  console.log(req.body);
+
+  var query = new Object({ _id: req.body.id });
+	mongoose.model('category').findOne(query, function(err, cat) {
+		if(err) return console.error(err);
+    var category = req.body.categoryname;
+    category = category.substr(0, 1).toUpperCase() + category.substr(1, category.length);
+    if(category && cat.name !== category) {
+      cat.name = category;
+      try {
+        cat.save(function(err, doc) {
+          if(err) {
+            req.flash('error', err);
+            res.redirect('/settings');
+            return console.error(err);
+          } else {
+            console.log('UPDATED.CATEGORY: "'+ doc.name +'" ('+ doc._id +') has been updated.');
+            req.flash('success', 'Category has been updated successfully.');
+            res.redirect('/settings');
+          }
+        });
+      } catch(e) {
+        console.error(e.stack);
+      }
+      for(var i = 0; i < cat.list.length; i++) {
+        query = new Object({ _id: cat.list[i] });
+        mongoose.model('tab').findOne(query, function(err, tab) {
+          if(err) return console.error(err);
+          tab.category = category;
+          try {
+            tab.save(function(err, doc) {
+              if(err) {
+                req.flash('error', err);
+                res.redirect('/settings');
+                return console.error(err);
+              }
+            });
+          } catch(e) {
+            console.error(e.stack);
+          }
+        });
+      }
+    } else {
+      console.log('UPDATED.CATEGORY: "'+ cat.name +'" ('+ cat._id +') still same. Nothing updated.');
+      req.flash('info', 'Category "'+ cat.name +'" still same. Nothing updated. Please choose a different name.');
+      res.redirect('/settings');
+    }
+  });
+
+  /*var category = req.body.categoryname;
+	category = category.substr(0, 1).toUpperCase() + category.substr(1, category.length);
+	var Category = mongoose.model('category');
+	var data = new Category({
+		name: category,
+		list: new Array()
+	});
+	try {
+		data.save(function(err, doc) {
+			if(err) {
+				req.flash('error', err.toString());
+				res.redirect('/settings/category/update');
+				return console.error(err);
+      } else {
+
+        req.flash('success', 'Category has been updated successfully.');
+        res.redirect('/settings');
+
+      }
+		});
+	} catch(e) {
+		console.error(e.stack);
+	}*/
 };
 
 /**
@@ -759,17 +829,21 @@ module.exports.postDeleteCategory = function(req, res) {
         }
       });
     }
-    cat.remove(function(err, doc) {
-      if(err) {
-        req.flash('error', err);
-        res.redirect('back');
-        return console.error(err);
-      } else {
-        console.log('DELETE.CATEGORY: '+ cat +' has been deleted.');
-        req.flash('success', 'Category has been deleted successfully.');
-        res.redirect('/settings');
-      }
-    });
+    try {
+      cat.remove(function(err, doc) {
+        if(err) {
+          req.flash('error', err);
+          res.redirect('back');
+          return console.error(err);
+        } else {
+          console.log('DELETE.CATEGORY: '+ cat.name +' has been deleted.');
+          req.flash('success', 'Category has been deleted successfully.');
+          res.redirect('/settings');
+        }
+      });
+    } catch(e) {
+      console.error(e.stack);
+    }
   });
 };
 
