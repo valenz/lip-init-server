@@ -114,7 +114,7 @@ module.exports.account = function(req, res) {
 module.exports.settings = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		mongoose.model('account').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, acc) {
+		mongoose.model('account').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, account) {
 			if(err) return console.error(err);
       mongoose.model('category').find(function(err, category) {
         if(err) return console.error(err);
@@ -122,7 +122,7 @@ module.exports.settings = function(req, res) {
         ro.set({
           title: 'Settings',
           list: category,
-          accs: acc,
+          accs: account,
           tabs: tab,
           user: req.user,
           info: req.flash('info'),
@@ -226,12 +226,12 @@ module.exports.updateAccount = function(req, res) {
  * @param {Object} res
  */
 module.exports.createTab = function(req, res) {
-	mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, list) {
+	mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
 		if(err) return console.error(err);
 		var ro = new RenderObject();
 		ro.set({
 			title: 'Create Tab',
-			list: list,
+			list: category,
 			user: req.user,
 			info: req.flash('info'),
 			error: req.flash('error'),
@@ -248,12 +248,12 @@ module.exports.createTab = function(req, res) {
  * @param {Object} res
  */
 module.exports.updateTab = function(req, res) {
-	mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, list) {
+	mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
 		if(err) return console.error(err);
 		var ro = new RenderObject();
 		ro.set({
 			title: 'Update Tab',
-			list: list,
+			list: category,
 			query: req.query,
 			user: req.user,
 			info: req.flash('info'),
@@ -391,15 +391,15 @@ module.exports.postCreateAccount = function(req, res) {
 	var Account = mongoose.model('account');
 	if(req.body.password === req.body.confirm) {
 		try {
-			Account.register(new Account(user), req.body.password, function(err) {
+			Account.register(new Account(user), req.body.password, function(err, doc) {
 				if(err) {
 					req.flash('error', err.message);
 					res.redirect('/settings/account/create');
 					return console.error(err);
 				} else {
-					console.log('CREATE.ACCOUNT: '+ user.username +' has been created successfully.');
+					console.log('CREATE.ACCOUNT: '+ doc.username +' has been created successfully.');
 					req.flash('success', 'Account has been created successfully.');
-					res.redirect('/settings/account/create');
+					res.redirect('/settings');
 				}
 			});
 		} catch(e) {
@@ -435,7 +435,7 @@ module.exports.postUpdateAccount = function(req, res) {
 						} else {
 							console.log('UPDATE.ACCOUNT: '+ doc.username +' was updated successfully.');
 							req.flash('success', 'Your new password has been set successfully.');
-							res.redirect('/settings/account/update');
+							res.redirect('/settings');
 						}
 					});
 				} catch(e) {
@@ -554,7 +554,7 @@ module.exports.postCreateTab = function(req, res) {
 /**
  * Updated the given Tab with request parameters from the submitted form name
  * attributes.
- * Opens the given url and loads it to the page and provides the page status to the
+ * Opens the given url, loads it to the page and provides the page status to the
  * function ('success' or 'fail'). Evaluates the given function in the
  * context of the web page and try to save the document to the collection.
  * @param {Object} req
@@ -565,18 +565,16 @@ module.exports.postUpdateTab = function(req, res) {
 	console.log('UPDATE.TAB: body request');
 	console.log(req.body);
   var url = urlparse(req.body.address).normalize().toString();
-
   var query = new Object({ _id: req.body.id });
 	mongoose.model('tab').findOne(query, function(err, doc) {
 		if(err) return console.error(err);
-
+    var oldAddress = doc.url;
     pageInfo.parse(url, function(info) {
       if(info.error) {
         req.flash('error', info.error.toString());
         res.redirect('/settings/tab/update');
         return console.error(info.error);
       } else {
-
         var query = new Object({ name: doc.category });
         mongoose.model('category').findOne(query, function(err, cat) {
           if(err) return console.error(err);
@@ -591,7 +589,6 @@ module.exports.postUpdateTab = function(req, res) {
             });
           }
         });
-
         if(!req.body.check) {
           var query = new Object({ name: req.body.category });
           mongoose.model('category').findOne(query, function(err, cat) {
@@ -608,7 +605,6 @@ module.exports.postUpdateTab = function(req, res) {
             }
           });
         }
-
         var title = info.title ? entities.decode(info.title) : url;
         doc.name = req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42);
         doc.url = req.body.address;
@@ -621,22 +617,27 @@ module.exports.postUpdateTab = function(req, res) {
         doc.whenCreated = doc.whenCreated;
         doc.whenUpdated = new Date();
         doc.__v = doc.__v + 1;
-
         console.log('UPDATE.TAB: response ' + doc);
-
         try {
           doc.save(function(err, doc) {
             if(err) return console.error(err);
-            webshot(url, uploadPath+doc._id+'.png', options, function(err) {
-              if(err) {
-                req.flash('error', err);
-                res.redirect('/settings/updatetab');
-                return console.error(err);
-              }
+            if(oldAddress != req.body.address) {
+              webshot(url, uploadPath+doc._id+'.png', options, function(err) {
+                if(err) {
+                  req.flash('error', err);
+                  res.redirect('/settings/updatetab');
+                  return console.error(err);
+                }
+                console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
+                req.flash('success', 'Tab has been updated successfully.');
+                req.body.check ? res.redirect('/account') : res.redirect('/');
+              });
+            } else {
               console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
+              req.flash('info', 'Web address was the same. Therefore, no new thumbnail has been saved.');
               req.flash('success', 'Tab has been updated successfully.');
               req.body.check ? res.redirect('/account') : res.redirect('/');
-            });
+            }
           });
         } catch(e) {
           console.error(e.stack);
@@ -663,7 +664,7 @@ module.exports.postDeleteTab = function(req, res) {
 		mongoose.model('category').findOne(query, function(err, cat) {
 			if(err) return console.error(err);
 			try {
-          var data = methods.detach(req.body.id, cat);
+        var data = methods.detach(req.body.id, cat);
 				if(data) {
 					data.save(function(err, doc) {
 						if(err) {
