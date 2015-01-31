@@ -6,7 +6,7 @@ block content
 
   - var l = query.list.replace(new RegExp(',', 'g'), '\n');
 
-  form.form(action='/deletecategory' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+  form.form(action='/settings/category/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
     h3= title
 
     label| Name:

@@ -74,23 +74,23 @@ app.get('/account', routes.ensureAuthenticated, routes.account);
 app.get('/settings/tab/create', routes.ensureAuthenticated, routes.createTab);
 app.get('/settings/tab/update', routes.ensureAuthenticated, routes.updateTab);
 app.get('/settings/tab/details/:id?', routes.ensureAuthenticated, routes.tabDetails);
-app.get('/settings/account/create', routes.createAccount); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
+app.get('/settings/account/create', /*routes.ensureAuthenticated,*/ routes.createAccount); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/account/update', routes.ensureAuthenticated, routes.updateAccount);
 app.get('/settings/account/details/:id?', routes.ensureAuthenticated, routes.userDetails);
-app.get('/settings/category/create', routes.ensureAuthenticated, routes.createCategory);
+app.get('/settings/category/create', /*routes.ensureAuthenticated,*/ routes.createCategory);
 app.get('/settings/category/update', routes.ensureAuthenticated, routes.updateCategory);
 app.get('/settings/category/details/:id?', routes.ensureAuthenticated, routes.categoryDetails);
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), routes.postLogin);
-app.post('/createcategory', routes.postCreateCategory);
-app.post('/updatecategory', routes.postUpdateCategory);
-app.post('/deletecategory', routes.postDeleteCategory);
-app.post('/createaccount', routes.postCreateAccount);
-app.post('/updateaccount', routes.postUpdateAccount);
-app.post('/deleteaccount', routes.postDeleteAccount);
-app.post('/createtab', routes.postCreateTab);
-app.post('/updatetab', routes.postUpdateTab);
-app.post('/deletetab', routes.postDeleteTab);
+app.post('/settings/category/create', routes.postCreateCategory);
+app.post('/settings/category/update', routes.postUpdateCategory);
+app.post('/settings/category/delete', routes.postDeleteCategory);
+app.post('/settings/account/create', routes.postCreateAccount);
+app.post('/settings/account/update', routes.postUpdateAccount);
+app.post('/settings/account/delete', routes.postDeleteAccount);
+app.post('/settings/tab/create', routes.postCreateTab);
+app.post('/settings/tab/update', routes.postUpdateTab);
+app.post('/settings/tab/delete', routes.postDeleteTab);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -4,7 +4,7 @@ block content
 
 	include ../includes/message
 
-	form.form(action='/createtab' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+	form.form(action='/settings/tab/create' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
 		h3= title
 
 		label| Address (required):
