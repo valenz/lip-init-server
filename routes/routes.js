@@ -724,6 +724,15 @@ module.exports.postCreateCategory = function(req, res) {
 	}
 };
 
+/**
+ * Selects all documents in collection category with queried object,
+ * updated the category of all associated tabs and
+ * try to save the new document from the collection.
+ * Given category must be different from the old one.
+ * @param {Object} req
+ * @param {Object} res
+ * @return {String} err
+ */
 module.exports.postUpdateCategory = function(req, res) {
   console.log(req.body);
 
@@ -773,30 +782,6 @@ module.exports.postUpdateCategory = function(req, res) {
       res.redirect('/settings');
     }
   });
-
-  /*var category = req.body.categoryname;
-	category = category.substr(0, 1).toUpperCase() + category.substr(1, category.length);
-	var Category = mongoose.model('category');
-	var data = new Category({
-		name: category,
-		list: new Array()
-	});
-	try {
-		data.save(function(err, doc) {
-			if(err) {
-				req.flash('error', err.toString());
-				res.redirect('/settings/category/update');
-				return console.error(err);
-      } else {
-
-        req.flash('success', 'Category has been updated successfully.');
-        res.redirect('/settings');
-
-      }
-		});
-	} catch(e) {
-		console.error(e.stack);
-	}*/
 };
 
 /**
