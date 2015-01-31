@@ -729,6 +729,14 @@ module.exports.postUpdateCategory = function(req, res) {
   res.redirect('/settings');
 };
 
+/**
+ * Selects all documents in collection category with queried object,
+ * removes the category of all associated tabs and
+ * try to remove the document from the collection.
+ * @param {Object} req
+ * @param {Object} res
+ * @return {String} err
+ */
 module.exports.postDeleteCategory = function(req, res) {
   var query = new Object({ _id: req.body.id });
 	mongoose.model('category').findOne(query, function(err, cat) {
