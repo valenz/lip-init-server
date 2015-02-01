@@ -1,7 +1,7 @@
 {
   "name": "tabgrid",
   "description": "Jump page with NodeJS",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/valenz/tabgrid.git"
@@ -17,6 +17,7 @@
     "connect-flash": "^0.1.1",
     "express": "^4.11.1",
     "express-session": "^1.10.1",
+    "html-entities": "^1.1.2",
     "jade": "^1.9.1",
     "mongoose": "^3.8.22",
     "morgan": "^1.5.1",
