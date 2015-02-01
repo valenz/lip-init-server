@@ -6,17 +6,17 @@ block content
 
 	if grid && grid.length != 0
 		- for (var i = list.length; i >= 0 ; --i) {
-			if list[i] && list[i].list.length > 0
-				h3.categoryHeadline= list[i].name
-					span.length| (
-						= list[i] ? list[i].list.length : grid.length-assigned-admintabs
-						| )
-			else if !list[i] && grid.length-assigned-admintabs > 0
-				h3.categoryHeadline| unassigned
-					span.length| (
-						= grid.length-assigned-admintabs
-						| )
 			ul.grid(name= list[i] ? list[i].name : 'unassigned' data-length= list[i] ? list[i].list.length : grid.length-assigned-admintabs)
+				if list[i] && list[i].list.length > 0
+					h3.categoryHeadline= list[i].name
+						span.length| (
+							= list[i] ? list[i].list.length : grid.length-assigned-admintabs
+							| )
+				else if !list[i] && grid.length-assigned-admintabs > 0
+					h3.categoryHeadline| unassigned
+						span.length| (
+							= grid.length-assigned-admintabs
+							| )
 				each item, j in grid
 					if list[i] && list[i].name == item.category
 						+tabs(item._id, item.url, item.title, item.icon, item.name, item.category, item.check, j)
