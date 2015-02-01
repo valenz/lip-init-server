@@ -5,7 +5,7 @@ block content
 	include ../includes/message
 
 	form.form(action='/settings/account/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-		h3= title
+		h3.formHeadline= title
 
 		label| Username:
 		input.details(type='text' name='username' title= user.username value= user.username readonly)

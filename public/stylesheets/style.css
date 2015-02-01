@@ -248,6 +248,17 @@ li a {
 /**
  * FORM
  */
+.formHeadline {
+	padding-bottom: 7px;
+	border-bottom: 1px #17313A solid;
+	text-align: center;
+  width: 103%;
+	font-weight: bold;
+  font-size: 30px;
+  color: #304651;
+  text-shadow: 0 -1px 1px #131D20, 0 1px 1px #57818E;
+}
+
 .form {
  	width: 500px;
  	margin: 0 auto;
@@ -430,13 +441,13 @@ form button:active {
  */
 #adjustments {
 	margin: 0 auto;
-	padding: 25px 0px 25px 0px;
+	padding: 0 0 25px 0;
 	width: 800px;
 }
 
 #adjustments h3 {
 	padding-bottom: 7px;
-	border-bottom:1px #17313A solid;
+	border-bottom: 1px #17313A solid;
   text-align: center;
   width: auto;
 	font-weight: bold;

@@ -5,7 +5,7 @@ block content
 	include ../includes/message
 
 	form.form(action='/login' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-		h3= title
+		h3.formHeadline= title
 
 		label| Username:
 		input.field(type='text' name='username' title='Username' required='required' placeholder='Username' autofocus)
