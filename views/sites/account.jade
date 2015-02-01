@@ -4,7 +4,7 @@ block content
 
 	include ../includes/message
 
-	if grid && grid != 0
+	if grid && grid.length != 0
 		ul.grid(name= list[i] ? list[i].name : 'unassigned' data-length= admintabs)
 			each item, j in grid
 				+tabs(item._id, item.url, item.title, item.icon, item.name, item.category, item.check, j)
@@ -19,7 +19,7 @@ block content
 								img.pic(src='uploads/'+ id +'.png')
 							img.icon(src= icon)
 							.name= name
-							input(type='hidden' name='id' value= id data-check='checked')
+							input(type='hidden' name='id' value= id data-check='checked' disabled)
 						if user
 							a(href='/settings/tab/update/?id='+ id +'&url='+ url +'&name='+ name +'&category='+ category +'&check='+ check )
 								i.btn-edit.fa.fa-pencil(title='Edit tab')

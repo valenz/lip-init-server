@@ -22,8 +22,9 @@ body {
 	font-family: 'Audiowide', cursive;
 	font-size: 58px;
 	background-color: transparent;
-	color: #FFFFFF;
 	text-decoration: none;
+  color: #FFF9E5;
+  text-shadow: 0 -1px 2px #FFE799, 0 1px 2px #FFFFFF;
 }
 
 #logo {
@@ -133,7 +134,7 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
 .grid li {
 	width: 182px;
 	vertical-align: top;
-	padding: 35px 15px 0px 15px;
+	padding: 25px 15px 0px 15px;
 	zoom: 1;
 	position: relative;
 	*display: inline;
@@ -142,15 +143,17 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
 }
 
 .categoryHeadline {
-  margin-bottom: -17.55px;
+  margin: 10px 0 -10px 0;
   text-align: center;
   width: auto;
-	font-weight: lighter;
-  font-size: 20px;
+	font-weight: bold;
+  font-size: 40px;
+  color: #304651;
+  text-shadow: 0 -1px 1px #131D20, 0 1px 1px #57818E;
 }
 
 .length {
-  font-size: 12px;
+  font-size: 21px;
   padding: 0 5px 0 5px;
 }
 
@@ -184,7 +187,7 @@ li .pic, li .img-container {
 	position: relative;
 	top: -10px;
 	font-size: 15px;
-	font-weight: normal;
+	font-weight: lighter;
 }
 
 li a {
@@ -196,7 +199,7 @@ li a {
 	color: #17313A;
 	display: none;
 	z-index: 10000;
-	top: 39px;
+	top: 29px;
 	left: 21px;
 }
 
@@ -207,7 +210,7 @@ li a {
 	z-index: 10000;
 	width: 13px;
 	height: 15px;
-	top: 2px;
+	top: -8px;
 	right: 16px;
 	background-color: transparent;
 	border: 0px solid transparent;
