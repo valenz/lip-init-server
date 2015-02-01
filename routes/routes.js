@@ -384,6 +384,8 @@ module.exports.postLogin = function(req, res) {
  * @return {String} err
  */
 module.exports.postCreateAccount = function(req, res) {
+	console.log('CREATE.ACCOUNT: body request');
+	console.log(req.body.username);
 	// The passport-local-mongoose package automatically takes care of salting and hashing the password.
 	var user = new Object({
 		username: req.body.username,
@@ -422,6 +424,8 @@ module.exports.postCreateAccount = function(req, res) {
  * @return {String} err
  */
 module.exports.postUpdateAccount = function(req, res) {
+	console.log('UPDATE.ACCOUNT: body request');
+	console.log(req.body);
 	var query = new Object({ _id: req.user._id });
 	if(req.body.newPassword === req.body.confirm) {
 		mongoose.model('account').findOne(query, function(err, doc) {
@@ -463,6 +467,8 @@ module.exports.postUpdateAccount = function(req, res) {
  * @return {String} err
  */
 module.exports.postDeleteAccount = function(req, res) {
+	console.log('DELETE.ACCOUNT: body request');
+	console.log(req.body);
 	var query = new Object({ _id: req.body.id });
 	mongoose.model('account').findOne(query, function(err, doc) {
 		if(err) return console.error(err);
@@ -498,7 +504,6 @@ module.exports.postCreateTab = function(req, res) {
 	console.log('CREATE.TAB: body request');
 	console.log(req.body);
   var url = urlparse(req.body.address).normalize().toString();
-
   pageInfo.parse(url, function(info) {
     if(info.error) {
       req.flash('error', info.error.toString());
@@ -659,7 +664,8 @@ module.exports.postUpdateTab = function(req, res) {
  * @return {String} err
  */
 module.exports.postDeleteTab = function(req, res) {
-  console.log(req.body);
+	console.log('DELETE.TAB: body request');
+	console.log(req.body);
 	var query = new Object({ _id: req.body.id });
 	mongoose.model('tab').findOne(query, function(err, tab) {
 		if(err) return console.error(err);
@@ -704,6 +710,8 @@ module.exports.postDeleteTab = function(req, res) {
  * @return {String} err
  */
 module.exports.postCreateCategory = function(req, res) {
+	console.log('CREATE.CATEGORY: body request');
+	console.log(req.body);
 	var category = req.body.categoryname;
 	category = category.substr(0, 1).toUpperCase() + category.substr(1, category.length);
 	var Category = mongoose.model('category');
@@ -738,8 +746,8 @@ module.exports.postCreateCategory = function(req, res) {
  * @return {String} err
  */
 module.exports.postUpdateCategory = function(req, res) {
-  console.log(req.body);
-
+	console.log('UPDATE.CATEGORY: body request');
+	console.log(req.body);
   var query = new Object({ _id: req.body.id });
 	mongoose.model('category').findOne(query, function(err, cat) {
 		if(err) return console.error(err);
@@ -797,6 +805,8 @@ module.exports.postUpdateCategory = function(req, res) {
  * @return {String} err
  */
 module.exports.postDeleteCategory = function(req, res) {
+	console.log('DELETE.CATEGORY: body request');
+	console.log(req.body);
   var query = new Object({ _id: req.body.id });
 	mongoose.model('category').findOne(query, function(err, cat) {
 		if(err) return console.error(err);
@@ -851,3 +861,10 @@ module.exports.ensureAuthenticated = function(req, res, next) {
 	if (req.isAuthenticated()) return next();
 	res.redirect('/login');
 }
+
+/**
+ * Handles uncaught exceptions.
+ */
+process.on('uncaughtException', function (err) {
+  return console.error('Caught exception: ' + err.stack);
+});
