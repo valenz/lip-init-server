@@ -5,7 +5,7 @@ block content
 	include ../includes/message
 
 	if grid && grid != 0
-		ul.grid(name= list[i] ? list[i].name : 'unassigned')
+		ul.grid(name= list[i] ? list[i].name : 'unassigned' data-length= admintabs)
 			each item, j in grid
 				+tabs(item._id, item.url, item.title, item.icon, item.name, item.category, item.check, j)
 

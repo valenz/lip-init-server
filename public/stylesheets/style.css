@@ -146,7 +146,12 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
   text-align: center;
   width: auto;
 	font-weight: lighter;
-  font-size: 19px;
+  font-size: 20px;
+}
+
+.length {
+  font-size: 12px;
+  padding: 0 5px 0 5px;
 }
 
 li .icon {
@@ -478,6 +483,9 @@ form button:active {
 	-moz-box-shadow: 0 0 0 1px #B36B34;
 	-webkit-box-shadow: 0 0 0 1px #B36B34;
 	background-color: #B36B34;
+}
+#check {
+  text-decoration: underline;
 }
 
 .item {

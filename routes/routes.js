@@ -58,14 +58,16 @@ var options = {
 module.exports.index = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		mongoose.model('category').find(function(err, category) {
+    mongoose.model('category').find(function(err, category) {
 			if(err) return console.error(err);
-			var ro = new RenderObject();
+      var ro = new RenderObject();
 			ro.set({
 				title: 'Index',
 				grid: tab,
 				list: category,
 				user: req.user,
+        admintabs: methods.getAdminTabs(tab),
+        assigned: methods.getAssignedTabs(category),
 				info: req.flash('info'),
 				error: req.flash('error'),
 				success: req.flash('success')
@@ -94,6 +96,7 @@ module.exports.account = function(req, res) {
 				grid: tab,
 				list: category,
 				user: req.user,
+        admintabs: methods.getAdminTabs(tab),
 				info: req.flash('info'),
 				error: req.flash('error'),
 				success: req.flash('success')
