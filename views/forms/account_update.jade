@@ -4,7 +4,7 @@ block content
 
 	include ../includes/message
 
-	form.form(action='/updateaccount' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+	form.form(action='/settings/account/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
 		h3= title
 
 		a#detailsLink(title='Account details and delete' href='/settings/account/details')

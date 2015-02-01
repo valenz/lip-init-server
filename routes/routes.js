@@ -394,7 +394,7 @@ module.exports.postCreateAccount = function(req, res) {
 			Account.register(new Account(user), req.body.password, function(err, doc) {
 				if(err) {
 					req.flash('error', err.message);
-					res.redirect('/settings/account/create');
+					res.redirect('create');
 					return console.error(err);
 				} else {
 					console.log('CREATE.ACCOUNT: '+ doc.username +' has been created successfully.');
@@ -407,7 +407,7 @@ module.exports.postCreateAccount = function(req, res) {
 		}
 	} else {
 		req.flash('info', 'Account could not be created. Passwords did not match.');
-		res.redirect('/settings/account/create');
+		res.redirect('create');
 	}
 };
 
@@ -430,11 +430,11 @@ module.exports.postUpdateAccount = function(req, res) {
 					doc.save(function(err, doc) {
 						if(err) {
 							req.flash('error', err);
-							res.redirect('/settings/account/update');
+							res.redirect('update');
 							return console.error(err);
 						} else {
 							console.log('UPDATE.ACCOUNT: '+ doc.username +' was updated successfully.');
-							req.flash('success', 'Your new password has been set successfully.');
+							req.flash('success', 'Password has been set successfully.');
 							res.redirect('/settings');
 						}
 					});
@@ -446,7 +446,7 @@ module.exports.postUpdateAccount = function(req, res) {
   } else {
     console.log('UPDATE.ACCOUNT: Account could not be updated. Passwords did not match.');
     req.flash('info', 'Account could not be updated. Passwords did not match.');
-    res.redirect('/settings/account/update');
+    res.redirect('update');
   }
 };
 
@@ -471,7 +471,7 @@ module.exports.postDeleteAccount = function(req, res) {
 					return console.error(err);
 				} else {
 					console.log('DELETE.ACCOUNT: '+ doc.username +' was deleted successfully.');
-					req.flash('success', 'Your Account has been deleted successfully.');
+					req.flash('success', 'Account has been deleted successfully.');
 					methods.logout(req, res);
 					res.redirect('/');
 				}
@@ -499,7 +499,7 @@ module.exports.postCreateTab = function(req, res) {
   pageInfo.parse(url, function(info) {
     if(info.error) {
       req.flash('error', info.error.toString());
-      res.redirect('/settings/tab/create');
+      res.redirect('create');
       return console.error(info.error);
     } else {
       var title = info.title ? entities.decode(info.title) : url;
@@ -525,7 +525,7 @@ module.exports.postCreateTab = function(req, res) {
             mongoose.model('category').findOne(query, function(err, cat) {
               if(err) {
                 req.flash('error', err);
-                res.redirect('/settings/tab/create');
+                res.redirect('create');
                 return console.error(err);
               }
               var data = methods.paste(doc._id, cat);
@@ -533,7 +533,7 @@ module.exports.postCreateTab = function(req, res) {
                 data.save(function(err, doc) {
                   if(err) {
                     req.flash('error', err);
-                    res.redirect('/settings/tab/create');
+                    res.redirect('create');
                     return console.error(err);
                   }
                 });
@@ -541,7 +541,7 @@ module.exports.postCreateTab = function(req, res) {
             });
             console.log('CREATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been created.');
             req.flash('success', 'Tab has been created successfully.');
-            res.redirect('/settings/tab/create');
+            res.redirect('create');
           });
         });
       } catch(e) {
@@ -572,7 +572,7 @@ module.exports.postUpdateTab = function(req, res) {
     pageInfo.parse(url, function(info) {
       if(info.error) {
         req.flash('error', info.error.toString());
-        res.redirect('/settings/tab/update');
+        res.redirect('update');
         return console.error(info.error);
       } else {
         var query = new Object({ name: doc.category });
@@ -583,7 +583,7 @@ module.exports.postUpdateTab = function(req, res) {
             data.save(function(err, doc) {
               if(err) {
                 req.flash('error', err);
-                res.redirect('/settings/tab/update');
+                res.redirect('update');
                 return console.error(err);
               }
             });
@@ -598,7 +598,7 @@ module.exports.postUpdateTab = function(req, res) {
               data.save(function(err, doc) {
                 if(err) {
                   req.flash('error', err);
-                  res.redirect('/settings/tab/update');
+                  res.redirect('update');
                   return console.error(err);
                 }
               });
@@ -606,7 +606,7 @@ module.exports.postUpdateTab = function(req, res) {
           });
         }
         var title = info.title ? entities.decode(info.title) : url;
-        doc.name = req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42);
+        doc.name = req.body.name && ( oldAddress != req.body.address || oldAddress == req.body.address ) ? req.body.name : methods.shorter(title, 42);
         doc.url = req.body.address;
         doc.title = title;
         doc.icon = info.favicon;
@@ -625,7 +625,7 @@ module.exports.postUpdateTab = function(req, res) {
               webshot(url, uploadPath+doc._id+'.png', options, function(err) {
                 if(err) {
                   req.flash('error', err);
-                  res.redirect('/settings/updatetab');
+                  res.redirect('update');
                   return console.error(err);
                 }
                 console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
@@ -634,7 +634,6 @@ module.exports.postUpdateTab = function(req, res) {
               });
             } else {
               console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
-              req.flash('info', 'Web address was the same. Therefore, no new thumbnail has been saved.');
               req.flash('success', 'Tab has been updated successfully.');
               req.body.check ? res.redirect('/account') : res.redirect('/');
             }
@@ -657,6 +656,7 @@ module.exports.postUpdateTab = function(req, res) {
  * @return {String} err
  */
 module.exports.postDeleteTab = function(req, res) {
+  console.log(req.body);
 	var query = new Object({ _id: req.body.id });
 	mongoose.model('tab').findOne(query, function(err, tab) {
 		if(err) return console.error(err);
@@ -664,12 +664,12 @@ module.exports.postDeleteTab = function(req, res) {
 		mongoose.model('category').findOne(query, function(err, cat) {
 			if(err) return console.error(err);
 			try {
-        var data = methods.detach(req.body.id, cat);
+          var data = methods.detach(req.body.id, cat);
 				if(data) {
 					data.save(function(err, doc) {
 						if(err) {
 							req.flash('error', err);
-							res.redirect('back');
+              res.redirect('/');
 							return console.error(err);
 						}
 					});
@@ -677,13 +677,13 @@ module.exports.postDeleteTab = function(req, res) {
 				tab.remove(function(err, doc) {
 					if(err) {
 						req.flash('error', err);
-						res.redirect('back');
+            res.redirect('/');
 						return console.error(err);
 					} else {
 						methods.clear(req);
 						console.log('DELETE.TAB: '+ doc +' has been deleted.');
 						req.flash('success', 'Tab has been deleted successfully.');
-						res.redirect('back');
+            res.redirect('/');
 					}
 				});
 			} catch(e) {
@@ -711,13 +711,13 @@ module.exports.postCreateCategory = function(req, res) {
 	try {
 		data.save(function(err, doc) {
 			if(err) {
-				req.flash('error', err);
-				res.redirect('/settings/category/create');
+				req.flash('error', err.toString());
+				res.redirect('create');
 				return console.error(err);
 			} else {
 				console.log('CREATE.CATEGORY: "'+ doc.name +'" ('+ doc._id +') has been created.');
-				req.flash('success', 'Category has been created successfully.');
-				res.redirect('/settings/category/create');
+				req.flash('success', 'Category "'+ doc.name +'" has been created successfully.');
+				res.redirect('/settings');
 			}
 		});
 	} catch(e) {
@@ -747,12 +747,12 @@ module.exports.postUpdateCategory = function(req, res) {
       try {
         cat.save(function(err, doc) {
           if(err) {
-            req.flash('error', err);
+            req.flash('error', err.toString());
             res.redirect('/settings');
             return console.error(err);
           } else {
             console.log('UPDATED.CATEGORY: "'+ doc.name +'" ('+ doc._id +') has been updated.');
-            req.flash('success', 'Category has been updated successfully.');
+            req.flash('success', 'Category "'+ doc.name +'" has been updated successfully.');
             res.redirect('/settings');
           }
         });
@@ -806,7 +806,7 @@ module.exports.postDeleteCategory = function(req, res) {
           tab.save(function(err, doc) {
             if(err) {
               req.flash('error', err);
-              res.redirect('back');
+              res.redirect('/settings');
               return console.error(err);
             }
           });
@@ -818,12 +818,12 @@ module.exports.postDeleteCategory = function(req, res) {
     try {
       cat.remove(function(err, doc) {
         if(err) {
-          req.flash('error', err);
-          res.redirect('back');
+          req.flash('error', err.toString());
+          res.redirect('/settings');
           return console.error(err);
         } else {
           console.log('DELETE.CATEGORY: '+ cat.name +' has been deleted.');
-          req.flash('success', 'Category has been deleted successfully.');
+          req.flash('success', 'Category "'+ cat.name +'" has been deleted successfully.');
           res.redirect('/settings');
         }
       });

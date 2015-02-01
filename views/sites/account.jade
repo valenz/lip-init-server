@@ -5,23 +5,23 @@ block content
 	include ../includes/message
 
 	if grid && grid != 0
-		ul.grid(name= list[i] ? list[i].name : 'unassigned' data-length= list[i] ? list[i].list.length : 0)
+		ul.grid(name= list[i] ? list[i].name : 'unassigned')
 			each item, j in grid
 				+tabs(item._id, item.url, item.title, item.icon, item.name, item.category, item.check, j)
 
 	mixin tabs(id, url, title, icon, name, category, check, j)
 		if check
-			li.tabs(data-item=j)
-				form.tab-form(action='/deletetab' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+			li.tabs(data-item= j)
+				form.tab-form(action='/settings/tab/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
 					div
-						a(href=url title=title?title:name)
+						a(href= url title= title ? title : name)
 							div.img-container
-								img.pic(src='uploads/' + id+'.png')
-							img.icon(src=icon)
+								img.pic(src='uploads/'+ id +'.png')
+							img.icon(src= icon)
 							.name= name
-							input(type='hidden' name='id' value=id data-check='checked')
+							input(type='hidden' name='id' value= id data-check='checked')
 						if user
-							a(href='/settings/tab/update/?id='+id+'&url='+url+'&name='+name+'&category='+category+'&check='+check)
+							a(href='/settings/tab/update/?id='+ id +'&url='+ url +'&name='+ name +'&category='+ category +'&check='+ check )
 								i.btn-edit.fa.fa-pencil(title='Edit tab')
 							button.btn-del
 								i.fa.fa-times(title='Remove tab')

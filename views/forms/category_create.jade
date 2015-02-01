@@ -4,7 +4,7 @@ block content
 
 	include ../includes/message
 
-	form.form(action='/createcategory' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+	form.form(action='/settings/category/create' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
 		h3= title
 
 		label| Category Name (required):
