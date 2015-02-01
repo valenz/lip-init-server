@@ -11,6 +11,11 @@ module.exports.logout = function(req, res) {
 	req.logout();
 };
 
+/**
+ * Returns the number of tabs which are assigned to admin view.
+ * @param {obj} Object
+ * @return {n} Number
+ */
 module.exports.getAdminTabs = function(obj) {
   if(!obj) return 0;
   var n = 0;
@@ -18,6 +23,11 @@ module.exports.getAdminTabs = function(obj) {
   return n;
 };
 
+/**
+ * Returns the number of tabs which are assigned to categories.
+ * @param {obj} Object
+ * @return {n} Number
+ */
 module.exports.getAssignedTabs = function(obj) {
   if(!obj) return 0;
   var n = 0;
