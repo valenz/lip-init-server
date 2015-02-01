@@ -58,7 +58,7 @@ var options = {
 module.exports.index = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-    mongoose.model('category').find(function(err, category) {
+    mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
 			if(err) return console.error(err);
       var ro = new RenderObject();
 			ro.set({
@@ -88,7 +88,7 @@ module.exports.index = function(req, res) {
 module.exports.account = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		mongoose.model('category').find(function(err, category) {
+		mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
 			if(err) return console.error(err);
 			var ro = new RenderObject();
 			ro.set({
@@ -119,7 +119,7 @@ module.exports.settings = function(req, res) {
 		if(err) return console.error(err);
 		mongoose.model('account').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, account) {
 			if(err) return console.error(err);
-      mongoose.model('category').find(function(err, category) {
+      mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
         if(err) return console.error(err);
         var ro = new RenderObject();
         ro.set({
