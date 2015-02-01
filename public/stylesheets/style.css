@@ -157,9 +157,9 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
   padding: 0 5px 0 5px;
 }
 
-li .icon {
+.icon-container {
 	position: relative;
-	top: -9px;
+	top: -7px;
 	height: 14px;
 }
 
@@ -183,9 +183,10 @@ li .pic, li .img-container {
 	background: transparent;
 	color: #FFF9E5;
 	width: auto;
+  height: auto;
 	margin: 0;
 	position: relative;
-	top: -10px;
+	top: -5px;
 	font-size: 15px;
 	font-weight: lighter;
 }

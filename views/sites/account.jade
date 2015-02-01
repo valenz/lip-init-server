@@ -17,9 +17,10 @@ block content
 						a(href= url title= title ? title : name)
 							div.img-container
 								img.pic(src='uploads/'+ id +'.png')
-							img.icon(src= icon)
+							div.icon-container
+								img(src= icon)
 							.name= name
-							input(type='hidden' name='id' value= id data-check='checked' disabled)
+							input(type='hidden' name='id' value= id data-check='checked')
 						if user
 							a(href='/settings/tab/update/?id='+ id +'&url='+ url +'&name='+ name +'&category='+ category +'&check='+ check )
 								i.btn-edit.fa.fa-pencil(title='Edit tab')
