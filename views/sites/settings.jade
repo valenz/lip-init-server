@@ -2,61 +2,65 @@ extends ../includes/header
 
 block content
 
-	include ../includes/message
+  include ../includes/message
 
-	#adjustments
-		h3.settingHeader| Adjustments
-			span.length#adjReset(title='Reset')
-				i.fa.fa-eraser
-		.adj.clearfix
-			div
-				span| Range:
-				span#rangeFac
-			#rangeLeft| 1.0
-			#rangeRight| 2.0
-			input(type='range' min='1' max='2' step='0.01')
+  #adjustments
+    h3.settingHeader| Adjustments
+      span.length#adjReset(title='Reset')
+        i.fa.fa-eraser
+    .adj.clearfix
+      div
+        noscript
+          p.no-script
+            i.fa.fa-info-circle
+            | You need to enable Javascript in order to use all features.
+        span| Range:
+        span#rangeFac
+      #rangeLeft| 1.0
+      #rangeRight| 2.0
+      input(type='range' min='1' max='2' step='0.01')
 
-		if user
-			h3.settingHeader| Accounts
-				span.length| (
-					= accs.length
-					| )
-			.adj.clearfix
-				a#createuser(title='Create Account' href='/settings/account/create')
-					.item.itemfloat| +
-				each item, j in accs
-					if user && item.id == user.id
-						a(href='/settings/account/update')
-							.item.itemfloat#user(data-item=j)= item.username
-					else
-						.item.itemfloat(data-item=j)= item.username
+    if user
+      h3.settingHeader| Tabs
+        span.length| (
+          = tabs.length
+          | )
+      .adj.clearfix
+        a#createuser(title='Create Tab' href='/settings/tab/create')
+          .item.itemfloat| +
+        each item, j in tabs
+          if user && item.check
+            a(href='/settings/tab/details/?name='+item.name+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
+              .item.itemfloat#check(data-item=j)= item.name
+          else
+            a(href='/settings/tab/details/?name='+item.name+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
+              .item.itemfloat(data-item=j)= item.name
 
-		if user
-			h3.settingHeader| Tabs
-				span.length| (
-					= tabs.length
-					| )
-			.adj.clearfix
-				a#createuser(title='Create Tab' href='/settings/tab/create')
-					.item.itemfloat| +
-				each item, j in tabs
-					if user && item.check
-						a(href='/settings/tab/details/?name='+item.name+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
-							.item.itemfloat#check(data-item=j)= item.name
-					else
-						a(href='/settings/tab/details/?name='+item.name+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
-							.item.itemfloat(data-item=j)= item.name
+    if user
+      h3.settingHeader| Categories
+        span.length| (
+          = list.length
+          | )
+      .adj.clearfix
+        a#createuser(title='Create Category' href='/settings/category/create')
+          .item.itemfloat| +
+        each item, j in list
+          a(href='/settings/category/update/?name='+item.name+'&list='+item.list+'&id='+item._id+'&rev='+item.__v)
+            .item.itemfloat(data-item=j)= item.name
 
-		if user
-			h3.settingHeader| Categories
-				span.length| (
-					= list.length
-					| )
-			.adj.clearfix
-				a#createuser(title='Create Category' href='/settings/category/create')
-					.item.itemfloat| +
-				each item, j in list
-					a(href='/settings/category/update/?name='+item.name+'&list='+item.list+'&id='+item._id+'&rev='+item.__v)
-						.item.itemfloat(data-item=j)= item.name
+    if user
+      h3.settingHeader| Accounts
+        span.length| (
+          = accs.length
+          | )
+      .adj.clearfix
+        a#createuser(title='Create Account' href='/settings/account/create')
+          .item.itemfloat| +
+        each item, j in accs
+          if user && item.id == user.id
+            a(href='/settings/account/update')
+              .item.itemfloat#user(data-item=j)= item.username
+          else
+            .item.itemfloat(data-item=j)= item.username
 
-	include ../includes/foot
+  include ../includes/foot

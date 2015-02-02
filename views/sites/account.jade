@@ -12,7 +12,7 @@ block content
 	mixin tabs(id, url, title, icon, name, category, check, j)
 		if check
 			li.tabs(data-item= j)
-				form.tab-form(action='/settings/tab/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+				form.tab-form(action='/settings/tab/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
 					div
 						a(href= url title= title ? title : name)
 							div.img-container
@@ -22,9 +22,14 @@ block content
 							.name= name
 							input(type='hidden' name='id' value= id data-check='checked')
 						if user
+							noscript
+								a(href='/settings/tab/update/?id='+ id +'&url='+ url +'&name='+ name +'&category='+ category +'&check='+ check )
+									i.btn-edit-ns.fa.fa-pencil(title='Edit tab')
+								button.btn-del-ns
+									i.fa.fa-times(title='Remove tab')
 							a(href='/settings/tab/update/?id='+ id +'&url='+ url +'&name='+ name +'&category='+ category +'&check='+ check )
 								i.btn-edit.fa.fa-pencil(title='Edit tab')
-							button.btn-del
+							a.btn-del
 								i.fa.fa-times(title='Remove tab')
 
 	include ../includes/foot

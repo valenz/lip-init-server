@@ -9,39 +9,39 @@ var Entities = require('html-entities').AllHtmlEntities
 var uploadPath = 'public/uploads/';
 var entities = new Entities();
 var options = {
-    screenSize: {
-      width: 720,
-      height: 405
-    },
-    shotSize: {
-      width: 720,
-      height: 405
-    },
-    phantomConfig: {
-      'config': 'config.json'
-      //'ignore-ssl-errors': 'true',
-      //'output-encoding': 'utf8',
-      //'ssl-protocol': 'tlsv1',
-      //'web-security': 'false'
-    },
-    siteType: 'url',
-    timeout: 60*1000, // 60 sec
-    renderDelay: 1000, // 1 sec
-    defaultWhiteBackground: true,
-    settings: {
-      javascriptEnabled: true,
-      XSSAuditingEnabled: true
-    },
-    // This callback is invoked when a web page was unable to load resource.
-    onResourceError: function(resourceError) {
-      console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
-      console.log('ON.RESOURCE.ERROR: Error code: '+ resourceError.errorCode +'. Description: '+ resourceError.errorString);
-    },
-    // This callback is invoked when a resource requested by the page timeout.
-    onResourceTimeout: function(request) {
-			console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
-    }
-  };
+  screenSize: {
+    width: 720,
+    height: 405
+  },
+  shotSize: {
+    width: 720,
+    height: 405
+  },
+  phantomConfig: {
+    'config': 'config.json'
+    //'ignore-ssl-errors': 'true',
+    //'output-encoding': 'utf8',
+    //'ssl-protocol': 'tlsv1',
+    //'web-security': 'false'
+  },
+  siteType: 'url',
+  timeout: 60*1000, // 60 sec
+  renderDelay: 1000, // 1 sec
+  defaultWhiteBackground: true,
+  settings: {
+    javascriptEnabled: true,
+    XSSAuditingEnabled: true
+  },
+  // This callback is invoked when a web page was unable to load resource.
+  onResourceError: function(resourceError) {
+    console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
+    console.log('ON.RESOURCE.ERROR: Error code: '+ resourceError.errorCode +'. Description: '+ resourceError.errorString);
+  },
+  // This callback is invoked when a resource requested by the page timeout.
+  onResourceTimeout: function(request) {
+    console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
+  }
+};
 
 /**
  *********************************** GET ***********************************
@@ -700,6 +700,27 @@ module.exports.postDeleteTab = function(req, res) {
 			}
 		});
 	});
+};
+
+/**
+ * Pass a local variable to the confirm page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+module.exports.postDeleteConfirm = function(req, res) {
+  console.log(req.body);
+  var ro = new RenderObject();
+  ro.set({
+    title: 'Confirm',
+    action: urlparse(req.path).directory,
+    confirm: req.body,
+    user: req.user,
+    info: req.flash('info'),
+    error: req.flash('error'),
+    success: req.flash('success')
+  });
+  res.render('sites/confirm', ro.get());
 };
 
 /**
