@@ -7,6 +7,8 @@ $(document).ready(function() {
     $(this).find('[class^=btn]').css('display', 'none');
   });
 
+  $('#range').css('display', 'block');
+
   /** Submit delete settings */
   $('.btn-dlt-f').css('display', 'block').on('click', function() {
     var action = $(this).parent().attr('action');

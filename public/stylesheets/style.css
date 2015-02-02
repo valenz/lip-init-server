@@ -581,6 +581,10 @@ a .item {
   cursor: pointer;
 }
 
+#range {
+  display: none;
+}
+
 
 
 
