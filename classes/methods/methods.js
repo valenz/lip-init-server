@@ -12,6 +12,30 @@ module.exports.logout = function(req, res) {
 };
 
 /**
+ * Returns the number of tabs which are assigned to admin view.
+ * @param {obj} Object
+ * @return {n} Number
+ */
+module.exports.getAdminTabs = function(obj) {
+  if(!obj) return 0;
+  var n = 0;
+  for(var i in obj) if(obj[i].check) n++;
+  return n;
+};
+
+/**
+ * Returns the number of tabs which are assigned to categories.
+ * @param {obj} Object
+ * @return {n} Number
+ */
+module.exports.getAssignedTabs = function(obj) {
+  if(!obj) return 0;
+  var n = 0;
+  for(var i in obj) n += obj[i].list.length;
+  return n;
+};
+
+/**
  * Extracts the characters from a string, between two specified indices,
  * (where n is the last one) and returns the new sub string.
  * @param {str} String

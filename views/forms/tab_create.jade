@@ -5,7 +5,7 @@ block content
 	include ../includes/message
 
 	form.form(action='/settings/tab/create' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-		h3= title
+		h3.formHeadline= title
 
 		label| Address (required):
 		input.field(type='url' name='address' title='Address (required)' required='required' placeholder='Address (required)' autofocus)
@@ -25,7 +25,7 @@ block content
 			span| Admin only?
 			input(type='checkbox' name='check' title='Access only for admins')
 
-		button#submit(title='Submit')| Create
+		button#submit.sbt-f(title='Submit')| Create
 		a.cancel(href='/' title='Cancel')| Cancel
 
 	include ../includes/foot

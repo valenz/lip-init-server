@@ -6,8 +6,8 @@ block content
 
   - var l = query.list.replace(new RegExp(',', 'g'), '\n');
 
-  form.form(action='/settings/category/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-    h3= title
+  form.form(action='/settings/category/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+    h3.formHeadline= title
 
     label| Name:
     input.details(type='text' name='name' title=  query.name value= query.name readonly)
@@ -19,6 +19,9 @@ block content
     label| Revision:
     input.details(type='text' name='rev' title=  query.rev value= query.rev readonly)
 
-    button(title='Submit')| Delete
+    .btn-dlt-f
+      a(title='Submit')| Delete
+    noscript
+      button.dlt-f(title='Submit')| Delete
 
   include ../includes/foot

@@ -9,39 +9,39 @@ var Entities = require('html-entities').AllHtmlEntities
 var uploadPath = 'public/uploads/';
 var entities = new Entities();
 var options = {
-    screenSize: {
-      width: 720,
-      height: 405
-    },
-    shotSize: {
-      width: 720,
-      height: 405
-    },
-    phantomConfig: {
-      'config': 'config.json'
-      //'ignore-ssl-errors': 'true',
-      //'output-encoding': 'utf8',
-      //'ssl-protocol': 'tlsv1',
-      //'web-security': 'false'
-    },
-    siteType: 'url',
-    timeout: 60*1000, // 60 sec
-    renderDelay: 1000, // 1 sec
-    defaultWhiteBackground: true,
-    settings: {
-      javascriptEnabled: true,
-      XSSAuditingEnabled: true
-    },
-    // This callback is invoked when a web page was unable to load resource.
-    onResourceError: function(resourceError) {
-      console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
-      console.log('ON.RESOURCE.ERROR: Error code: '+ resourceError.errorCode +'. Description: '+ resourceError.errorString);
-    },
-    // This callback is invoked when a resource requested by the page timeout.
-    onResourceTimeout: function(request) {
-			console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
-    }
-  };
+  screenSize: {
+    width: 720,
+    height: 405
+  },
+  shotSize: {
+    width: 720,
+    height: 405
+  },
+  phantomConfig: {
+    'config': 'config.json'
+    //'ignore-ssl-errors': 'true',
+    //'output-encoding': 'utf8',
+    //'ssl-protocol': 'tlsv1',
+    //'web-security': 'false'
+  },
+  siteType: 'url',
+  timeout: 60*1000, // 60 sec
+  renderDelay: 1000, // 1 sec
+  defaultWhiteBackground: true,
+  settings: {
+    javascriptEnabled: true,
+    XSSAuditingEnabled: true
+  },
+  // This callback is invoked when a web page was unable to load resource.
+  onResourceError: function(resourceError) {
+    console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
+    console.log('ON.RESOURCE.ERROR: Error code: '+ resourceError.errorCode +'. Description: '+ resourceError.errorString);
+  },
+  // This callback is invoked when a resource requested by the page timeout.
+  onResourceTimeout: function(request) {
+    console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
+  }
+};
 
 /**
  *********************************** GET ***********************************
@@ -58,14 +58,16 @@ var options = {
 module.exports.index = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		mongoose.model('category').find(function(err, category) {
+    mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
 			if(err) return console.error(err);
-			var ro = new RenderObject();
+      var ro = new RenderObject();
 			ro.set({
 				title: 'Index',
 				grid: tab,
 				list: category,
 				user: req.user,
+        admintabs: methods.getAdminTabs(tab),
+        assigned: methods.getAssignedTabs(category),
 				info: req.flash('info'),
 				error: req.flash('error'),
 				success: req.flash('success')
@@ -86,7 +88,7 @@ module.exports.index = function(req, res) {
 module.exports.account = function(req, res) {
 	mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
 		if(err) return console.error(err);
-		mongoose.model('category').find(function(err, category) {
+		mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
 			if(err) return console.error(err);
 			var ro = new RenderObject();
 			ro.set({
@@ -94,6 +96,7 @@ module.exports.account = function(req, res) {
 				grid: tab,
 				list: category,
 				user: req.user,
+        admintabs: methods.getAdminTabs(tab),
 				info: req.flash('info'),
 				error: req.flash('error'),
 				success: req.flash('success')
@@ -116,7 +119,7 @@ module.exports.settings = function(req, res) {
 		if(err) return console.error(err);
 		mongoose.model('account').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, account) {
 			if(err) return console.error(err);
-      mongoose.model('category').find(function(err, category) {
+      mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
         if(err) return console.error(err);
         var ro = new RenderObject();
         ro.set({
@@ -381,6 +384,8 @@ module.exports.postLogin = function(req, res) {
  * @return {String} err
  */
 module.exports.postCreateAccount = function(req, res) {
+	console.log('CREATE.ACCOUNT: body request');
+	console.log(req.body.username);
 	// The passport-local-mongoose package automatically takes care of salting and hashing the password.
 	var user = new Object({
 		username: req.body.username,
@@ -419,6 +424,8 @@ module.exports.postCreateAccount = function(req, res) {
  * @return {String} err
  */
 module.exports.postUpdateAccount = function(req, res) {
+	console.log('UPDATE.ACCOUNT: body request');
+	console.log(req.body);
 	var query = new Object({ _id: req.user._id });
 	if(req.body.newPassword === req.body.confirm) {
 		mongoose.model('account').findOne(query, function(err, doc) {
@@ -460,6 +467,8 @@ module.exports.postUpdateAccount = function(req, res) {
  * @return {String} err
  */
 module.exports.postDeleteAccount = function(req, res) {
+	console.log('DELETE.ACCOUNT: body request');
+	console.log(req.body);
 	var query = new Object({ _id: req.body.id });
 	mongoose.model('account').findOne(query, function(err, doc) {
 		if(err) return console.error(err);
@@ -495,7 +504,6 @@ module.exports.postCreateTab = function(req, res) {
 	console.log('CREATE.TAB: body request');
 	console.log(req.body);
   var url = urlparse(req.body.address).normalize().toString();
-
   pageInfo.parse(url, function(info) {
     if(info.error) {
       req.flash('error', info.error.toString());
@@ -656,7 +664,8 @@ module.exports.postUpdateTab = function(req, res) {
  * @return {String} err
  */
 module.exports.postDeleteTab = function(req, res) {
-  console.log(req.body);
+	console.log('DELETE.TAB: body request');
+	console.log(req.body);
 	var query = new Object({ _id: req.body.id });
 	mongoose.model('tab').findOne(query, function(err, tab) {
 		if(err) return console.error(err);
@@ -694,6 +703,27 @@ module.exports.postDeleteTab = function(req, res) {
 };
 
 /**
+ * Pass a local variable to the confirm page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+module.exports.postDeleteConfirm = function(req, res) {
+  console.log(req.body);
+  var ro = new RenderObject();
+  ro.set({
+    title: 'Confirm',
+    action: urlparse(req.path).directory,
+    confirm: req.body,
+    user: req.user,
+    info: req.flash('info'),
+    error: req.flash('error'),
+    success: req.flash('success')
+  });
+  res.render('sites/confirm', ro.get());
+};
+
+/**
  * Creates a new Category with request parameters from the submitted form name
  * attributes and try to save the object to the collection category list.
  * @param {Object} req
@@ -701,6 +731,8 @@ module.exports.postDeleteTab = function(req, res) {
  * @return {String} err
  */
 module.exports.postCreateCategory = function(req, res) {
+	console.log('CREATE.CATEGORY: body request');
+	console.log(req.body);
 	var category = req.body.categoryname;
 	category = category.substr(0, 1).toUpperCase() + category.substr(1, category.length);
 	var Category = mongoose.model('category');
@@ -735,8 +767,8 @@ module.exports.postCreateCategory = function(req, res) {
  * @return {String} err
  */
 module.exports.postUpdateCategory = function(req, res) {
-  console.log(req.body);
-
+	console.log('UPDATE.CATEGORY: body request');
+	console.log(req.body);
   var query = new Object({ _id: req.body.id });
 	mongoose.model('category').findOne(query, function(err, cat) {
 		if(err) return console.error(err);
@@ -794,6 +826,8 @@ module.exports.postUpdateCategory = function(req, res) {
  * @return {String} err
  */
 module.exports.postDeleteCategory = function(req, res) {
+	console.log('DELETE.CATEGORY: body request');
+	console.log(req.body);
   var query = new Object({ _id: req.body.id });
 	mongoose.model('category').findOne(query, function(err, cat) {
 		if(err) return console.error(err);
@@ -848,3 +882,10 @@ module.exports.ensureAuthenticated = function(req, res, next) {
 	if (req.isAuthenticated()) return next();
 	res.redirect('/login');
 }
+
+/**
+ * Handles uncaught exceptions.
+ */
+process.on('uncaughtException', function (err) {
+  return console.error('Caught exception: ' + err.stack);
+});

@@ -5,12 +5,12 @@ block content
 	include ../includes/message
 
 	form.form(action='/settings/category/create' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-		h3= title
+		h3.formHeadline= title
 
 		label| Category Name (required):
 		input.field(type='text' name='categoryname' title='Category Name (required)' required='required' placeholder='Category Name (required)' autofocus)
 
-		button#submit(title='Submit')| Create
+		button#submit.sbt-f(title='Submit')| Create
 		a.cancel(href='/' title='Cancel')| Cancel
 
 	include ../includes/foot
