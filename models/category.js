@@ -3,10 +3,10 @@ var mongoose = require('mongoose')
 
 var Category = new Schema({
     name: {
-    	type: String,
-	    unique: true,
-	    required: true,
-	    trim: true
+      type: String,
+      unique: true,
+      required: true,
+      trim: true
     },
     list: Array
 });

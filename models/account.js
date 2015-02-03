@@ -4,13 +4,13 @@ var mongoose = require('mongoose')
 
 var Account = new Schema({
     username: {
-    	type: String,
-	    unique: true,
-	    trim: true
+      type: String,
+      unique: true,
+      trim: true
     },
     password: {
-    	type: String,
-	    trim: true
+      type: String,
+      trim: true
     },
     whoCreated: String,
     whenCreated: Date,
@@ -18,27 +18,27 @@ var Account = new Schema({
 });
 
 Account.plugin(passportLocalMongoose, {
-//	saltlen: 32,
-//	iterations: 25000,
-//	keylen: 512,
-//	interval: 100,
-//	usernameField: 'username',
-//	usernameUnique: true,
-//	saltField: 'salt',
-//	hashField: 'hash',
-//	attemptsField: 'attempts',
-//	lastLoginField: 'last',
-//	selectFields: 'undefined',
+//  saltlen: 32,
+//  iterations: 25000,
+//  keylen: 512,
+//  interval: 100,
+//  usernameField: 'username',
+//  usernameUnique: true,
+//  saltField: 'salt',
+//  hashField: 'hash',
+//  attemptsField: 'attempts',
+//  lastLoginField: 'last',
+//  selectFields: 'undefined',
     usernameLowerCase: true,
-//	populateFields: 'undefined',
-//	encoding: 'hex',
-//	limitAttempts: false,
-//	incorrectPasswordError: 'Incorrect password',
-//	incorrectUsernameError: 'Incorrect username',
-//	missingUsernameError: 'Field %s is not set',
-//	missingPasswordError: 'Password argument not set!',
-//	userExistsError: 'User already exists with name %s',
-//	noSaltValueStored: 'Authentication not possible. No salt value stored in mongodb collection!'
+//  populateFields: 'undefined',
+//  encoding: 'hex',
+//  limitAttempts: false,
+//  incorrectPasswordError: 'Incorrect password',
+//  incorrectUsernameError: 'Incorrect username',
+//  missingUsernameError: 'Field %s is not set',
+//  missingPasswordError: 'Password argument not set!',
+//  userExistsError: 'User already exists with name %s',
+//  noSaltValueStored: 'Authentication not possible. No salt value stored in mongodb collection!'
 });
 
 module.exports = mongoose.model('account', Account);

@@ -2,19 +2,19 @@ extends ../includes/header
 
 block content
 
-	include ../includes/message
+  include ../includes/message
 
-	form.form(action='/settings/account/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-		h3.formHeadline= title
+  form.form(action='/settings/account/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+    h3.formHeadline= title
 
-		a#detailsLink(title='Account details and delete' href='/settings/account/details')
-			| Details
-		label| New Password (required):
-		input.field(type='password' name='newPassword' title='New Password (required)' required='required' placeholder='New Password (required)' autofocus)
-		label| Confirm New Password (required):
-		input.field(type='password' name='confirm' title='Confirm New Password (required)' required='required' placeholder='Confirm New Password (required)')
+    a#detailsLink(title='Account details and delete' href='/settings/account/details')
+      | Details
+    label| New Password (required):
+    input.field(type='password' name='newPassword' title='New Password (required)' required='required' placeholder='New Password (required)' autofocus)
+    label| Confirm New Password (required):
+    input.field(type='password' name='confirm' title='Confirm New Password (required)' required='required' placeholder='Confirm New Password (required)')
 
-		button#submit.sbt-f(title='Submit')| Update
-		a.cancel(href='/settings' title='Cancel')| Cancel
+    button#submit.sbt-f(title='Submit')| Update
+    a.cancel(href='/settings' title='Cancel')| Cancel
 
-	include ../includes/foot
+  include ../includes/foot

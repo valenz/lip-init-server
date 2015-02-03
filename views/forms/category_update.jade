@@ -2,18 +2,18 @@ extends ../includes/header
 
 block content
 
-	include ../includes/message
+  include ../includes/message
 
-	form.form(action='/settings/category/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-		h3.formHeadline= title
+  form.form(action='/settings/category/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+    h3.formHeadline= title
 
-		a#detailsLink(title='Category details and delete' href='/settings/category/details/?name='+query.name+'&list='+query.list+'&id='+query.id+'&rev='+query.rev)
-			| Details
-		label| Category Name (required):
-		input.field(type='text' name='categoryname' title='Category Name (required)' value= query.name required='required' placeholder='Category Name (required)' autofocus)
-		input(type='hidden' name='id' value= query.id)
+    a#detailsLink(title='Category details and delete' href='/settings/category/details/?name='+query.name+'&list='+query.list+'&id='+query.id+'&rev='+query.rev)
+      | Details
+    label| Category Name (required):
+    input.field(type='text' name='categoryname' title='Category Name (required)' value= query.name required='required' placeholder='Category Name (required)' autofocus)
+    input(type='hidden' name='id' value= query.id)
 
-		button#submit.sbt-f(title='Submit')| Update
-		a.cancel(href='/settings' title='Cancel')| Cancel
+    button#submit.sbt-f(title='Submit')| Update
+    a.cancel(href='/settings' title='Cancel')| Cancel
 
-	include ../includes/foot
+  include ../includes/foot

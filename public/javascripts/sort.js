@@ -71,14 +71,14 @@ $(document).ready(function() {
     //localStorage.setItem('test', JSON.stringify(grid));
 
     /*for(p in x, y) {
-				for(q in x[p], y[p]) {
-					$('li.tabs').each(function(key, value) {
-						if($(this).find('[type=hidden]').attr('value') == q) {
-							console.log(key);
-						}
-					});
-				}
-			}*/
+        for(q in x[p], y[p]) {
+          $('li.tabs').each(function(key, value) {
+            if($(this).find('[type=hidden]').attr('value') == q) {
+              console.log(key);
+            }
+          });
+        }
+      }*/
   }
 
   function handleDragStart(event, ui) {

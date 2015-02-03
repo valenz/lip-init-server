@@ -157,9 +157,9 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
   padding: 0 0 0 5px;
 }
 
-.icon-container {
+li .icon, li .icon-container {
   position: relative;
-  top: -7px;
+  top: -3px;
   height: 14px;
 }
 

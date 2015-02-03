@@ -2,15 +2,15 @@ extends ../includes/header
 
 block content
 
-	include ../includes/message
+  include ../includes/message
 
-	form.form(action= action method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-		h3.formHeadline= title
+  form.form(action= action method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+    h3.formHeadline= title
 
-		p| Are you sure you want to submit?
-		input.field(type='hidden' name='id' value= confirm.id)
+    p| Are you sure you want to submit?
+    input.field(type='hidden' name='id' value= confirm.id)
 
-		button#submit.dlt-f(title='Submit')| Delete
-		a.cancel(href='/' title='Cancel')| Cancel
+    button#submit.dlt-f(title='Submit')| Delete
+    a.cancel(href='/' title='Cancel')| Cancel
 
-	include ../includes/foot
+  include ../includes/foot

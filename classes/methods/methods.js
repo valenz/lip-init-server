@@ -7,8 +7,8 @@ var fs = require('fs');
  * @param {Object} res
  */
 module.exports.logout = function(req, res) {
-	req.flash('success', 'You are logged out.');
-	req.logout();
+  req.flash('success', 'You are logged out.');
+  req.logout();
 };
 
 /**
@@ -44,7 +44,7 @@ module.exports.getAssignedTabs = function(obj) {
  */
 module.exports.shorter = function(str, n) {
   if(!str) return false;
-	return str.length > n ? str.substring(0, n)+'...' : str;
+  return str.length > n ? str.substring(0, n)+'...' : str;
 };
 
 /**
@@ -87,25 +87,25 @@ module.exports.paste = function(str, obj) {
  * @return {String} err
  */
 module.exports.clear = function(req) {
-	var path = 'public/uploads/';
-	var file = req.body.id +'.png';
-	fs.exists(path + file, function(exists) {
-		if(exists) {
-			try {
-				fs.unlink(path + file, function(err) {
+  var path = 'public/uploads/';
+  var file = req.body.id +'.png';
+  fs.exists(path + file, function(exists) {
+    if(exists) {
+      try {
+        fs.unlink(path + file, function(err) {
           if(err) {
             req.flash('error', err);
             return console.error(err);
           }
-					console.log('DELETE.FILE: '+ req.body.id);
-				});
-			} catch(e) {
-				console.error(e.stack);
-				req.flash('error', e.message);
-			}
-		} else {
-			req.flash('note', 'Incorrect '+ path +' or '+ file +' does not exists.');
-			console.error('Incorrect '+ path +' or '+ file +' does not exists.');
-		}
-	});
+          console.log('DELETE.FILE: '+ req.body.id);
+        });
+      } catch(e) {
+        console.error(e.stack);
+        req.flash('error', e.message);
+      }
+    } else {
+      req.flash('note', 'Incorrect '+ path +' or '+ file +' does not exists.');
+      console.error('Incorrect '+ path +' or '+ file +' does not exists.');
+    }
+  });
 };

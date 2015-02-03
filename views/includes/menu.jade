@@ -1,32 +1,32 @@
 ul.fa-ul
-	li
-		if user
-			a(title='Sign out' href='/logout')
-				i.fa.fa-sign-out
-		else
-			a(title='Sign in' href='/login')
-				i.fa.fa-sign-in
+  li
+    if user
+      a(title='Sign out' href='/logout')
+        i.fa.fa-sign-out
+    else
+      a(title='Sign in' href='/login')
+        i.fa.fa-sign-in
 
-	if user
-		li
-			a(title='New tab' href='/settings/tab/create')
-				i.fa.fa-plus-circle
-	li
-		a(title='Link 1' href='/')
-			| Link 1
-	li
-		a(title='Link 2' href='/')
-			| Link 2
-	if user
-		li
-			a(title= user.username href='/account')
-				= user.username
-	li
-		a(title='Settings' href='/settings')
-			i.fa.fa-cog
-	li
-		a(title='E-Mail' href='mailto:your@mail.com')
-			i.fa.fa-envelope
-	li
-		a(title='Help' href='/help')
-			i.fa.fa-question
+  if user
+    li
+      a(title='New tab' href='/settings/tab/create')
+        i.fa.fa-plus-circle
+  li
+    a(title='Link 1' href='/')
+      | Link 1
+  li
+    a(title='Link 2' href='/')
+      | Link 2
+  if user
+    li
+      a(title= user.username href='/account')
+        = user.username
+  li
+    a(title='Settings' href='/settings')
+      i.fa.fa-cog
+  li
+    a(title='E-Mail' href='mailto:your@mail.com')
+      i.fa.fa-envelope
+  li
+    a(title='Help' href='/help')
+      i.fa.fa-question

@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "connect-flash": "^0.1.1",
-    "express": "^4.11.1",
-    "express-session": "^1.10.1",
+    "express": "^4.11.2",
+    "express-session": "^1.10.2",
     "html-entities": "^1.1.2",
     "jade": "^1.9.1",
     "mongoose": "^3.8.22",
@@ -25,10 +25,9 @@
     "passport": "^0.2.1",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^1.0.0",
+    "phantom": "^0.7.2",
     "serve-favicon": "^2.2.0",
-    "urlparse": "^0.0.1",
-    "webpage-info": "0.0.6",
-    "webshot": "^0.15.3"
+    "urlparse": "^0.0.1"
   },
   "scripts": {
     "start": "node app"
