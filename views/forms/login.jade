@@ -2,17 +2,17 @@ extends ../includes/header
 
 block content
 
-	include ../includes/message
+  include ../includes/message
 
-	form.form(action='/login' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-		h3.formHeadline= title
+  form.form(action='/login' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+    h3.formHeadline= title
 
-		label| Username:
-		input.field(type='text' name='username' title='Username' required='required' placeholder='Username' autofocus)
-		label| Password:
-		input.field(type='password' name='password' title='Password' required='required' placeholder='Password')
+    label| Username:
+    input.field(type='text' name='username' title='Username' required='required' placeholder='Username' autofocus)
+    label| Password:
+    input.field(type='password' name='password' title='Password' required='required' placeholder='Password')
 
-		button#submit.sbt-f(title='Submit')| Login
-		a.cancel(href='/' title='Cancel')| Cancel
+    button#submit.sbt-f(title='Submit')| Login
+    a.cancel(href='/' title='Cancel')| Cancel
 
-	include ../includes/foot
+  include ../includes/foot

@@ -27,9 +27,9 @@ app.use(multer());
 app.use(morgan('dev'));
 
 app.use(expressSession({
-	resave: false, // don't save session if unmodified
-	saveUninitialized: false, // don't create session until something stored
-	secret: 'keyboard cat'
+  resave: false, // don't save session if unmodified
+  saveUninitialized: false, // don't create session until something stored
+  secret: 'keyboard cat'
 }));
 
 app.use(flash());
@@ -51,9 +51,9 @@ passport.deserializeUser(Account.deserializeUser());
 
 // Connect mongoose
 mongoose.connect('mongodb://localhost/lipinit', function(err) {
-	if (err) {
-		console.log('Could not connect to mongodb on localhost. Ensure that you have mongodb running on localhost and mongodb accepts connections on standard ports!');
-	}
+  if (err) {
+    console.log('Could not connect to mongodb on localhost. Ensure that you have mongodb running on localhost and mongodb accepts connections on standard ports!');
+  }
 });
 
 // Route dependencies
@@ -90,9 +90,9 @@ app.post('/settings/*/delete/confirm', routes.postConfirm);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-	var err = new Error('Failed to load resource: the server responded with a status of 404 (Not Found)');
-	err.status = 404;
-	next(err);
+  var err = new Error('Failed to load resource: the server responded with a status of 404 (Not Found)');
+  err.status = 404;
+  next(err);
 });
 
 // Handles uncaught exceptions.
@@ -105,34 +105,34 @@ process.on('uncaughtException', function (err) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-	app.enable('verbose errors');
-	app.use(function(err, req, res, next) {
-		res.status(err.status || 500);
-		console.error(err);
-		res.render('index', {
-			fallover: err.message,
-			message: JSON.stringify(err)
-		});
-	});
+  app.enable('verbose errors');
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    console.error(err);
+    res.render('index', {
+      fallover: err.message,
+      message: JSON.stringify(err)
+    });
+  });
 }
 
 // production error handler
 // no stacktraces leaked to user
 if (app.get('env') === 'production') {
-	app.disable('verbose errors');
-	app.use(function(err, req, res, next) {
-		res.status(err.status || 500);
-		console.error(err);
-		res.render('index', {
-			fallover: err.message,
-			message: JSON.stringify({})
-		});
-	});
+  app.disable('verbose errors');
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    console.error(err);
+    res.render('index', {
+      fallover: err.message,
+      message: JSON.stringify({})
+    });
+  });
 }
 
 // Fires the server.
 var server = http.createServer(app);
 server.listen(app.get('port'), function() {
   console.log('Node ('+ process.version +') is running. Process id is: '+ process.pid);
-	console.log(pkg.name +' listening on %s:%d in %s mode.', server.address().address, server.address().port, app.settings.env);
+  console.log(pkg.name +' listening on %s:%d in %s mode.', server.address().address, server.address().port, app.settings.env);
 });
