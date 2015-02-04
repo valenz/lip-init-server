@@ -686,7 +686,7 @@ function postTabCreate(req, res) {
         page.evaluate(function () {
           var info = new Object();
           document.body.bgColor = '#F6F6F6';
-          info['title'] = document.title;
+          info['title'] = document.title ? document.title : undefined;
           var icon = document.getElementsByTagName('link');
           for(var i in icon) {
             try {
@@ -701,12 +701,12 @@ function postTabCreate(req, res) {
             }
           }
         }, function (info) {
-          var title = info ? entities.decode(info.title) : url;
+          var title = info.title ? entities.decode(info.title) : url;
           var Tab = mongoose.model('tab');
           var data = new Tab({
             name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42),
             url: req.body.address,
-            title: title,
+            title: info.title,
             icon: info ? info.favicon : undefined,
             category: req.body.category,
             check: req.body.check ? true : false,
@@ -810,7 +810,7 @@ function postTabUpdate(req, res) {
           page.evaluate(function () {
             var info = new Object();
             document.body.bgColor = '#F6F6F6';
-            info['title'] = document.title;
+            info['title'] = document.title ? document.title : undefined;
             var icon = document.getElementsByTagName('link');
             for(var i in icon) {
               try {
@@ -855,10 +855,10 @@ function postTabUpdate(req, res) {
                 }
               });
             }
-            var title = info ? entities.decode(info.title) : url;
+            var title = info.title ? entities.decode(info.title) : url;
             doc.name = req.body.name && ( oldAddress != req.body.address || oldAddress == req.body.address ) ? req.body.name : methods.shorter(title, 42);
             doc.url = req.body.address;
-            doc.title = title;
+            doc.title = info.title;
             doc.icon = info ? info.favicon : undefined;
             doc.category = req.body.category;
             doc.check = req.body.check ? true : false;
