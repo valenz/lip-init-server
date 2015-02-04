@@ -1,12 +1,20 @@
 var fs = require('fs');
 
+module.exports.logout = logout;
+module.exports.getAdminTabs = getAdminTabs;
+module.exports.getAssignedTabs = getAssignedTabs;
+module.exports.shorter = shorter;
+module.exports.detach = detach;
+module.exports.paste = paste;
+module.exports.clear = clear;
+
 /**
  * Set a flash message by passing the key, followed by the value, to req.flash()
  * and remove the req.user property and clear the login session.
  * @param {Object} req
  * @param {Object} res
  */
-module.exports.logout = function(req, res) {
+function logout(req, res) {
   req.flash('success', 'You are logged out.');
   req.logout();
 };
@@ -16,7 +24,7 @@ module.exports.logout = function(req, res) {
  * @param {obj} Object
  * @return {n} Number
  */
-module.exports.getAdminTabs = function(obj) {
+function getAdminTabs(obj) {
   if(!obj) return 0;
   var n = 0;
   for(var i in obj) if(obj[i].check) n++;
@@ -28,7 +36,7 @@ module.exports.getAdminTabs = function(obj) {
  * @param {obj} Object
  * @return {n} Number
  */
-module.exports.getAssignedTabs = function(obj) {
+function getAssignedTabs(obj) {
   if(!obj) return 0;
   var n = 0;
   for(var i in obj) n += obj[i].list.length;
@@ -42,7 +50,7 @@ module.exports.getAssignedTabs = function(obj) {
  * @param {n} Number
  * @return {str} String
  */
-module.exports.shorter = function(str, n) {
+function shorter(str, n) {
   if(!str) return false;
   return str.length > n ? str.substring(0, n)+'...' : str;
 };
@@ -53,7 +61,7 @@ module.exports.shorter = function(str, n) {
  * @param {obj} Object
  * @return {data} Object
  */
-module.exports.detach = function(str, obj) {
+function detach(str, obj) {
   if(!obj) return false;
   var data = obj;
   var list = obj.list;
@@ -70,7 +78,7 @@ module.exports.detach = function(str, obj) {
  * @param {obj} Object
  * @return {data} Object
  */
-module.exports.paste = function(str, obj) {
+function paste(str, obj) {
   if(!obj) return false;
   var data = obj;
   var list = obj.list;
@@ -86,7 +94,7 @@ module.exports.paste = function(str, obj) {
  * @param {Object} res
  * @return {String} err
  */
-module.exports.clear = function(req) {
+function clear(req) {
   var path = 'public/uploads/';
   var file = req.body.id +'.png';
   fs.exists(path + file, function(exists) {
