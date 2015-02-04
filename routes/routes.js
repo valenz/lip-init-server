@@ -655,10 +655,6 @@ function postTabCreate(req, res) {
       page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
       // sets the size of the viewport for the layout process
       page.set('viewportSize', { width: 960, height: 540 });
-      // This callback is invoked when a resource requested by the page timeout.
-      page.set('onResourceTimeout', function(request) {
-        console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
-      });
       // This callback is invoked when a web page was unable to load resource.
       page.set('onResourceError', function(resourceError) {
         console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
@@ -668,6 +664,10 @@ function postTabCreate(req, res) {
       page.set('onConfirm', function(msg) {
         console.log('ON.CONFIRM: '+ msg);
         return false; // true === pressing the OK button, false === pressing the Cancel button
+      });
+      // This callback is invoked when a resource requested by the page timeout.
+      page.set('onResourceTimeout', function(request) {
+        console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
       });
       /*// This callback is invoked when the page requests a resource.
       page.set('onResourceRequested', function(requestData, networkRequest) {
@@ -686,7 +686,7 @@ function postTabCreate(req, res) {
         page.evaluate(function () {
           var info = new Object();
           document.body.bgColor = '#F6F6F6';
-          info['title'] = document.title ? document.title : undefined;
+          info['title'] = document.title;
           var icon = document.getElementsByTagName('link');
           for(var i in icon) {
             try {
@@ -701,13 +701,13 @@ function postTabCreate(req, res) {
             }
           }
         }, function (info) {
-          var title = info.title ? entities.decode(info.title) : url;
+          var title = info && info.title ? entities.decode(info.title) : url;
           var Tab = mongoose.model('tab');
           var data = new Tab({
             name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42),
             url: req.body.address,
-            title: info.title,
-            icon: info ? info.favicon : undefined,
+            title: title,
+            icon: info && info.favicon ? info.favicon : undefined,
             category: req.body.category,
             check: req.body.check ? true : false,
             whoCreated: req.user.username,
@@ -779,10 +779,6 @@ function postTabUpdate(req, res) {
         page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
         // sets the size of the viewport for the layout process
         page.set('viewportSize', { width: 960, height: 540 });
-        // This callback is invoked when a resource requested by the page timeout.
-        page.set('onResourceTimeout', function(request) {
-          console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
-        });
         // This callback is invoked when a web page was unable to load resource.
         page.set('onResourceError', function(resourceError) {
           console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
@@ -792,6 +788,10 @@ function postTabUpdate(req, res) {
         page.set('onConfirm', function(msg) {
           console.log('ON.CONFIRM: '+ msg);
           return false; // true === pressing the OK button, false === pressing the Cancel button
+        });
+        // This callback is invoked when a resource requested by the page timeout.
+        page.set('onResourceTimeout', function(request) {
+          console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
         });
         /*// This callback is invoked when the page requests a resource.
         page.set('onResourceRequested', function(requestData, networkRequest) {
@@ -810,7 +810,7 @@ function postTabUpdate(req, res) {
           page.evaluate(function () {
             var info = new Object();
             document.body.bgColor = '#F6F6F6';
-            info['title'] = document.title ? document.title : undefined;
+            info['title'] = document.title;
             var icon = document.getElementsByTagName('link');
             for(var i in icon) {
               try {
@@ -855,11 +855,11 @@ function postTabUpdate(req, res) {
                 }
               });
             }
-            var title = info.title ? entities.decode(info.title) : url;
+            var title = info && info.title ? entities.decode(info.title) : url;
             doc.name = req.body.name && ( oldAddress != req.body.address || oldAddress == req.body.address ) ? req.body.name : methods.shorter(title, 42);
             doc.url = req.body.address;
-            doc.title = info.title;
-            doc.icon = info ? info.favicon : undefined;
+            doc.title = title;
+            doc.icon = info && info.favicon ? info.favicon : undefined;
             doc.category = req.body.category;
             doc.check = req.body.check ? true : false;
             doc.whoCreated = doc.whoCreated;
@@ -871,7 +871,7 @@ function postTabUpdate(req, res) {
             try {
               doc.save(function(err, doc) {
                 if(err) return console.error(err);
-                if(oldAddress != req.body.address) {
+                if(oldAddress == req.body.address) {
                   console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
                   req.flash('success', 'Tab has been updated successfully.');
                   req.body.check ? res.redirect('/account') : res.redirect('/');
