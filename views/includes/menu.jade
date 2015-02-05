@@ -19,7 +19,7 @@ ul.fa-ul
       | MPIB-Berlin
   if user
     li
-      a(title= user.username href='/account')
+      a(title= user.username href='/accounts/'+ user.username)
         = user.username
   li
     a(title='Settings' href='/settings')

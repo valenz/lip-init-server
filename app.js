@@ -65,7 +65,7 @@ app.get('/help', routes.help);
 app.get('/login', routes.login);
 app.get('/logout', routes.logout);
 app.get('/settings', routes.settings);
-app.get('/account', routes.ensureAuthenticated, routes.account);
+app.get('/accounts/:username', routes.ensureAuthenticated, routes.accounts);
 app.get('/settings/account/create', routes.ensureAuthenticated, routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/account/update', routes.ensureAuthenticated, routes.accountUpdate);
 app.get('/settings/account/details/:id?', routes.ensureAuthenticated, routes.accountDetails);
@@ -86,7 +86,7 @@ app.post('/settings/category/delete', routes.postCategoryDelete);
 app.post('/settings/tab/create', routes.postTabCreate);
 app.post('/settings/tab/update', routes.postTabUpdate);
 app.post('/settings/tab/delete', routes.postTabDelete);
-app.post('/settings/*/delete/confirm', routes.postConfirm);
+app.post('/settings/:type(account|category|tab)/delete/confirm', routes.postConfirm);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -15,7 +15,7 @@ var entities = new Entities();
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.index = index;
-module.exports.account = account;
+module.exports.accounts = accounts;
 module.exports.settings = settings;
 module.exports.help = help;
 module.exports.accountCreate = accountCreate;
@@ -112,7 +112,7 @@ function index(req, res) {
  * @param {Object} res
  * @return {String} err
  */
-function account(req, res) {
+function accounts(req, res) {
   mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
     if(err) return console.error(err);
     mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
@@ -128,7 +128,7 @@ function account(req, res) {
         error: req.flash('error'),
         success: req.flash('success')
       });
-      res.render('sites/account', ro.get());
+      res.render('sites/accounts', ro.get());
     });
   });
 };
@@ -371,7 +371,7 @@ function tabDetails(req, res) {
 function postLogin(req, res) {
   console.log('LOGIN: "'+ req.user.username +'" has been logged in.');
   req.flash('success', 'You are logged in. Welcome, '+req.user.username+'!');
-  res.redirect('/account');
+  res.redirect('/accounts/'+ req.user.username);
 };
 
 /**
@@ -884,13 +884,13 @@ function postTabUpdate(req, res) {
                 if(oldAddress == req.body.address) {
                   console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
                   req.flash('success', 'Tab has been updated successfully.');
-                  req.body.check ? res.redirect('/account') : res.redirect('/');
+                  req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
                 } else {
                   // Renders the web page to an image buffer and saves it as the specified filename.
                   page.render(uploadPath+doc._id +'.png');
                   console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
                   req.flash('success', 'Tab has been updated successfully.');
-                  req.body.check ? res.redirect('/account') : res.redirect('/');
+                  req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
                 }
                 ph.exit();
               });
@@ -942,7 +942,7 @@ function postTabDelete(req, res) {
             methods.clear(req);
             console.log('DELETE.TAB: '+ doc +' has been deleted.');
             req.flash('success', 'Tab has been deleted successfully.');
-            res.redirect('/');
+            doc.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
           }
         });
       } catch(e) {
