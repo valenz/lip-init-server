@@ -112,8 +112,8 @@ function clear(req) {
         req.flash('error', e.message);
       }
     } else {
-      req.flash('note', 'Incorrect '+ path +' or '+ file +' does not exists.');
-      console.error('Incorrect '+ path +' or '+ file +' does not exists.');
+      req.flash('note', 'Incorrect path "'+ path +'" or file "'+ file +'" does not exists.');
+      console.error('Incorrect path "'+ path +'" or file "'+ file +'" does not exists.');
     }
   });
 };

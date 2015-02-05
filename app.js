@@ -90,14 +90,22 @@ app.post('/settings/:type(account|category|tab)/delete/confirm', routes.postConf
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Failed to load resource: the server responded with a status of 404 (Not Found)');
-  err.status = 404;
-  next(err);
+  if(req.user) {
+    var err = new Error();
+    err.message = 'Failed to load resource "'+ req.url +'". The server responded with a status of 404 (Not Found).';
+    err.status = 404;
+    err.method = req.method;
+    err.header = req.headers;
+    err.url = req.url;
+    next(err);
+  } else {
+    res.redirect('/');
+  }
 });
 
 // Handles uncaught exceptions.
-process.on('uncaughtException', function (err) {
-  return console.error('Caught exception: ' + err.stack);
+process.on('uncaughtException', function (e) {
+  return console.error('Caught exception: ' + e.stack);
 });
 
 // error handlers
@@ -109,9 +117,12 @@ if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     console.error(err);
-    res.render('index', {
-      fallover: err.message,
-      message: JSON.stringify(err)
+    res.render('sites/status', {
+      title: err.status,
+      user: req.user,
+      fallover: err,
+      header: err.header,
+      message: err.message
     });
   });
 }
@@ -123,9 +134,12 @@ if (app.get('env') === 'production') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     console.error(err);
-    res.render('index', {
-      fallover: err.message,
-      message: JSON.stringify({})
+    res.render('sites/status', {
+      title: err.status,
+      user: req.user,
+      fallover: err,
+      header: {},
+      message: err.message
     });
   });
 }
