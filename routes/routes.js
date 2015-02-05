@@ -376,7 +376,7 @@ function postLogin(req, res) {
 
 /**
  * Creates a new object with request parameters from the submitted form name attributes
- * and try to save the object to the collection account as a new document.
+ * and tries to save the object to the collection account as a new document.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
@@ -416,7 +416,7 @@ function postAccountCreate(req, res) {
 
 /**
  * Selects all documents in collection account with queried object
- * and try to update the document from the collection.
+ * and tries to update the document from the collection.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
@@ -457,7 +457,7 @@ function postAccountUpdate(req, res) {
 
 /**
  * Selects all documents in collection account with queried object
- * and try to remove the document from the collection. Only if the
+ * and tries to remove the document from the collection. Only if the
  * total number of accounts is greater than one.
  * Calls the exported function logout in methods
  * and redirect to the given url.
@@ -501,7 +501,7 @@ function postAccountDelete(req, res) {
 
 /**
  * Creates a new Category with request parameters from the submitted form name
- * attributes and try to save the object to the collection category list.
+ * attributes and tries to save the object to the collection category list.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
@@ -536,7 +536,7 @@ function postCategoryCreate(req, res) {
 /**
  * Selects all documents in collection category with queried object,
  * updated the category of all associated tabs and
- * try to save the new document from the collection.
+ * tries to save the new document from the collection.
  * Given category must be different from the old one.
  * @param {Object} req
  * @param {Object} res
@@ -596,7 +596,7 @@ function postCategoryUpdate(req, res) {
 /**
  * Selects all documents in collection category with queried object,
  * removes the category of all associated tabs and
- * try to remove the document from the collection.
+ * tries to remove the document from the collection.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
@@ -647,7 +647,7 @@ function postCategoryDelete(req, res) {
  * Creates a new Tab with request parameters from the submitted form name attributes.
  * Opens the given url and loads it to the page and provides the page status to the
  * function ('success' or 'fail'). Evaluates the given function in the
- * context of the web page and try to save the document to the collection.
+ * context of the web page and tries to save the document to the collection.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
@@ -767,7 +767,7 @@ function postTabCreate(req, res) {
  * attributes.
  * Opens the given url, loads it to the page and provides the page status to the
  * function ('success' or 'fail'). Evaluates the given function in the
- * context of the web page and try to save the document to the collection.
+ * context of the web page and tries to save the document to the collection.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
@@ -906,7 +906,7 @@ function postTabUpdate(req, res) {
 
 /**
  * Selects all documents in collection tab with queried object
- * and try to remove the document from the collection.
+ * and tries to remove the document from the collection.
  * Calls the exported function clear in methods
  * and redirect to the given url.
  * @param {Object} req

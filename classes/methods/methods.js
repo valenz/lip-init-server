@@ -88,8 +88,8 @@ function paste(str, obj) {
 };
 
 /**
- * Test whether or not the given path exists by checking with the file system
- * and try to delete the path file.
+ * Tests whether or not the given path exists by checking with the file system
+ * and tries to delete the path file.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
