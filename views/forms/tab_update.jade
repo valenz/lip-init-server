@@ -29,8 +29,9 @@ block content
       span| Admin only?
       input(type='checkbox', name='check', title='Access only for admins', checked= query.check ? true : false)
 
-    button#submit.sbt-f(title='Submit')| Update
+    button#submit.sbt-f(title='Submit')
       i.fa.fa-refresh
+      | Update
     a.cancel(href='/' title='Cancel')| Cancel
 
   include ../includes/foot

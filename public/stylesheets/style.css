@@ -391,7 +391,7 @@ form button, .btn-dlt-f {
   display: block;
   margin: 35px 0 0 0;
   text-align: center;
-  width: 15%;
+  width: 16%;
   cursor: pointer;
   font-size: 14px;
   border: 1px solid #17313A;
@@ -406,13 +406,13 @@ form button, .btn-dlt-f {
 }
 
 form button {
-  padding: 0px 0px 0px 0px;
+  padding: 0;
   height: 30px;
 }
 
 .btn-dlt-f {
   display: none;
-  padding: 4px 0px 0px 0px;
+  padding: 4px 0 0 0;
   height: 23px;
 
 }
@@ -442,8 +442,7 @@ form button:active {
 }
 
 .dlt-f .fa, .btn-dlt-f .fa, .sbt-f .fa  {
-  padding-left: 7px;
-  float: left;
+  padding: 2px 5px 0 2px;
 }
 
 .sbt-f:hover {
