@@ -369,7 +369,7 @@ function tabDetails(req, res) {
  * @param {Object} res
  */
 function postLogin(req, res) {
-  console.log('LOGIN: '+ req.user.username +' has been logged in.');
+  console.log('LOGIN: "'+ req.user.username +'" has been logged in.');
   req.flash('success', 'You are logged in. Welcome, '+req.user.username+'!');
   res.redirect('/account');
 };
@@ -400,7 +400,7 @@ function postAccountCreate(req, res) {
           res.redirect('create');
           return console.error(err);
         } else {
-          console.log('CREATE.ACCOUNT: '+ doc.username +' has been created successfully.');
+          console.log('CREATE.ACCOUNT: "'+ doc.username +'" has been created successfully.');
           req.flash('success', 'Account has been created successfully.');
           res.redirect('/settings');
         }
@@ -438,7 +438,7 @@ function postAccountUpdate(req, res) {
               res.redirect('update');
               return console.error(err);
             } else {
-              console.log('UPDATE.ACCOUNT: '+ doc.username +' was updated successfully.');
+              console.log('UPDATE.ACCOUNT: "'+ doc.username +'" was updated successfully.');
               req.flash('success', 'Password has been set successfully.');
               res.redirect('/settings');
             }
@@ -457,7 +457,8 @@ function postAccountUpdate(req, res) {
 
 /**
  * Selects all documents in collection account with queried object
- * and try to remove the document from the collection.
+ * and try to remove the document from the collection. Only if the
+ * total number of accounts is greater than one.
  * Calls the exported function logout in methods
  * and redirect to the given url.
  * @param {Object} req
@@ -468,24 +469,33 @@ function postAccountDelete(req, res) {
   console.log('DELETE.ACCOUNT: body request');
   console.log(req.body);
   var query = new Object({ _id: req.body.id });
-  mongoose.model('account').findOne(query, function(err, doc) {
+  mongoose.model('account').find(function(err, account) {
     if(err) return console.error(err);
-    try {
-      doc.remove(function(err) {
-        if(err) {
-          req.flash('error', err);
-          res.redirect('/');
-          return console.error(err);
-        } else {
-          console.log('DELETE.ACCOUNT: '+ doc.username +' was deleted successfully.');
-          req.flash('success', 'Account has been deleted successfully.');
-          methods.logout(req, res);
-          res.redirect('/');
+    mongoose.model('account').findOne(query, function(err, doc) {
+      if(err) return console.error(err);
+      if(account.length > 1) {
+        try {
+          doc.remove(function(err) {
+            if(err) {
+              req.flash('error', err);
+              res.redirect('/');
+              return console.error(err);
+            } else {
+              console.log('DELETE.ACCOUNT: "'+ doc.username +'" was deleted successfully. Account objects left (LENGTH): '+ account.length);
+              req.flash('success', 'Account has been deleted successfully.');
+              methods.logout(req, res);
+              res.redirect('/');
+            }
+          });
+        } catch(e) {
+          console.error(e.stack);
         }
-      });
-    } catch(e) {
-      console.error(e.stack);
-    }
+      } else {
+        console.log('DELETE.ACCOUNT: "'+ doc.username +'" could not be deleted. Account objects left (LENGTH): '+ account.length);
+        req.flash('info', 'Account could not be deleted. Please create a new one first.');
+        res.redirect('details');
+      }
+    });
   });
 };
 
