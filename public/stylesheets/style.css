@@ -441,6 +441,11 @@ form button:active {
   background-color: #732626;
 }
 
+.dlt-f .fa, .btn-dlt-f .fa, .sbt-f .fa  {
+  padding-left: 7px;
+  float: left;
+}
+
 .sbt-f:hover {
   background-color: #243441;
 }
