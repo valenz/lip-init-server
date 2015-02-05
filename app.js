@@ -133,6 +133,6 @@ if (app.get('env') === 'production') {
 // Fires the server.
 var server = http.createServer(app);
 server.listen(app.get('port'), function() {
-  console.log('Node ('+ process.version +') is running. Process id is: '+ process.pid);
+  console.log(process.title +' ('+ process.version +') is running. Process id is: '+ process.pid);
   console.log(pkg.name +' listening on %s:%d in %s mode.', server.address().address, server.address().port, app.settings.env);
 });
