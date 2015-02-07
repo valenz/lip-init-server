@@ -1,5 +1,5 @@
 var fs = require('fs');
-var uploadPath = 'public/uploads/';
+var cfg = require('../../config');
 
 /**
  ********************************* EXPORTS *********************************
@@ -102,26 +102,25 @@ function paste(str, obj) {
  * Tests whether or not the given path exists by checking with the file system
  * and tries to delete the path file.
  * @param {Object} req
- * @param {Object} res
  * @return {String} err
  */
 function clear(req) {
-  var file = req.body.id +'.png';
+  var file = req.body.id + cfg.ph.render.format;
+  var path = cfg.custom.upload;
 
-  fs.exists(uploadPath + file, function(exists) {
+  fs.exists(path + file, function(exists) {
     if(exists) {
       try {
-        fs.unlink(uploadPath + file, function(err) {
+        fs.unlink(path + file, function(err) {
           if(err) {
             req.flash('error', err);
             return console.error(err);
           }
 
-          console.log('DELETE.FILE: '+ req.body.id);
+          console.log('DELETE.FILE: ', file);
         });
       } catch(e) {
         console.error(e.stack);
-        req.flash('error', e.message);
       }
     } else {
       console.error('Incorrect path "'+ path +'" or file "'+ file +'" does not exists.');
@@ -172,7 +171,7 @@ function getPageInfo(url, cb) {
             cb(info);
             ph.exit();
           });
-        }, 500);
+        }, cfg.ph.evaluate.delay);
       });
     });
   });
@@ -186,16 +185,17 @@ function getPageInfo(url, cb) {
 function renderPage(obj, cb) {
   var phantom = require('phantom');
 
-  phantom.create('--ignore-ssl-errors=true', '--ssl-protocol=any', '--web-security=false', '--output-encoding=utf8', function (ph) {
+  phantom.create(cfg.ph.settings.clo, function (ph) {
     return ph.createPage(function (page) {
       console.log('PAGE.RENDER.PHANTOM.PROCESS.PID:', ph.process.pid);
 
-      page.set('settings.javascriptEnabled', true);
-      page.set('settings.resourceTimeout', 30 * 1000); // timeout 30 seconds
-      // defines the rectangular area of the web page to be rasterized when page.render is invoked
-      page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
-      // sets the size of the viewport for the layout process
-      page.set('viewportSize', { width: 960, height: 540 });
+      page.set('settings.resourceTimeout', cfg.ph.settings.timeout);
+      // Specifies the scaling factor
+      page.set('zoomFactor', cfg.ph.settings.zoom);
+      // Defines the rectangular area of the web page to be rasterized when page.render is invoked
+      page.set('clipRect', cfg.ph.settings.clip);
+      // Sets the size of the viewport for the layout process
+      page.set('viewportSize', cfg.ph.settings.viewport);
 
       // This callback is invoked when a web page was unable to load resource.
       page.set('onResourceError', function(resourceError) {
@@ -214,36 +214,21 @@ function renderPage(obj, cb) {
         console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
       });
 
-      /*// This callback is invoked when the page requests a resource.
-      page.set('onResourceRequested', function(requestData, networkRequest) {
-        console.log('ON.RESOURCE.REQUESTED: Request (ID: #'+ requestData.id +'): '+ JSON.stringify(requestData));
-      });
-
-      // This callback is invoked when a resource requested by the page is received (for every chuck if supported).
-      page.set('onResourceReceived', function(response) {
-        console.log('ON.RESOURCE.RECEIVED: Response (ID: #'+ response.id +', STAGE: "'+ response.stage +'"): '+ JSON.stringify(response));
-      });
-
-      // This callback is invoked when there is a JavaScript console message on the web page.
-      page.set('onConsoleMessage', function(msg, lineNum, sourceId) {
-        console.log('ON.CONSOLE.MESSAGE: '+ msg +' (from line #'+ lineNum +' in "'+ sourceId +'")');
-      });*/
-
       return page.open(obj.url, function (status) {
         console.log("PAGE.RENDER.URL.STATUS: ", status);
 
         return setTimeout(function() {
-          return page.evaluate(function() {
+          return page.evaluate(function(color) {
             // Sets background color
-            document.body.bgColor = '#F6F6F6';
+            document.body.bgColor = color;
           }, function() {
             // Renders the web page to an image buffer and saves it as the specified filename.
-            page.render(uploadPath + obj.filename, function() {
+            page.render(cfg.custom.upload + obj.filename + cfg.ph.render.format, function() {
               cb();
               ph.exit();
             });
-          });
-        }, 1000);
+          }, cfg.ph.render.color);
+        }, cfg.ph.render.delay);
       });
     });
   });
