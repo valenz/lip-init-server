@@ -18,9 +18,10 @@ html(lang='en')
       div(style='font-size: 12px; color: #454578;')
         p= fallover
 
-        for i, j in header
-          p(style='color: #A6A6A6;').
-            #{j} : #{i}
+        if header
+          for i, j in header
+            p(style='color: #A6A6A6;').
+              #{j} : #{i}
 
         p
           a(href='/')| Home
