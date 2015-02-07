@@ -1,4 +1,9 @@
 var fs = require('fs');
+var uploadPath = 'public/uploads/';
+
+/**
+ ********************************* EXPORTS *********************************
+ */
 
 module.exports.logout = logout;
 module.exports.getAdminTabs = getAdminTabs;
@@ -7,6 +12,12 @@ module.exports.shorter = shorter;
 module.exports.detach = detach;
 module.exports.paste = paste;
 module.exports.clear = clear;
+module.exports.getPageInfo = getPageInfo;
+module.exports.renderPage = renderPage;
+
+/**
+ ********************************* METHODS *********************************
+ */
 
 /**
  * Set a flash message by passing the key, followed by the value, to req.flash()
@@ -95,16 +106,17 @@ function paste(str, obj) {
  * @return {String} err
  */
 function clear(req) {
-  var path = 'public/uploads/';
   var file = req.body.id +'.png';
-  fs.exists(path + file, function(exists) {
+
+  fs.exists(uploadPath + file, function(exists) {
     if(exists) {
       try {
-        fs.unlink(path + file, function(err) {
+        fs.unlink(uploadPath + file, function(err) {
           if(err) {
             req.flash('error', err);
             return console.error(err);
           }
+
           console.log('DELETE.FILE: '+ req.body.id);
         });
       } catch(e) {
@@ -112,8 +124,127 @@ function clear(req) {
         req.flash('error', e.message);
       }
     } else {
-      req.flash('note', 'Incorrect path "'+ path +'" or file "'+ file +'" does not exists.');
       console.error('Incorrect path "'+ path +'" or file "'+ file +'" does not exists.');
+      req.flash('note', 'Incorrect path "'+ path +'" or file "'+ file +'" does not exists.');
     }
+  });
+};
+
+/**
+ * Returns title and icon from given url.
+ * @param {String} url
+ * @return {Function} cb
+ */
+function getPageInfo(url, cb) {
+  var phantom = require('phantom');
+
+  // Creates PhantomJS process
+  phantom.create(function(ph) {
+    // Makes new PhantomJS WebPage objects
+    return ph.createPage(function(page) {
+      console.log('PAGE.INFO.PHANTOM.PROCESS.PID:', ph.process.pid);
+
+      // Opens the url and loads it to the page
+      return page.open(url, function(status) {
+        console.log("PAGE.INFO.URL.STATUS: ", status);
+
+        return setTimeout(function() {
+          // Evaluates the given function in the context of the web page. Execution is sandboxed.
+          return page.evaluate(function() {
+
+            var info = new Object();
+            info.title = document.title;
+            var links = document.getElementsByTagName('link');
+
+            for(var link in links) {
+              try {
+                if(links[link].rel.toLowerCase().indexOf('icon') > -1) {
+                  info.favicon = links[link].href;
+                  return info;
+                }
+              } catch(e) {
+                info.favicon = 'https://plus.google.com/_/favicon?domain_url='+ window.location.origin;
+                console.error(e.stack);
+                return info;
+              }
+            }
+          }, function(info) {
+            cb(info);
+            ph.exit();
+          });
+        }, 500);
+      });
+    });
+  });
+};
+
+/**
+ * Captures web page from given url and saves it as an image.
+ * @param {Object} obj
+ * @return {Function} cb
+ */
+function renderPage(obj, cb) {
+  var phantom = require('phantom');
+
+  phantom.create('--ignore-ssl-errors=true', '--ssl-protocol=any', '--web-security=false', '--output-encoding=utf8', function (ph) {
+    return ph.createPage(function (page) {
+      console.log('PAGE.RENDER.PHANTOM.PROCESS.PID:', ph.process.pid);
+
+      page.set('settings.javascriptEnabled', true);
+      page.set('settings.resourceTimeout', 30 * 1000); // timeout 30 seconds
+      // defines the rectangular area of the web page to be rasterized when page.render is invoked
+      page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
+      // sets the size of the viewport for the layout process
+      page.set('viewportSize', { width: 960, height: 540 });
+
+      // This callback is invoked when a web page was unable to load resource.
+      page.set('onResourceError', function(resourceError) {
+        console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
+        console.log('ON.RESOURCE.ERROR: Error code: '+ resourceError.errorCode +'. Description: '+ resourceError.errorString);
+      });
+
+      // This callback is invoked when there is a JavaScript confirm on the web page.
+      page.set('onConfirm', function(msg) {
+        console.log('ON.CONFIRM: '+ msg);
+        return false; // true === pressing the OK button, false === pressing the Cancel button
+      });
+
+      // This callback is invoked when a resource requested by the page timeout.
+      page.set('onResourceTimeout', function(request) {
+        console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
+      });
+
+      /*// This callback is invoked when the page requests a resource.
+      page.set('onResourceRequested', function(requestData, networkRequest) {
+        console.log('ON.RESOURCE.REQUESTED: Request (ID: #'+ requestData.id +'): '+ JSON.stringify(requestData));
+      });
+
+      // This callback is invoked when a resource requested by the page is received (for every chuck if supported).
+      page.set('onResourceReceived', function(response) {
+        console.log('ON.RESOURCE.RECEIVED: Response (ID: #'+ response.id +', STAGE: "'+ response.stage +'"): '+ JSON.stringify(response));
+      });
+
+      // This callback is invoked when there is a JavaScript console message on the web page.
+      page.set('onConsoleMessage', function(msg, lineNum, sourceId) {
+        console.log('ON.CONSOLE.MESSAGE: '+ msg +' (from line #'+ lineNum +' in "'+ sourceId +'")');
+      });*/
+
+      return page.open(obj.url, function (status) {
+        console.log("PAGE.RENDER.URL.STATUS: ", status);
+
+        return setTimeout(function() {
+          return page.evaluate(function() {
+            // Sets background color
+            document.body.bgColor = '#F6F6F6';
+          }, function() {
+            // Renders the web page to an image buffer and saves it as the specified filename.
+            page.render(uploadPath + obj.filename, function() {
+              cb();
+              ph.exit();
+            });
+          });
+        }, 1000);
+      });
+    });
   });
 };

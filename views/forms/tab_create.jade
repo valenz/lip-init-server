@@ -7,8 +7,10 @@ block content
   form.form(action='/settings/tab/create' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
     h3.formHeadline= title
 
-    label| Address (required):
-    input.field(type='url' name='address' title='Address (required)' required='required' placeholder='Address (required)' autofocus)
+    label| Render Address (required):
+    input.field(type='url' name='renderUrl' title='Render Address (required)' required='required' placeholder='Render Address (required)' autofocus)
+    label| Web Address (optional):
+    input.field(type='url' name='address' title='Web Address (optional)' placeholder='Web Address (optional)')
     label| Name (optional):
     input.field(type='text' name='name' title='Name (optional)' placeholder='Name (optional)')
     a#detailsLink(title='Create a category' href='/settings/category/create')
@@ -29,5 +31,9 @@ block content
       i.fa.fa-upload
       | Create
     a.cancel(href='/' title='Cancel')| Cancel
+
+    p.patient
+      | Depending on web page, the capturing may take a few seconds.
+      | This page will reload when the process is complete.
 
   include ../includes/foot
