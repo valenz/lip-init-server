@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var morgan = require('morgan');
 
 var pkg = require('./package');
+var cfg = require('./config');
 var flash = require('connect-flash');
 var http = require('http');
 var expressSession = require('express-session');
@@ -15,14 +16,14 @@ var LocalStrategy = require('passport-local').Strategy;
 
 // Configure Express
 var app = express();
-app.set('port', process.env.PORT || 9002);
-app.set('env', process.argv[2] || process.env.NODE_ENV || 'development');
+app.set('port', process.env.PORT || cfg.app.set.port);
+app.set('env', process.argv[2] || process.env.NODE_ENV || cfg.env);
 
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
-app.set('view options', { layout: false });
+app.set('views', __dirname + cfg.app.set.views);
+app.set('view engine', cfg.app.set.engine);
+app.set('view options', cfg.app.set.options);
 
-app.use(favicon(__dirname + '/public/images/favicon.ico'));
+app.use(favicon(__dirname + cfg.app.set.favicon));
 app.use(multer());
 app.use(morgan('dev'));
 
@@ -34,7 +35,7 @@ app.use(expressSession({
 
 app.use(flash());
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, cfg.app.set.static)));
 
 // Configure passport middleware
 app.use(passport.initialize());
@@ -50,7 +51,7 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // Connect mongoose
-mongoose.connect('mongodb://localhost/lipinit', function(err) {
+mongoose.connect(cfg.db.uri + cfg.db.name, function(err) {
   if (err) {
     console.log('Could not connect to mongodb on localhost. Ensure that you have mongodb running on localhost and mongodb accepts connections on standard ports!');
   }

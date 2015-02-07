@@ -762,7 +762,7 @@ function postTabCreate(req, res) {
             }
           });
 
-          methods.renderPage({url: req.body.renderUrl, filename: doc._id +'.png'}, function() {
+          methods.renderPage({ url: req.body.renderUrl, filename: doc._id }, function() {
             console.log('CREATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been created.');
             req.flash('success', 'Tab has been created successfully.');
             res.redirect('create');});
@@ -862,7 +862,7 @@ function postTabUpdate(req, res) {
               req.flash('success', 'Tab has been updated successfully.');
               req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
             } else {
-              methods.renderPage({url: req.body.renderUrl, filename: doc._id +'.png'}, function() {
+              methods.renderPage({ url: req.body.renderUrl, filename: doc._id }, function() {
                 console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
                 req.flash('success', 'Tab has been updated successfully.');
                 req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
