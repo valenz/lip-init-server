@@ -10,6 +10,10 @@ var Tab = new Schema({
     type: String,
     trim: true
   },
+  renderUrl: {
+    type: String,
+    trim: true
+  },
   url: {
     type: String,
     trim: true

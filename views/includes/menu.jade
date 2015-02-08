@@ -19,8 +19,8 @@ ul.fa-ul
       | Link 2
   if user
     li
-      a(title= user.username href='/account')
-        = user.username
+      a(title= user.username href='/accounts/'+ user.username)
+        i.fa.fa-user
   li
     a(title='Settings' href='/settings')
       i.fa.fa-cog

@@ -1,11 +1,9 @@
 var Entities = require('html-entities').AllHtmlEntities
   , methods = require('../classes/methods/methods')
   , RenderObject = require('../classes/render')
-  , phantom = require('phantom')
   , mongoose = require('mongoose')
   , urlparse = require('urlparse');
 
-var uploadPath = 'public/uploads/';
 var entities = new Entities();
 
 /**
@@ -15,7 +13,7 @@ var entities = new Entities();
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.index = index;
-module.exports.account = account;
+module.exports.accounts = accounts;
 module.exports.settings = settings;
 module.exports.help = help;
 module.exports.accountCreate = accountCreate;
@@ -112,7 +110,7 @@ function index(req, res) {
  * @param {Object} res
  * @return {String} err
  */
-function account(req, res) {
+function accounts(req, res) {
   mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
     if(err) return console.error(err);
     mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
@@ -128,7 +126,7 @@ function account(req, res) {
         error: req.flash('error'),
         success: req.flash('success')
       });
-      res.render('sites/account', ro.get());
+      res.render('sites/accounts', ro.get());
     });
   });
 };
@@ -369,14 +367,14 @@ function tabDetails(req, res) {
  * @param {Object} res
  */
 function postLogin(req, res) {
-  console.log('LOGIN: '+ req.user.username +' has been logged in.');
+  console.log('LOGIN: "'+ req.user.username +'" has been logged in.');
   req.flash('success', 'You are logged in. Welcome, '+req.user.username+'!');
-  res.redirect('/account');
+  res.redirect('/accounts/'+ req.user.username);
 };
 
 /**
  * Creates a new object with request parameters from the submitted form name attributes
- * and try to save the object to the collection account as a new document.
+ * and tries to save the object to the collection account as a new document.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
@@ -384,39 +382,48 @@ function postLogin(req, res) {
 function postAccountCreate(req, res) {
   console.log('CREATE.ACCOUNT: body request');
   console.log(req.body.username);
-  // The passport-local-mongoose package automatically takes care of salting and hashing the password.
-  var user = new Object({
-    username: req.body.username,
-    whoCreated: req.user ? req.user.username : req.body.username,
-    whenCreated: new Date(),
-    whenUpdated: undefined
-  });
-  var Account = mongoose.model('account');
-  if(req.body.password === req.body.confirm) {
-    try {
-      Account.register(new Account(user), req.body.password, function(err, doc) {
-        if(err) {
-          req.flash('error', err.message);
-          res.redirect('create');
-          return console.error(err);
-        } else {
-          console.log('CREATE.ACCOUNT: '+ doc.username +' has been created successfully.');
-          req.flash('success', 'Account has been created successfully.');
-          res.redirect('/settings');
-        }
-      });
-    } catch(e) {
-      console.error(e.stack);
+
+  if(req.user) {
+    // The passport-local-mongoose package automatically takes care of salting and hashing the password.
+    var user = new Object({
+      username: req.body.username,
+      whoCreated: req.user ? req.user.username : req.body.username,
+      whenCreated: new Date(),
+      whenUpdated: undefined
+    });
+
+    var Account = mongoose.model('account');
+
+    if(req.body.password === req.body.confirm) {
+      try {
+        Account.register(new Account(user), req.body.password, function(err, doc) {
+          if(err) {
+            req.flash('error', err.message);
+            res.redirect('create');
+            return console.error(err);
+          } else {
+            console.log('CREATE.ACCOUNT: "'+ doc.username +'" has been created successfully.');
+            req.flash('success', 'Account has been created successfully.');
+            res.redirect('/settings');
+          }
+        });
+      } catch(e) {
+        console.error(e.stack);
+      }
+    } else {
+      req.flash('info', 'Account could not be created. Passwords did not match.');
+      res.redirect('create');
     }
   } else {
-    req.flash('info', 'Account could not be created. Passwords did not match.');
-    res.redirect('create');
+    console.log('CREATE.ACCOUNT: Account could not be created. Session is expired.');
+    req.flash('info', 'Account could not be created. Your session is expired. Please log in.');
+    res.redirect('/');
   }
 };
 
 /**
  * Selects all documents in collection account with queried object
- * and try to update the document from the collection.
+ * and tries to update the document from the collection.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
@@ -424,40 +431,51 @@ function postAccountCreate(req, res) {
 function postAccountUpdate(req, res) {
   console.log('UPDATE.ACCOUNT: body request');
   console.log(req.body);
-  var query = new Object({ _id: req.user._id });
-  if(req.body.newPassword === req.body.confirm) {
-    mongoose.model('account').findOne(query, function(err, doc) {
-      if(err) return console.error(err);
-      doc.setPassword(req.body.newPassword, function(err, doc) {
+
+  if(req.user) {
+    var query = new Object({ _id: req.user._id });
+    if(req.body.newPassword === req.body.confirm) {
+      mongoose.model('account').findOne(query, function(err, doc) {
         if(err) return console.error(err);
-        doc.whenUpdated = new Date();
-        try {
-          doc.save(function(err, doc) {
-            if(err) {
-              req.flash('error', err);
-              res.redirect('update');
-              return console.error(err);
-            } else {
-              console.log('UPDATE.ACCOUNT: '+ doc.username +' was updated successfully.');
-              req.flash('success', 'Password has been set successfully.');
-              res.redirect('/settings');
-            }
-          });
-        } catch(e) {
-          console.error(e.stack);
-        }
+
+        doc.setPassword(req.body.newPassword, function(err, doc) {
+          if(err) return console.error(err);
+
+          doc.whenUpdated = new Date();
+
+          try {
+            doc.save(function(err, doc) {
+              if(err) {
+                req.flash('error', err);
+                res.redirect('update');
+                return console.error(err);
+              } else {
+                console.log('UPDATE.ACCOUNT: "'+ doc.username +'" was updated successfully.');
+                req.flash('success', 'Password has been set successfully.');
+                res.redirect('/settings');
+              }
+            });
+          } catch(e) {
+            console.error(e.stack);
+          }
+        });
       });
-    });
+    } else {
+      console.log('UPDATE.ACCOUNT: Account could not be updated. Passwords did not match.');
+      req.flash('info', 'Account could not be updated. Passwords did not match.');
+      res.redirect('update');
+    }
   } else {
-    console.log('UPDATE.ACCOUNT: Account could not be updated. Passwords did not match.');
-    req.flash('info', 'Account could not be updated. Passwords did not match.');
-    res.redirect('update');
+    console.log('UPDATE.ACCOUNT: Account could not be updated. Session is expired.');
+    req.flash('info', 'Account could not be updated. Your session is expired. Please log in.');
+    res.redirect('/');
   }
 };
 
 /**
  * Selects all documents in collection account with queried object
- * and try to remove the document from the collection.
+ * and tries to remove the document from the collection. Only if the
+ * total number of accounts is greater than one.
  * Calls the exported function logout in methods
  * and redirect to the given url.
  * @param {Object} req
@@ -467,31 +485,50 @@ function postAccountUpdate(req, res) {
 function postAccountDelete(req, res) {
   console.log('DELETE.ACCOUNT: body request');
   console.log(req.body);
-  var query = new Object({ _id: req.body.id });
-  mongoose.model('account').findOne(query, function(err, doc) {
-    if(err) return console.error(err);
-    try {
-      doc.remove(function(err) {
-        if(err) {
-          req.flash('error', err);
-          res.redirect('/');
-          return console.error(err);
+
+  if(req.user) {
+    var query = new Object({ _id: req.body.id });
+    mongoose.model('account').find(function(err, account) {
+      if(err) return console.error(err);
+
+      mongoose.model('account').findOne(query, function(err, doc) {
+        if(err) return console.error(err);
+
+        if(account.length > 1) {
+          try {
+            doc.remove(function(err) {
+              if(err) {
+                req.flash('error', err);
+                res.redirect('/');
+                return console.error(err);
+              } else {
+                methods.logout(req, res);
+
+                console.log('DELETE.ACCOUNT: "'+ doc.username +'" was deleted successfully. Account objects left (LENGTH): '+ account.length);
+                req.flash('success', 'Account has been deleted successfully.');
+                res.redirect('/');
+              }
+            });
+          } catch(e) {
+            console.error(e.stack);
+          }
         } else {
-          console.log('DELETE.ACCOUNT: '+ doc.username +' was deleted successfully.');
-          req.flash('success', 'Account has been deleted successfully.');
-          methods.logout(req, res);
-          res.redirect('/');
+          console.log('DELETE.ACCOUNT: "'+ doc.username +'" could not be deleted. Account objects left (LENGTH): '+ account.length);
+          req.flash('info', 'Account could not be deleted. Please create a new one first.');
+          res.redirect('details');
         }
       });
-    } catch(e) {
-      console.error(e.stack);
-    }
-  });
+    });
+  } else {
+    console.log('DELETE.ACCOUNT: Account could not be deleted. Session is expired.');
+    req.flash('info', 'Account could not be deleted. Your session is expired. Please log in.');
+    res.redirect('/');
+  }
 };
 
 /**
  * Creates a new Category with request parameters from the submitted form name
- * attributes and try to save the object to the collection category list.
+ * attributes and tries to save the object to the collection category list.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
@@ -499,34 +536,41 @@ function postAccountDelete(req, res) {
 function postCategoryCreate(req, res) {
   console.log('CREATE.CATEGORY: body request');
   console.log(req.body);
-  var category = req.body.categoryname;
-  category = category.substr(0, 1).toUpperCase() + category.substr(1, category.length);
-  var Category = mongoose.model('category');
-  var data = new Category({
-    name: category,
-    list: new Array()
-  });
-  try {
-    data.save(function(err, doc) {
-      if(err) {
-        req.flash('error', err.toString());
-        res.redirect('create');
-        return console.error(err);
-      } else {
-        console.log('CREATE.CATEGORY: "'+ doc.name +'" ('+ doc._id +') has been created.');
-        req.flash('success', 'Category "'+ doc.name +'" has been created successfully.');
-        res.redirect('/settings');
-      }
+
+  if(req.user) {
+    var category = req.body.categoryname;
+    var Category = mongoose.model('category');
+    var data = new Category({
+      name: category,
+      list: new Array()
     });
-  } catch(e) {
-    console.error(e.stack);
+
+    try {
+      data.save(function(err, doc) {
+        if(err) {
+          req.flash('error', err.toString());
+          res.redirect('create');
+          return console.error(err);
+        } else {
+          console.log('CREATE.CATEGORY: "'+ doc.name +'" ('+ doc._id +') has been created.');
+          req.flash('success', 'Category "'+ doc.name +'" has been created successfully.');
+          res.redirect('/settings');
+        }
+      });
+    } catch(e) {
+      console.error(e.stack);
+    }
+  } else {
+    console.log('CREATE.CATEGORY: Category could not be created. Session is expired.');
+    req.flash('info', 'Category could not be created. Your session is expired. Please log in.');
+    res.redirect('/');
   }
 };
 
 /**
  * Selects all documents in collection category with queried object,
  * updated the category of all associated tabs and
- * try to save the new document from the collection.
+ * tries to save the new document from the collection.
  * Given category must be different from the old one.
  * @param {Object} req
  * @param {Object} res
@@ -535,33 +579,91 @@ function postCategoryCreate(req, res) {
 function postCategoryUpdate(req, res) {
   console.log('UPDATE.CATEGORY: body request');
   console.log(req.body);
-  var query = new Object({ _id: req.body.id });
-  mongoose.model('category').findOne(query, function(err, cat) {
-    if(err) return console.error(err);
-    var category = req.body.categoryname;
-    category = category.substr(0, 1).toUpperCase() + category.substr(1, category.length);
-    if(category && cat.name !== category) {
-      cat.name = category;
-      try {
-        cat.save(function(err, doc) {
-          if(err) {
-            req.flash('error', err.toString());
-            res.redirect('/settings');
-            return console.error(err);
-          } else {
-            console.log('UPDATED.CATEGORY: "'+ doc.name +'" ('+ doc._id +') has been updated.');
-            req.flash('success', 'Category "'+ doc.name +'" has been updated successfully.');
-            res.redirect('/settings');
-          }
-        });
-      } catch(e) {
-        console.error(e.stack);
+
+  if(req.user) {
+    var query = new Object({ _id: req.body.id });
+    mongoose.model('category').findOne(query, function(err, cat) {
+      if(err) return console.error(err);
+
+      var category = req.body.categoryname;
+      category = category.substr(0, 1).toUpperCase() + category.substr(1, category.length);
+
+      if(category && cat.name !== category) {
+        cat.name = category;
+
+        try {
+          cat.save(function(err, doc) {
+            if(err) {
+              req.flash('error', err.toString());
+              res.redirect('/settings');
+              return console.error(err);
+            } else {
+              console.log('UPDATED.CATEGORY: "'+ doc.name +'" ('+ doc._id +') has been updated.');
+              req.flash('success', 'Category "'+ doc.name +'" has been updated successfully.');
+              res.redirect('/settings');
+            }
+          });
+        } catch(e) {
+          console.error(e.stack);
+        }
+
+        for(var i = 0; i < cat.list.length; i++) {
+          query = new Object({ _id: cat.list[i] });
+          mongoose.model('tab').findOne(query, function(err, tab) {
+            if(err) return console.error(err);
+
+            tab.category = category;
+
+            try {
+              tab.save(function(err, doc) {
+                if(err) {
+                  req.flash('error', err);
+                  res.redirect('/settings');
+                  return console.error(err);
+                }
+              });
+            } catch(e) {
+              console.error(e.stack);
+            }
+          });
+        }
+      } else {
+        console.log('UPDATED.CATEGORY: "'+ cat.name +'" ('+ cat._id +') still same. Nothing updated.');
+        req.flash('info', 'Category "'+ cat.name +'" still same. Nothing updated. Please type a different name.');
+        res.redirect('/settings');
       }
+    });
+  } else {
+    console.log('UPDATE.CATEGORY: Category could not be updated. Session is expired.');
+    req.flash('info', 'Category could not be updated. Your session is expired. Please log in.');
+    res.redirect('/');
+  }
+};
+
+/**
+ * Selects all documents in collection category with queried object,
+ * removes the category of all associated tabs and
+ * tries to remove the document from the collection.
+ * @param {Object} req
+ * @param {Object} res
+ * @return {String} err
+ */
+function postCategoryDelete(req, res) {
+  console.log('DELETE.CATEGORY: body request');
+  console.log(req.body);
+
+  if(req.user) {
+    var query = new Object({ _id: req.body.id });
+    mongoose.model('category').findOne(query, function(err, cat) {
+      if(err) return console.error(err);
+
       for(var i = 0; i < cat.list.length; i++) {
         query = new Object({ _id: cat.list[i] });
         mongoose.model('tab').findOne(query, function(err, tab) {
           if(err) return console.error(err);
-          tab.category = category;
+
+          tab.category = undefined;
+
           try {
             tab.save(function(err, doc) {
               if(err) {
@@ -575,69 +677,35 @@ function postCategoryUpdate(req, res) {
           }
         });
       }
-    } else {
-      console.log('UPDATED.CATEGORY: "'+ cat.name +'" ('+ cat._id +') still same. Nothing updated.');
-      req.flash('info', 'Category "'+ cat.name +'" still same. Nothing updated. Please choose a different name.');
-      res.redirect('/settings');
-    }
-  });
-};
 
-/**
- * Selects all documents in collection category with queried object,
- * removes the category of all associated tabs and
- * try to remove the document from the collection.
- * @param {Object} req
- * @param {Object} res
- * @return {String} err
- */
-function postCategoryDelete(req, res) {
-  console.log('DELETE.CATEGORY: body request');
-  console.log(req.body);
-  var query = new Object({ _id: req.body.id });
-  mongoose.model('category').findOne(query, function(err, cat) {
-    if(err) return console.error(err);
-    for(var i = 0; i < cat.list.length; i++) {
-      query = new Object({ _id: cat.list[i] });
-      mongoose.model('tab').findOne(query, function(err, tab) {
-        if(err) return console.error(err);
-        tab.category = undefined;
-        try {
-          tab.save(function(err, doc) {
-            if(err) {
-              req.flash('error', err);
-              res.redirect('/settings');
-              return console.error(err);
-            }
-          });
-        } catch(e) {
-          console.error(e.stack);
-        }
-      });
-    }
-    try {
-      cat.remove(function(err, doc) {
-        if(err) {
-          req.flash('error', err.toString());
-          res.redirect('/settings');
-          return console.error(err);
-        } else {
-          console.log('DELETE.CATEGORY: '+ cat.name +' has been deleted.');
-          req.flash('success', 'Category "'+ cat.name +'" has been deleted successfully.');
-          res.redirect('/settings');
-        }
-      });
-    } catch(e) {
-      console.error(e.stack);
-    }
-  });
+      try {
+        cat.remove(function(err, doc) {
+          if(err) {
+            req.flash('error', err.toString());
+            res.redirect('/settings');
+            return console.error(err);
+          } else {
+            console.log('DELETE.CATEGORY: '+ cat.name +' has been deleted.');
+            req.flash('success', 'Category "'+ cat.name +'" has been deleted successfully.');
+            res.redirect('/settings');
+          }
+        });
+      } catch(e) {
+        console.error(e.stack);
+      }
+    });
+  } else {
+    console.log('DELETE.CATEGORY: Category could not be deleted. Session is expired.');
+    req.flash('info', 'Category could not be deleted. Your session is expired. Please log in.');
+    res.redirect('/');
+  }
 };
 
 /**
  * Creates a new Tab with request parameters from the submitted form name attributes.
  * Opens the given url and loads it to the page and provides the page status to the
  * function ('success' or 'fail'). Evaluates the given function in the
- * context of the web page and try to save the document to the collection.
+ * context of the web page and tries to save the document to the collection.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
@@ -645,111 +713,69 @@ function postCategoryDelete(req, res) {
 function postTabCreate(req, res) {
   console.log('CREATE.TAB: body request');
   console.log(req.body);
-  var url = urlparse(req.body.address).normalize().toString();
-  phantom.create('--ignore-ssl-errors=true', '--ssl-protocol=any', '--web-security=false', '--output-encoding=utf8', function (ph) {
-    ph.createPage(function (page) {
-      console.log('PHANTOM.PROCESS.PID:', ph.process.pid);
-      page.set('settings.javascriptEnabled', true);
-      page.set('settings.resourceTimeout', 30 * 1000); // timeoute 30 seconds
-      // defines the rectangular area of the web page to be rasterized when page.render is invoked
-      page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
-      // sets the size of the viewport for the layout process
-      page.set('viewportSize', { width: 960, height: 540 });
-      // This callback is invoked when a resource requested by the page timeout.
-      page.set('onResourceTimeout', function(request) {
-        console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
+
+  if(req.user) {
+    var url = req.body.address ? urlparse(req.body.address).normalize().toString() : urlparse(req.body.renderUrl).normalize().toString();
+
+    methods.getPageInfo(url, function(info) {
+      var title = info && info.title ? entities.decode(info.title) : url;
+
+      var Tab = mongoose.model('tab');
+      var data = new Tab({
+        name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42),
+        renderUrl: req.body.renderUrl,
+        url: req.body.address ? req.body.address : req.body.renderUrl,
+        title: title,
+        icon: info && info.favicon ? info.favicon : undefined,
+        category: req.body.category,
+        check: req.body.check ? true : false,
+        whoCreated: req.user.username,
+        whenCreated: new Date(),
+        whenUpdated: undefined
       });
-      // This callback is invoked when a web page was unable to load resource.
-      page.set('onResourceError', function(resourceError) {
-        console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
-        console.log('ON.RESOURCE.ERROR: Error code: '+ resourceError.errorCode +'. Description: '+ resourceError.errorString);
-      });
-      // This callback is invoked when there is a JavaScript confirm on the web page.
-      page.set('onConfirm', function(msg) {
-        console.log('ON.CONFIRM: '+ msg);
-        return false; // true === pressing the OK button, false === pressing the Cancel button
-      });
-      /*// This callback is invoked when the page requests a resource.
-      page.set('onResourceRequested', function(requestData, networkRequest) {
-        console.log('ON.RESOURCE.REQUESTED: Request (ID: #'+ requestData.id +'): '+ JSON.stringify(requestData));
-      });
-      // This callback is invoked when a resource requested by the page is received (for every chuck if supported).
-      page.set('onResourceReceived', function(response) {
-        console.log('ON.RESOURCE.RECEIVED: Response (ID: #'+ response.id +', STAGE: "'+ response.stage +'"): '+ JSON.stringify(response));
-      });
-      // This callback is invoked when there is a JavaScript console message on the web page.
-      page.set('onConsoleMessage', function(msg, lineNum, sourceId) {
-        console.log('ON.CONSOLE.MESSAGE: '+ msg +' (from line #'+ lineNum +' in "'+ sourceId +'")');
-      });*/
-      page.open(req.body.address, function (status) {
-        console.log("URL-STATUS: ", status);
-        page.evaluate(function () {
-          var info = new Object();
-          document.body.bgColor = '#F6F6F6';
-          info['title'] = document.title;
-          var icon = document.getElementsByTagName('link');
-          for(var i in icon) {
-            try {
-              if(icon[i].rel.toLowerCase().indexOf('icon') > -1) {
-                info['favicon'] = icon[i].href;
-                return info;
-              }
-            } catch(e) {
-              info['favicon'] = 'https://plus.google.com/_/favicon?domain_url='+ window.location.origin;
-              console.error(e.stack);
-              return info;
+
+      console.log('CREATE.TAB: response ' + data);
+
+      try {
+        data.save(function(err, doc) {
+          if(err) return console.error(err);
+
+          var query = new Object({ name: req.body.category });
+
+          mongoose.model('category').findOne(query, function(err, cat) {
+            if(err) {
+              req.flash('error', err);
+              res.redirect('create');
+              return console.error(err);
             }
-          }
-        }, function (info) {
-          var title = info ? entities.decode(info.title) : url;
-          var Tab = mongoose.model('tab');
-          var data = new Tab({
-            name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42),
-            url: req.body.address,
-            title: title,
-            icon: info ? info.favicon : undefined,
-            category: req.body.category,
-            check: req.body.check ? true : false,
-            whoCreated: req.user.username,
-            whenCreated: new Date(),
-            whenUpdated: undefined
+
+            var data = methods.paste(doc._id, cat);
+
+            if(data) {
+              data.save(function(err, doc) {
+                if(err) {
+                  req.flash('error', err);
+                  res.redirect('create');
+                  return console.error(err);
+                }
+              });
+            }
           });
-          console.log('CREATE.TAB: response ' + data);
-          try {
-            data.save(function(err, doc) {
-              if(err) return console.error(err);
-                var query = new Object({ name: req.body.category });
-                mongoose.model('category').findOne(query, function(err, cat) {
-                  if(err) {
-                    req.flash('error', err);
-                    res.redirect('create');
-                    return console.error(err);
-                  }
-                  var data = methods.paste(doc._id, cat);
-                  if(data) {
-                    data.save(function(err, doc) {
-                      if(err) {
-                        req.flash('error', err);
-                        res.redirect('create');
-                        return console.error(err);
-                      }
-                    });
-                  }
-                });
-                // Renders the web page to an image buffer and saves it as the specified filename.
-                page.render(uploadPath+doc._id +'.png');
-                console.log('CREATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been created.');
-                req.flash('success', 'Tab has been created successfully.');
-                res.redirect('create');
-                ph.exit();
-            });
-          } catch(e) {
-            console.error(e.stack);
-          }
-        });
-      });
+
+          methods.renderPage({ url: req.body.renderUrl, filename: doc._id }, function() {
+            console.log('CREATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been created.');
+            req.flash('success', 'Tab has been created successfully.');
+            res.redirect('create');});
+          });
+      } catch(e) {
+        console.error(e.stack);
+      }
     });
-  });
+  } else {
+    console.log('CREATE.TAB: Tab could not be created. Session is expired.');
+    req.flash('info', 'Tab could not be created. Your session is expired. Please log in.');
+    res.redirect('/');
+  }
 };
 
 /**
@@ -757,7 +783,7 @@ function postTabCreate(req, res) {
  * attributes.
  * Opens the given url, loads it to the page and provides the page status to the
  * function ('success' or 'fail'). Evaluates the given function in the
- * context of the web page and try to save the document to the collection.
+ * context of the web page and tries to save the document to the collection.
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
@@ -765,138 +791,99 @@ function postTabCreate(req, res) {
 function postTabUpdate(req, res) {
   console.log('UPDATE.TAB: body request');
   console.log(req.body);
-  var url = urlparse(req.body.address).normalize().toString();
-  var query = new Object({ _id: req.body.id });
-  mongoose.model('tab').findOne(query, function(err, doc) {
-    if(err) return console.error(err);
-    var oldAddress = doc.url;
-    phantom.create('--ignore-ssl-errors=true', '--ssl-protocol=any', '--web-security=false', '--output-encoding=utf8', function (ph) {
-      ph.createPage(function (page) {
-        console.log('PHANTOM.PROCESS.PID:', ph.process.pid);
-        page.set('settings.javascriptEnabled', true);
-        page.set('settings.resourceTimeout', 30 * 1000); // timeoute 30 seconds
-        // defines the rectangular area of the web page to be rasterized when page.render is invoked
-        page.set('clipRect', { top: 0, left: 0, width: 960, height: 540});
-        // sets the size of the viewport for the layout process
-        page.set('viewportSize', { width: 960, height: 540 });
-        // This callback is invoked when a resource requested by the page timeout.
-        page.set('onResourceTimeout', function(request) {
-          console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
-        });
-        // This callback is invoked when a web page was unable to load resource.
-        page.set('onResourceError', function(resourceError) {
-          console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
-          console.log('ON.RESOURCE.ERROR: Error code: '+ resourceError.errorCode +'. Description: '+ resourceError.errorString);
-        });
-        // This callback is invoked when there is a JavaScript confirm on the web page.
-        page.set('onConfirm', function(msg) {
-          console.log('ON.CONFIRM: '+ msg);
-          return false; // true === pressing the OK button, false === pressing the Cancel button
-        });
-        /*// This callback is invoked when the page requests a resource.
-        page.set('onResourceRequested', function(requestData, networkRequest) {
-          console.log('ON.RESOURCE.REQUESTED: Request (ID: #'+ requestData.id +'): '+ JSON.stringify(requestData));
-        });
-        // This callback is invoked when a resource requested by the page is received (for every chuck if supported).
-        page.set('onResourceReceived', function(response) {
-          console.log('ON.RESOURCE.RECEIVED: Response (ID: #'+ response.id +', STAGE: "'+ response.stage +'"): '+ JSON.stringify(response));
-        });
-        // This callback is invoked when there is a JavaScript console message on the web page.
-        page.set('onConsoleMessage', function(msg, lineNum, sourceId) {
-          console.log('ON.CONSOLE.MESSAGE: '+ msg +' (from line #'+ lineNum +' in "'+ sourceId +'")');
-        });*/
-        page.open(req.body.address, function (status) {
-          console.log("URL-STATUS: ", status);
-          page.evaluate(function () {
-            var info = new Object();
-            document.body.bgColor = '#F6F6F6';
-            info['title'] = document.title;
-            var icon = document.getElementsByTagName('link');
-            for(var i in icon) {
-              try {
-                if(icon[i].rel.toLowerCase().indexOf('icon') > -1) {
-                  info['favicon'] = icon[i].href;
-                  return info;
-                }
-              } catch(e) {
-                info['favicon'] = 'https://plus.google.com/_/favicon?domain_url='+ window.location.origin;
-                console.error(e.stack);
-                return info;
-              }
-            }
-          }, function (info) {
-            var query = new Object({ name: doc.category });
-            mongoose.model('category').findOne(query, function(err, cat) {
-              if(err) return console.error(err);
-              var data = methods.detach(doc._id, cat);
-              if(data) {
-                data.save(function(err, doc) {
-                  if(err) {
-                    req.flash('error', err);
-                    res.redirect('update');
-                    return console.error(err);
-                  }
-                });
-              }
-            });
-            if(!req.body.check) {
-              var query = new Object({ name: req.body.category });
-              mongoose.model('category').findOne(query, function(err, cat) {
-                if(err) return console.error(err);
-                var data = methods.paste(doc._id, cat);
-                if(data) {
-                  data.save(function(err, doc) {
-                    if(err) {
-                      req.flash('error', err);
-                      res.redirect('update');
-                      return console.error(err);
-                    }
-                  });
-                }
-              });
-            }
-            var title = info ? entities.decode(info.title) : url;
-            doc.name = req.body.name && ( oldAddress != req.body.address || oldAddress == req.body.address ) ? req.body.name : methods.shorter(title, 42);
-            doc.url = req.body.address;
-            doc.title = title;
-            doc.icon = info ? info.favicon : undefined;
-            doc.category = req.body.category;
-            doc.check = req.body.check ? true : false;
-            doc.whoCreated = doc.whoCreated;
-            doc.whoUpdated = req.user.username;
-            doc.whenCreated = doc.whenCreated;
-            doc.whenUpdated = new Date();
-            doc.__v = doc.__v + 1;
-            console.log('UPDATE.TAB: response ' + doc);
-            try {
-              doc.save(function(err, doc) {
-                if(err) return console.error(err);
-                if(oldAddress != req.body.address) {
-                  console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
-                  req.flash('success', 'Tab has been updated successfully.');
-                  req.body.check ? res.redirect('/account') : res.redirect('/');
-                } else {
-                  // Renders the web page to an image buffer and saves it as the specified filename.
-                  page.render(uploadPath+doc._id +'.png');
-                  console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
-                  req.flash('success', 'Tab has been updated successfully.');
-                  req.body.check ? res.redirect('/account') : res.redirect('/');
-                }
-                ph.exit();
-              });
-            } catch(e) {
-              console.error(e.stack);
+
+  if(req.user) {
+    var url = req.body.address ? urlparse(req.body.address).normalize().toString() : urlparse(req.body.renderUrl).normalize().toString();
+
+    var query = new Object({ _id: req.body.id });
+    mongoose.model('tab').findOne(query, function(err, doc) {
+      if(err) return console.error(err);
+
+      var oldAddress = doc.renderUrl;
+
+      var query = new Object({ name: doc.category });
+      mongoose.model('category').findOne(query, function(err, cat) {
+        if(err) return console.error(err);
+        var data = methods.detach(doc._id, cat);
+        if(data) {
+          data.save(function(err, doc) {
+            if(err) {
+              req.flash('error', err);
+              res.redirect('update');
+              return console.error(err);
             }
           });
+        }
+      });
+
+      if(!req.body.check) {
+        var query = new Object({ name: req.body.category });
+        mongoose.model('category').findOne(query, function(err, cat) {
+          if(err) return console.error(err);
+
+          var data = methods.paste(doc._id, cat);
+
+          if(data) {
+            data.save(function(err, doc) {
+              if(err) {
+                req.flash('error', err);
+                res.redirect('update');
+                return console.error(err);
+              }
+            });
+          }
         });
+      }
+
+      methods.getPageInfo(url, function(info) {
+        var title = info && info.title ? entities.decode(info.title) : url;
+
+        doc.name = req.body.name && ( oldAddress != req.body.address || oldAddress == req.body.address ) ? req.body.name : methods.shorter(title, 42);
+        doc.renderUrl = req.body.renderUrl;
+        doc.url = req.body.address ? req.body.address : req.body.renderUrl;
+        doc.title = title;
+        doc.icon = info && info.favicon ? info.favicon : undefined;
+        doc.category = req.body.category;
+        doc.check = req.body.check ? true : false;
+        doc.whoCreated = doc.whoCreated;
+        doc.whoUpdated = req.user.username;
+        doc.whenCreated = doc.whenCreated;
+        doc.whenUpdated = new Date();
+        doc.__v = doc.__v + 1;
+
+        console.log('UPDATE.TAB: response ' + doc);
+
+        try {
+          doc.save(function(err, doc) {
+            if(err) return console.error(err);
+
+            if(oldAddress == req.body.renderUrl) {
+              console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
+              req.flash('success', 'Tab has been updated successfully.');
+              req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
+            } else {
+              methods.renderPage({ url: req.body.renderUrl, filename: doc._id }, function() {
+                console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
+                req.flash('success', 'Tab has been updated successfully.');
+                req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
+              });
+            }
+          });
+        } catch(e) {
+          console.error(e.stack);
+        }
       });
     });
-  });
+  } else {
+    console.log('UPDATE.TAB: Tab could not be updated. Session is expired.');
+    req.flash('info', 'Tab could not be updated. Your session is expired. Please log in.');
+    res.redirect('/');
+  }
 };
 
 /**
  * Selects all documents in collection tab with queried object
- * and try to remove the document from the collection.
+ * and tries to remove the document from the collection.
  * Calls the exported function clear in methods
  * and redirect to the given url.
  * @param {Object} req
@@ -906,40 +893,52 @@ function postTabUpdate(req, res) {
 function postTabDelete(req, res) {
   console.log('DELETE.TAB: body request');
   console.log(req.body);
-  var query = new Object({ _id: req.body.id });
-  mongoose.model('tab').findOne(query, function(err, tab) {
-    if(err) return console.error(err);
-    query = new Object({ name: tab.category });
-    mongoose.model('category').findOne(query, function(err, cat) {
+
+  if(req.user) {
+    var query = new Object({ _id: req.body.id });
+    mongoose.model('tab').findOne(query, function(err, tab) {
       if(err) return console.error(err);
-      try {
+
+      query = new Object({ name: tab.category });
+      mongoose.model('category').findOne(query, function(err, cat) {
+        if(err) return console.error(err);
+
+        try {
           var data = methods.detach(req.body.id, cat);
-        if(data) {
-          data.save(function(err, doc) {
+
+          if(data) {
+            data.save(function(err, doc) {
+              if(err) {
+                req.flash('error', err);
+                res.redirect('/');
+                return console.error(err);
+              }
+            });
+          }
+
+          tab.remove(function(err, doc) {
             if(err) {
               req.flash('error', err);
               res.redirect('/');
               return console.error(err);
+            } else {
+              methods.clear(req);
+
+              console.log('DELETE.TAB: '+ doc.name +' has been deleted.');
+              req.flash('success', 'Tab has been deleted successfully.');
+              doc.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
             }
           });
+        } catch(e) {
+          console.error(e.stack);
         }
-        tab.remove(function(err, doc) {
-          if(err) {
-            req.flash('error', err);
-            res.redirect('/');
-            return console.error(err);
-          } else {
-            methods.clear(req);
-            console.log('DELETE.TAB: '+ doc +' has been deleted.');
-            req.flash('success', 'Tab has been deleted successfully.');
-            res.redirect('/');
-          }
-        });
-      } catch(e) {
-        console.error(e.stack);
-      }
+      });
     });
-  });
+  } else {
+    console.log('DELETE.TAB: Tab could not be deleted. Session is expired.');
+    req.flash('info', 'Tab could not be deleted. Your session is expired. Please log in.');
+    res.redirect('/');
+  }
 };
 
 /**
@@ -950,17 +949,24 @@ function postTabDelete(req, res) {
  */
 function postConfirm(req, res) {
   console.log(req.body);
-  var ro = new RenderObject();
-  ro.set({
-    title: 'Confirm',
-    action: urlparse(req.path).directory,
-    confirm: req.body,
-    user: req.user,
-    info: req.flash('info'),
-    error: req.flash('error'),
-    success: req.flash('success')
-  });
-  res.render('sites/confirm', ro.get());
+
+  if(req.user) {
+    var ro = new RenderObject();
+    ro.set({
+      title: 'Confirm',
+      action: urlparse(req.path).directory,
+      confirm: req.body,
+      user: req.user,
+      info: req.flash('info'),
+      error: req.flash('error'),
+      success: req.flash('success')
+    });
+    res.render('sites/confirm', ro.get());
+  } else {
+    console.log('CONFIRM: Session is expired.');
+    req.flash('info', 'Your session is expired. Please log in.');
+    res.redirect('/');
+  }
 };
 
 /**

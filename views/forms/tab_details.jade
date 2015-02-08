@@ -12,26 +12,28 @@ block content
 
     #detailsForm
       label| Name:
-      input.details(type='text' name='name' title=  query.name value= query.name readonly)
-      label| Address:
-      input.details(type='url' name='address' title=  query.url value= query.url readonly)
+      input.details(type='text' name='name' title= query.name value= query.name readonly)
+      label| Render Address:
+      input.details(type='url' name='renderUrl' title= query.renderUrl value= query.renderUrl readonly)
+      label| Web Address:
+      input.details(type='url' name='address' title= query.url value= query.url readonly)
       label| Title:
-      input.details(type='text' name='title' title=  query.title value= query.title readonly)
+      input.details(type='text' name='title' title= query.title value= query.title readonly)
       label| Icon:
-      input.details(type='text' name='icon' title=  query.icon value= query.icon readonly)
+      input.details(type='text' name='icon' title= query.icon value= query.icon readonly)
       label| Category:
-      input.details(type='text' name='category' title=  query.category value= query.category readonly)
+      input.details(type='text' name='category' title= query.category value= query.category readonly)
       label| Admin View:
-      input.details(type='text' name='check' title=  query.check value= query.check readonly)
+      input.details(type='text' name='check' title= query.check value= query.check readonly)
 
       label| Who Created:
-      input.details(type='text' name='whoCreated' title=  query.whoCreated value= query.whoCreated readonly)
+      input.details(type='text' name='whoCreated' title= query.whoCreated value= query.whoCreated readonly)
       label| Who Updated:
-      input.details(type='text' name='whoUpdated' title=  query.whoUpdated value= query.whoUpdated readonly)
+      input.details(type='text' name='whoUpdated' title= query.whoUpdated value= query.whoUpdated readonly)
       label| When Created:
-      input.details(type='text' name='whenCreated' title=  query.whenCreated value= query.whenCreated readonly)
+      input.details(type='text' name='whenCreated' title= query.whenCreated value= query.whenCreated readonly)
       label| When Updated:
-      input.details(type='text' name='whenUpdated' title=  query.whenUpdated value= query.whenUpdated readonly)
+      input.details(type='text' name='whenUpdated' title= query.whenUpdated value= query.whenUpdated readonly)
 
       label| Identifier:
       input.details(type='text' name='id' title=  query.id value= query.id readonly)
@@ -39,8 +41,13 @@ block content
       input.details(type='text' name='rev' title=  query.rev value= query.rev readonly)
 
     .btn-dlt-f
-      a(title='Submit')| Delete
+      a(title='Submit')
+        i.fa.fa-trash-o
+      | Delete
     noscript
-      button.dlt-f(title='Submit')| Delete
+      button.dlt-f(title='Submit')
+        i.fa.fa-trash-o
+      | Delete
+    a.cancel(href='/settings' title='Cancel')| Cancel
 
   include ../includes/foot

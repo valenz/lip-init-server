@@ -28,8 +28,13 @@ block content
     input.details(type='text' name='rev' title= user.__v value= user.__v readonly)
 
     .btn-dlt-f
-      a(title='Submit')| Delete
+      a(title='Submit')
+        i.fa.fa-trash-o
+      | Delete
     noscript
-      button.dlt-f(title='Submit')| Delete
+      button.dlt-f(title='Submit')
+        i.fa.fa-trash-o
+      | Delete
+    a.cancel(href='/settings' title='Cancel')| Cancel
 
   include ../includes/foot

@@ -25,13 +25,14 @@ block content
             | )
         .adj.clearfix
           a#createuser(title='Create Tab' href='/settings/tab/create')
-            .item.itemfloat| +
+            .item.itemfloat
+              i.fa.fa-plus-circle
           each item, j in tabs
             if user && item.check
-              a(href='/settings/tab/details/?name='+item.name+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
+              a(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
                 .item.itemfloat#check(data-item=j)= item.name
             else
-              a(href='/settings/tab/details/?name='+item.name+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
+              a(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
                 .item.itemfloat(data-item=j)= item.name
 
     if user
@@ -42,7 +43,8 @@ block content
             | )
         .adj.clearfix
           a#createuser(title='Create Category' href='/settings/category/create')
-            .item.itemfloat| +
+            .item.itemfloat
+              i.fa.fa-plus-circle
           each item, j in list
             a(href='/settings/category/update/?name='+item.name+'&list='+item.list+'&id='+item._id+'&rev='+item.__v)
               .item.itemfloat(data-item=j)= item.name
@@ -55,7 +57,8 @@ block content
             | )
         .adj.clearfix
           a#createuser(title='Create Account' href='/settings/account/create')
-            .item.itemfloat| +
+            .item.itemfloat
+              i.fa.fa-plus-circle
           each item, j in accs
             if user && item.id == user.id
               a(href='/settings/account/update')

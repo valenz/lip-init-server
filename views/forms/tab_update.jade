@@ -7,8 +7,10 @@ block content
   form.form(action='/settings/tab/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
     h3.formHeadline= title
 
-    label| Address (required):
-    input.field(type='url' name='address' title='Address (required)' value= query.url required='required' placeholder='Address (required)' autofocus)
+    label| Render Address (required):
+    input.field(type='url' name='renderUrl' title='Render Address (required)' value= query.renderUrl required='required' placeholder='Render Address (required)' autofocus)
+    label| Web Address (optional):
+    input.field(type='url' name='address' title='Web Address (optional)' value= query.url placeholder='Web Address (optional)')
     label| Name (optional):
     input.field(type='text' name='name' title='Name (optional)' value= query.name placeholder='Name (optional)')
     input(type='hidden' name='id' value= query.id)
@@ -29,7 +31,13 @@ block content
       span| Admin only?
       input(type='checkbox', name='check', title='Access only for admins', checked= query.check ? true : false)
 
-    button#submit.sbt-f(title='Submit')| Update
+    button#submit.sbt-f(title='Submit')
+      i.fa.fa-refresh
+      | Update
     a.cancel(href='/' title='Cancel')| Cancel
+
+    p.patient
+      | Depending on web page, the capturing may take a few seconds.
+      | This page will reload when the process is complete.
 
   include ../includes/foot

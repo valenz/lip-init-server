@@ -13,26 +13,26 @@ You need default MongoDB service up and running, PhantomJS and the NodeJS engine
 
 ## Installation
 ### Quick installation
-  $ git clone git@github.com:valenz/tabgrid.git
+    $ git clone git@github.com:valenz/tabgrid.git
 
-  $ cd tabgrid
+    $ cd tabgrid
 
-  $ npm install
+    $ npm install
 
-  $ node app
+    $ node app
 
 For running your app in background and save all log files into folder 'logs' type:
 
-  $ npm install forever
+    $ npm install forever
 
-  $ forever start -p logs/ --minUptime 2000 --spinSleepTime 1000 app.js
+    $ forever start -p logs/ --minUptime 2000 --spinSleepTime 1000 app.js
 
 
 ## Checking
 Finally open your web browser and type:
 
-  http://localhost:9002
+    http://localhost:9002
 
 To create an account go to:
 
-  http://localhost:9002/settings/account/create
+    http://localhost:9002/settings/account/create
