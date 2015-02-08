@@ -101,22 +101,17 @@ function paste(str, obj) {
 /**
  * Tests whether or not the given path exists by checking with the file system
  * and tries to delete the path file.
- * @param {Object} req
- * @return {String} err
+ * @param {String} id
  */
-function clear(req) {
-  var file = req.body.id + '.' + cfg.ph.render.format;
+function clear(id) {
+  var file = id + '.' + cfg.ph.render.format;
   var path = cfg.custom.upload;
 
   fs.exists(path + file, function(exists) {
     if(exists) {
       try {
         fs.unlink(path + file, function(err) {
-          if(err) {
-            req.flash('error', err);
-            return console.error(err);
-          }
-
+          if(err) return console.error(err);
           console.log('DELETE.FILE: ', file);
         });
       } catch(e) {
@@ -124,7 +119,6 @@ function clear(req) {
       }
     } else {
       console.error('Incorrect path "'+ path +'" or file "'+ file +'" does not exists.');
-      req.flash('note', 'Incorrect path "'+ path +'" or file "'+ file +'" does not exists.');
     }
   });
 };

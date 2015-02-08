@@ -922,9 +922,9 @@ function postTabDelete(req, res) {
               res.redirect('/');
               return console.error(err);
             } else {
-              methods.clear(req);
+              methods.clear(doc._id);
 
-              console.log('DELETE.TAB: '+ doc.name +' has been deleted.');
+              console.log('DELETE.TAB: "'+ doc.name +'" has been deleted.');
               req.flash('success', 'Tab has been deleted successfully.');
               doc.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
             }
