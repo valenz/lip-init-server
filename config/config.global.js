@@ -23,6 +23,7 @@ config.db.name = '/lipinit';
 config.ph = {};
 config.ph.render = {};
 config.ph.render.format = '.png';
+
 config.ph.render.delay = 500;
 config.ph.render.color = '#F6F6F6';
 
