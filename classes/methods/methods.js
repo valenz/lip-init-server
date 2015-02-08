@@ -135,7 +135,7 @@ function random(len) {
 
   for (var i = 0; i < l; i++) {
     var n = Math.floor(Math.random() * c.length);
-    str += c.substring(n, n + 1);
+    str = str.concat(c.substring(n, n + 1));
   }
 
   return str;
