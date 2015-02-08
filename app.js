@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var morgan = require('morgan');
 
 var pkg = require('./package');
-var cfg = require('./config');
+var config = require('./config');
 var flash = require('connect-flash');
 var http = require('http');
 var expressSession = require('express-session');
@@ -16,14 +16,14 @@ var LocalStrategy = require('passport-local').Strategy;
 
 // Configure Express
 var app = express();
-app.set('port', process.env.PORT || cfg.app.set.port);
-app.set('env', process.argv[2] || process.env.NODE_ENV || cfg.env);
+app.set('port', process.env.PORT || config.app.set.port);
+app.set('env', process.argv[2] || process.env.NODE_ENV || config.env);
 
-app.set('views', __dirname + cfg.app.set.views);
-app.set('view engine', cfg.app.set.engine);
-app.set('view options', cfg.app.set.options);
+app.set('views', __dirname + config.app.set.views);
+app.set('view engine', config.app.set.engine);
+app.set('view options', config.app.set.options);
 
-app.use(favicon(__dirname + cfg.app.set.favicon));
+app.use(favicon(__dirname + config.app.set.favicon));
 app.use(multer());
 app.use(morgan('dev'));
 
@@ -35,7 +35,7 @@ app.use(expressSession({
 
 app.use(flash());
 
-app.use(express.static(path.join(__dirname, cfg.app.set.static)));
+app.use(express.static(path.join(__dirname, config.app.set.static)));
 
 // Configure passport middleware
 app.use(passport.initialize());
@@ -51,7 +51,7 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // Connect mongoose
-mongoose.connect(cfg.db.uri + cfg.db.name, function(err) {
+mongoose.connect(config.db.uri + config.db.name, function(err) {
   if (err) {
     console.log('Could not connect to mongodb on localhost. Ensure that you have mongodb running on localhost and mongodb accepts connections on standard ports!');
   }

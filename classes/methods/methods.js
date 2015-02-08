@@ -1,5 +1,5 @@
 var fs = require('fs');
-var cfg = require('../../config');
+var config = require('../../config');
 
 /**
  ********************************* EXPORTS *********************************
@@ -105,7 +105,7 @@ function paste(str, obj) {
  * @param {String} id
  */
 function clear(filename) {
-  var path = cfg.custom.upload;
+  var path = config.custom.upload;
 
   fs.exists(path + filename, function(exists) {
     if(exists) {
@@ -154,6 +154,7 @@ function getPageInfo(url, cb) {
     // Makes new PhantomJS WebPage objects
     return ph.createPage(function(page) {
       console.log('PAGE.INFO.PHANTOM.PROCESS.PID:', ph.process.pid);
+      if(!url) return ph.exit(1);
 
       // Opens the url and loads it to the page
       return page.open(url, function(status) {
@@ -175,8 +176,8 @@ function getPageInfo(url, cb) {
                   return info;
                 }
               } catch(e) {
-                info.favicon = 'https://plus.google.com/_/favicon?domain_url='+ window.location.origin;
                 console.error(e.stack);
+                info.favicon = 'https://plus.google.com/_/favicon?domain_url='+ window.location.origin;
                 return info;
               }
             }
@@ -184,7 +185,7 @@ function getPageInfo(url, cb) {
             cb(info);
             ph.exit();
           });
-        }, cfg.ph.evaluate.delay);
+        }, config.ph.evaluate.delay);
       });
     });
   });
@@ -198,37 +199,38 @@ function getPageInfo(url, cb) {
 function renderPage(obj, cb) {
   var phantom = require('phantom');
 
-  phantom.create(cfg.ph.settings.clo, function (ph) {
+  phantom.create(config.ph.settings.clo, function (ph) {
     return ph.createPage(function (page) {
       console.log('PAGE.RENDER.PHANTOM.PROCESS.PID:', ph.process.pid);
+      if(!obj.url) return ph.exit(1);
 
       // Sets the size of the viewport for the layout process
-      page.set('viewportSize', cfg.ph.render.viewport);
+      page.set('viewportSize', config.ph.render.viewport);
       // Defines the rectangular area of the web page to be
       // rasterized when page.render is invoked
-      page.set('clipRect', cfg.ph.render.clip);
+      page.set('clipRect', config.ph.render.clip);
       // Specifies the scaling factor
-      page.set('zoomFactor', cfg.ph.render.zoom);
+      page.set('zoomFactor', config.ph.render.zoom);
 
       // Defines whether to execute the script in the page or not
-      page.set('settings.javascriptEnabled', cfg.ph.settings.javascriptEnabled);
+      page.set('settings.javascriptEnabled', config.ph.settings.javascriptEnabled);
       // Defines whether to load the inlined images or not
-      page.set('settings.loadImages', cfg.ph.settings.loadImages);
+      page.set('settings.loadImages', config.ph.settings.loadImages);
       // Defines whether local resource (e.g. from file) can access remote URLs or not
-      page.set('settings.localToRemoteUrlAccessEnabled', cfg.ph.settings.localToRemoteUrlAccessEnabled);
+      page.set('settings.localToRemoteUrlAccessEnabled', config.ph.settings.localToRemoteUrlAccessEnabled);
       // Defines the user agent sent to server when the web page requests resources
-      page.set('settings.userAgent', cfg.ph.settings.userAgent);
+      page.set('settings.userAgent', config.ph.settings.userAgent);
       // Sets the user name used for HTTP authentication
-      page.set('settings.userName', cfg.ph.settings.userName);
+      page.set('settings.userName', config.ph.settings.userName);
       // Sets the password used for HTTP authentication
-      page.set('settings.password', cfg.ph.settings.password);
+      page.set('settings.password', config.ph.settings.password);
       // Defines whether load requests should be monitored for cross-site scripting attempts
-      page.set('settings.XSSAuditingEnabled', cfg.ph.settings.XSSAuditingEnabled);
+      page.set('settings.XSSAuditingEnabled', config.ph.settings.XSSAuditingEnabled);
       // Defines whether web security should be enabled or not
-      page.set('settings.webSecurityEnabled', cfg.ph.settings.webSecurityEnabled);
+      page.set('settings.webSecurityEnabled', config.ph.settings.webSecurityEnabled);
       // Defines the timeout after which any resource requested will stop trying
       // and proceed with other parts of the page
-      page.set('settings.resourceTimeout', cfg.ph.settings.resourceTimeout);
+      page.set('settings.resourceTimeout', config.ph.settings.resourceTimeout);
 
       // This callback is invoked when a web page
       // was unable to load resource.
@@ -266,12 +268,12 @@ function renderPage(obj, cb) {
           }, function() {
             // Renders the web page to an image buffer
 	          // and saves it as the specified filename.
-            page.render(cfg.custom.upload + obj.filename, { format: cfg.ph.render.format, quality: cfg.ph.render.quality }, function() {
+            page.render(config.custom.upload + obj.filename, { format: config.ph.render.format, quality: config.ph.render.quality }, function() {
               cb();
               ph.exit();
             });
-          }, cfg.ph.render.color);
-        }, cfg.ph.render.delay);
+          }, config.ph.render.color);
+        }, config.ph.render.delay);
       });
     });
   });
