@@ -12,6 +12,7 @@ module.exports.shorter = shorter;
 module.exports.detach = detach;
 module.exports.paste = paste;
 module.exports.clear = clear;
+module.exports.random = random;
 module.exports.getPageInfo = getPageInfo;
 module.exports.renderPage = renderPage;
 
@@ -103,25 +104,42 @@ function paste(str, obj) {
  * and tries to delete the path file.
  * @param {String} id
  */
-function clear(id) {
-  var file = id + '.' + cfg.ph.render.format;
+function clear(filename) {
   var path = cfg.custom.upload;
 
-  fs.exists(path + file, function(exists) {
+  fs.exists(path + filename, function(exists) {
     if(exists) {
       try {
-        fs.unlink(path + file, function(err) {
+        fs.unlink(path + filename, function(err) {
           if(err) return console.error(err);
-          console.log('DELETE.FILE: ', file);
+          console.log('DELETE.FILE: ', filename);
         });
       } catch(e) {
         console.error(e.stack);
       }
     } else {
-      console.error('Incorrect path "'+ path +'" or file "'+ file +'" does not exists.');
+      console.error('Incorrect path "'+ path +'" or file "'+ filename +'" does not exists.');
     }
   });
 };
+
+/**
+ * Returns random string depending on given length.
+ * @param {String} len
+ * @return {String} str
+ */
+function random(len) {
+  var c = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  var l = len ? len : 24;
+  var str = '';
+
+  for (var i = 0; i < l; i++) {
+    var n = Math.floor(Math.random() * c.length);
+    str += c.substring(n, n + 1);
+  }
+
+  return str;
+}
 
 /**
  * Returns title and icon from given url.
@@ -239,12 +257,16 @@ function renderPage(obj, cb) {
 
         return setTimeout(function() {
           return page.evaluate(function(color) {
-            // Sets background color
-            document.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' : color.value ? color.value : '#FFFFFF';
+            try {
+              // Sets background color
+              document.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' : color.value ? color.value : '#FFFFFF';
+            } catch(e) {
+              return console.error(e.stack);
+            }
           }, function() {
             // Renders the web page to an image buffer
 	          // and saves it as the specified filename.
-            page.render(cfg.custom.upload + obj.filename +'.'+ cfg.ph.render.format, { format: cfg.ph.render.format, quality: cfg.ph.render.quality }, function() {
+            page.render(cfg.custom.upload + obj.filename, { format: cfg.ph.render.format, quality: cfg.ph.render.quality }, function() {
               cb();
               ph.exit();
             });

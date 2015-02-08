@@ -22,6 +22,10 @@ var Tab = new Schema({
     type: String,
     trim: true
   },
+  image: {
+    type: String,
+    trim: true
+  },
   check: Boolean,
   category: String,
   whoCreated: String,

@@ -2,7 +2,8 @@ var Entities = require('html-entities').AllHtmlEntities
   , methods = require('../classes/methods/methods')
   , RenderObject = require('../classes/render')
   , mongoose = require('mongoose')
-  , urlparse = require('urlparse');
+  , urlparse = require('urlparse')
+  , cfg = require('../config');
 
 var entities = new Entities();
 
@@ -727,6 +728,7 @@ function postTabCreate(req, res) {
         url: req.body.address ? req.body.address : req.body.renderUrl,
         title: title,
         icon: info && info.favicon ? info.favicon : undefined,
+        image: methods.random() + '.' + cfg.ph.render.format,
         category: req.body.category,
         check: req.body.check ? true : false,
         whoCreated: req.user.username,
@@ -762,7 +764,7 @@ function postTabCreate(req, res) {
             }
           });
 
-          methods.renderPage({ url: req.body.renderUrl, filename: doc._id }, function() {
+          methods.renderPage({ url: req.body.renderUrl, filename: doc.image }, function() {
             console.log('CREATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been created.');
             req.flash('success', 'Tab has been created successfully.');
             res.redirect('create');});
@@ -843,6 +845,7 @@ function postTabUpdate(req, res) {
         doc.url = req.body.address ? req.body.address : req.body.renderUrl;
         doc.title = title;
         doc.icon = info && info.favicon ? info.favicon : undefined;
+        doc.image = doc.image;
         doc.category = req.body.category;
         doc.check = req.body.check ? true : false;
         doc.whoCreated = doc.whoCreated;
@@ -862,7 +865,7 @@ function postTabUpdate(req, res) {
               req.flash('success', 'Tab has been updated successfully.');
               req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
             } else {
-              methods.renderPage({ url: req.body.renderUrl, filename: doc._id }, function() {
+              methods.renderPage({ url: req.body.renderUrl, filename: doc.image }, function() {
                 console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
                 req.flash('success', 'Tab has been updated successfully.');
                 req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
@@ -922,7 +925,7 @@ function postTabDelete(req, res) {
               res.redirect('/');
               return console.error(err);
             } else {
-              methods.clear(doc._id);
+              methods.clear(doc.image);
 
               console.log('DELETE.TAB: "'+ doc.name +'" has been deleted.');
               req.flash('success', 'Tab has been deleted successfully.');

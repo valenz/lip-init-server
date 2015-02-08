@@ -43,7 +43,7 @@ config.ph = {};
 config.ph.render = {};
 
 // Renders the web page to an image buffer [PNG|GIF|JPEG|PDF]
-config.ph.render.format = 'png';
+config.ph.render.format = 'jpeg';
 // JPEG compression quality. A higher number will look better, but creates a larger file
 config.ph.render.quality = '100';
 
