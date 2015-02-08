@@ -105,7 +105,7 @@ function paste(str, obj) {
  * @return {String} err
  */
 function clear(req) {
-  var file = req.body.id + cfg.ph.render.format;
+  var file = req.body.id + '.' + cfg.ph.render.format;
   var path = cfg.custom.upload;
 
   fs.exists(path + file, function(exists) {
@@ -148,7 +148,8 @@ function getPageInfo(url, cb) {
         console.log("PAGE.INFO.URL.STATUS: ", status);
 
         return setTimeout(function() {
-          // Evaluates the given function in the context of the web page. Execution is sandboxed.
+          // Evaluates the given function in the context
+	        // of the web page. Execution is sandboxed.
           return page.evaluate(function() {
 
             var info = new Object();
@@ -189,27 +190,52 @@ function renderPage(obj, cb) {
     return ph.createPage(function (page) {
       console.log('PAGE.RENDER.PHANTOM.PROCESS.PID:', ph.process.pid);
 
-      page.set('settings.resourceTimeout', cfg.ph.settings.timeout);
-      // Specifies the scaling factor
-      page.set('zoomFactor', cfg.ph.settings.zoom);
-      // Defines the rectangular area of the web page to be rasterized when page.render is invoked
-      page.set('clipRect', cfg.ph.settings.clip);
       // Sets the size of the viewport for the layout process
-      page.set('viewportSize', cfg.ph.settings.viewport);
+      page.set('viewportSize', cfg.ph.render.viewport);
+      // Defines the rectangular area of the web page to be
+      // rasterized when page.render is invoked
+      page.set('clipRect', cfg.ph.render.clip);
+      // Specifies the scaling factor
+      page.set('zoomFactor', cfg.ph.render.zoom);
 
-      // This callback is invoked when a web page was unable to load resource.
+      // Defines whether to execute the script in the page or not
+      page.set('settings.javascriptEnabled', cfg.ph.settings.javascriptEnabled);
+      // Defines whether to load the inlined images or not
+      page.set('settings.loadImages', cfg.ph.settings.loadImages);
+      // Defines whether local resource (e.g. from file) can access remote URLs or not
+      page.set('settings.localToRemoteUrlAccessEnabled', cfg.ph.settings.localToRemoteUrlAccessEnabled);
+      // Defines the user agent sent to server when the web page requests resources
+      page.set('settings.userAgent', cfg.ph.settings.userAgent);
+      // Sets the user name used for HTTP authentication
+      page.set('settings.userName', cfg.ph.settings.userName);
+      // Sets the password used for HTTP authentication
+      page.set('settings.password', cfg.ph.settings.password);
+      // Defines whether load requests should be monitored for cross-site scripting attempts
+      page.set('settings.XSSAuditingEnabled', cfg.ph.settings.XSSAuditingEnabled);
+      // Defines whether web security should be enabled or not
+      page.set('settings.webSecurityEnabled', cfg.ph.settings.webSecurityEnabled);
+      // Defines the timeout after which any resource requested will stop trying
+      // and proceed with other parts of the page
+      page.set('settings.resourceTimeout', cfg.ph.settings.resourceTimeout);
+
+      // This callback is invoked when a web page
+      // was unable to load resource.
       page.set('onResourceError', function(resourceError) {
         console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
         console.log('ON.RESOURCE.ERROR: Error code: '+ resourceError.errorCode +'. Description: '+ resourceError.errorString);
       });
 
-      // This callback is invoked when there is a JavaScript confirm on the web page.
+      // This callback is invoked when there is a JavaScript
+      // confirm on the web page.
       page.set('onConfirm', function(msg) {
         console.log('ON.CONFIRM: '+ msg);
-        return false; // true === pressing the OK button, false === pressing the Cancel button
+        // true === pressing the OK button
+        // false === pressing the Cancel button
+        return false;
       });
 
-      // This callback is invoked when a resource requested by the page timeout.
+      // This callback is invoked when a resource requested
+      // by the page timeout.
       page.set('onResourceTimeout', function(request) {
         console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
       });
@@ -220,10 +246,11 @@ function renderPage(obj, cb) {
         return setTimeout(function() {
           return page.evaluate(function(color) {
             // Sets background color
-            document.body.bgColor = color;
+            document.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' : color.value ? color.value : '#FFFFFF';
           }, function() {
-            // Renders the web page to an image buffer and saves it as the specified filename.
-            page.render(cfg.custom.upload + obj.filename + cfg.ph.render.format, function() {
+            // Renders the web page to an image buffer
+	          // and saves it as the specified filename.
+            page.render(cfg.custom.upload + obj.filename +'.'+ cfg.ph.render.format, { format: cfg.ph.render.format, quality: cfg.ph.render.quality }, function() {
               cb();
               ph.exit();
             });

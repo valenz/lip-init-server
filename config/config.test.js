@@ -1,14 +1,9 @@
 var config = require('./config.global');
 
-// Overrides global config
+// Overrides global config (run Node with NODE_ENV=test)
 
-// Environment settings
 config.env = 'test';
-
-// App settings
 config.app.set.port = 9090;
-
-// Database settings
 config.db.name = '/liptest';
 
 module.exports = config;
