@@ -29,10 +29,10 @@ block content
               i.fa.fa-plus-circle
           each item, j in tabs
             if user && item.check
-              a(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
+              a(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
                 .item.itemfloat#check(data-item=j)= item.name
             else
-              a(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
+              a(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
                 .item.itemfloat(data-item=j)= item.name
 
     if user

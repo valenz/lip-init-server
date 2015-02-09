@@ -1,5 +1,5 @@
 var fs = require('fs');
-var cfg = require('../../config');
+var config = require('../../config');
 
 /**
  ********************************* EXPORTS *********************************
@@ -12,6 +12,7 @@ module.exports.shorter = shorter;
 module.exports.detach = detach;
 module.exports.paste = paste;
 module.exports.clear = clear;
+module.exports.random = random;
 module.exports.getPageInfo = getPageInfo;
 module.exports.renderPage = renderPage;
 
@@ -101,33 +102,44 @@ function paste(str, obj) {
 /**
  * Tests whether or not the given path exists by checking with the file system
  * and tries to delete the path file.
- * @param {Object} req
- * @return {String} err
+ * @param {String} id
  */
-function clear(req) {
-  var file = req.body.id + cfg.ph.render.format;
-  var path = cfg.custom.upload;
+function clear(filename) {
+  var path = config.custom.upload;
 
-  fs.exists(path + file, function(exists) {
+  fs.exists(path + filename, function(exists) {
     if(exists) {
       try {
-        fs.unlink(path + file, function(err) {
-          if(err) {
-            req.flash('error', err);
-            return console.error(err);
-          }
-
-          console.log('DELETE.FILE: ', file);
+        fs.unlink(path + filename, function(err) {
+          if(err) return console.error(err);
+          console.log('DELETE.FILE: ', filename);
         });
       } catch(e) {
         console.error(e.stack);
       }
     } else {
-      console.error('Incorrect path "'+ path +'" or file "'+ file +'" does not exists.');
-      req.flash('note', 'Incorrect path "'+ path +'" or file "'+ file +'" does not exists.');
+      console.error('Incorrect path "'+ path +'" or file "'+ filename +'" does not exists.');
     }
   });
 };
+
+/**
+ * Returns random string depending on given length.
+ * @param {String} len
+ * @return {String} str
+ */
+function random(len) {
+  var c = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  var l = len ? len : 24;
+  var str = '';
+
+  for (var i = 0; i < l; i++) {
+    var n = Math.floor(Math.random() * c.length);
+    str = str.concat(c.substring(n, n + 1));
+  }
+
+  return str;
+}
 
 /**
  * Returns title and icon from given url.
@@ -142,13 +154,15 @@ function getPageInfo(url, cb) {
     // Makes new PhantomJS WebPage objects
     return ph.createPage(function(page) {
       console.log('PAGE.INFO.PHANTOM.PROCESS.PID:', ph.process.pid);
+      if(!url) return ph.exit(1);
 
       // Opens the url and loads it to the page
       return page.open(url, function(status) {
         console.log("PAGE.INFO.URL.STATUS: ", status);
 
         return setTimeout(function() {
-          // Evaluates the given function in the context of the web page. Execution is sandboxed.
+          // Evaluates the given function in the context
+	        // of the web page. Execution is sandboxed.
           return page.evaluate(function() {
 
             var info = new Object();
@@ -162,8 +176,8 @@ function getPageInfo(url, cb) {
                   return info;
                 }
               } catch(e) {
-                info.favicon = 'https://plus.google.com/_/favicon?domain_url='+ window.location.origin;
                 console.error(e.stack);
+                info.favicon = 'https://plus.google.com/_/favicon?domain_url='+ window.location.origin;
                 return info;
               }
             }
@@ -171,7 +185,7 @@ function getPageInfo(url, cb) {
             cb(info);
             ph.exit();
           });
-        }, cfg.ph.evaluate.delay);
+        }, config.ph.evaluate.delay);
       });
     });
   });
@@ -185,31 +199,57 @@ function getPageInfo(url, cb) {
 function renderPage(obj, cb) {
   var phantom = require('phantom');
 
-  phantom.create(cfg.ph.settings.clo, function (ph) {
+  phantom.create(config.ph.settings.clo, function (ph) {
     return ph.createPage(function (page) {
       console.log('PAGE.RENDER.PHANTOM.PROCESS.PID:', ph.process.pid);
+      if(!obj.url) return ph.exit(1);
 
-      page.set('settings.resourceTimeout', cfg.ph.settings.timeout);
-      // Specifies the scaling factor
-      page.set('zoomFactor', cfg.ph.settings.zoom);
-      // Defines the rectangular area of the web page to be rasterized when page.render is invoked
-      page.set('clipRect', cfg.ph.settings.clip);
       // Sets the size of the viewport for the layout process
-      page.set('viewportSize', cfg.ph.settings.viewport);
+      page.set('viewportSize', config.ph.render.viewport);
+      // Defines the rectangular area of the web page to be
+      // rasterized when page.render is invoked
+      page.set('clipRect', config.ph.render.clip);
+      // Specifies the scaling factor
+      page.set('zoomFactor', config.ph.render.zoom);
 
-      // This callback is invoked when a web page was unable to load resource.
+      // Defines whether to execute the script in the page or not
+      page.set('settings.javascriptEnabled', config.ph.settings.javascriptEnabled);
+      // Defines whether to load the inlined images or not
+      page.set('settings.loadImages', config.ph.settings.loadImages);
+      // Defines whether local resource (e.g. from file) can access remote URLs or not
+      page.set('settings.localToRemoteUrlAccessEnabled', config.ph.settings.localToRemoteUrlAccessEnabled);
+      // Defines the user agent sent to server when the web page requests resources
+      page.set('settings.userAgent', config.ph.settings.userAgent);
+      // Sets the user name used for HTTP authentication
+      page.set('settings.userName', config.ph.settings.userName);
+      // Sets the password used for HTTP authentication
+      page.set('settings.password', config.ph.settings.password);
+      // Defines whether load requests should be monitored for cross-site scripting attempts
+      page.set('settings.XSSAuditingEnabled', config.ph.settings.XSSAuditingEnabled);
+      // Defines whether web security should be enabled or not
+      page.set('settings.webSecurityEnabled', config.ph.settings.webSecurityEnabled);
+      // Defines the timeout after which any resource requested will stop trying
+      // and proceed with other parts of the page
+      page.set('settings.resourceTimeout', config.ph.settings.resourceTimeout);
+
+      // This callback is invoked when a web page
+      // was unable to load resource.
       page.set('onResourceError', function(resourceError) {
         console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
         console.log('ON.RESOURCE.ERROR: Error code: '+ resourceError.errorCode +'. Description: '+ resourceError.errorString);
       });
 
-      // This callback is invoked when there is a JavaScript confirm on the web page.
+      // This callback is invoked when there is a JavaScript
+      // confirm on the web page.
       page.set('onConfirm', function(msg) {
         console.log('ON.CONFIRM: '+ msg);
-        return false; // true === pressing the OK button, false === pressing the Cancel button
+        // true === pressing the OK button
+        // false === pressing the Cancel button
+        return false;
       });
 
-      // This callback is invoked when a resource requested by the page timeout.
+      // This callback is invoked when a resource requested
+      // by the page timeout.
       page.set('onResourceTimeout', function(request) {
         console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
       });
@@ -219,16 +259,21 @@ function renderPage(obj, cb) {
 
         return setTimeout(function() {
           return page.evaluate(function(color) {
-            // Sets background color
-            document.body.bgColor = color;
+            try {
+              // Sets background color
+              document.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' : color.value ? color.value : '#FFFFFF';
+            } catch(e) {
+              return console.error(e.stack);
+            }
           }, function() {
-            // Renders the web page to an image buffer and saves it as the specified filename.
-            page.render(cfg.custom.upload + obj.filename + cfg.ph.render.format, function() {
+            // Renders the web page to an image buffer
+	          // and saves it as the specified filename.
+            page.render(config.custom.upload + obj.filename, { format: config.ph.render.format, quality: config.ph.render.quality }, function() {
               cb();
               ph.exit();
             });
-          }, cfg.ph.render.color);
-        }, cfg.ph.render.delay);
+          }, config.ph.render.color);
+        }, config.ph.render.delay);
       });
     });
   });

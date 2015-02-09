@@ -7,16 +7,16 @@ block content
   if grid && grid.length != 0
     ul.grid(name= list[i] ? list[i].name : 'unassigned' data-length= admintabs)
       each item, j in grid
-        +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.name, item.category, item.check, j)
+        +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, j)
 
-  mixin tabs(id, renderUrl, url, title, icon, name, category, check, j)
+  mixin tabs(id, renderUrl, url, title, icon, image, name, category, check, j)
     if check
       li.tabs(data-item= j)
         form.tab-form(action='/settings/tab/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
           div
             a(href= url title= title ? title : name)
               div.img-container
-                img.pic(src='../uploads/'+ id +'.png')
+                img.pic(src='../uploads/'+ image)
               div.icon-container
                 img.icon(src= icon)
               .name= name

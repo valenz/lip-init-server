@@ -7,8 +7,8 @@ block content
   form.form(action='/settings/tab/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
     h3.formHeadline= title
 
-    a(href='../../../uploads/'+query.id+'.png')
-      img(src='../../../uploads/'+query.id+'.png' width='250px')
+    a(href='../../../uploads/'+query.image)
+      img(src='../../../uploads/'+query.image width='250px')
 
     #detailsForm
       label| Name:
@@ -21,6 +21,8 @@ block content
       input.details(type='text' name='title' title= query.title value= query.title readonly)
       label| Icon:
       input.details(type='text' name='icon' title= query.icon value= query.icon readonly)
+      label| Image:
+      input.details(type='text' name='image' title= query.image value= query.image readonly)
       label| Category:
       input.details(type='text' name='category' title= query.category value= query.category readonly)
       label| Admin View:
@@ -47,7 +49,7 @@ block content
     noscript
       button.dlt-f(title='Submit')
         i.fa.fa-trash-o
-      | Delete
+        | Delete
     a.cancel(href='/settings' title='Cancel')| Cancel
 
   include ../includes/foot

@@ -1,8 +1,7 @@
 var config = require('./config.global');
 
-// Overrides global config
+// Overrides global config (run Node with NODE_ENV=production)
 
-// Environment settings
 config.env = 'production';
 
 module.exports = config;
