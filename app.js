@@ -5,6 +5,7 @@ var morgan = require('morgan');
 
 var pkg = require('./package');
 var config = require('./config');
+var winston = require('winston');
 var flash = require('connect-flash');
 var http = require('http');
 var expressSession = require('express-session');
@@ -13,6 +14,11 @@ var multer = require('multer');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+
+// Logging
+winston.loggers.add('log', config.loggers.log);
+var log = winston.loggers.get('log');
+log.exitOnError = false;
 
 // Configure Express
 var app = express();
@@ -53,7 +59,8 @@ passport.deserializeUser(Account.deserializeUser());
 // Connect mongoose
 mongoose.connect(config.db.uri + config.db.name, function(err) {
   if (err) {
-    console.log('Could not connect to mongodb on localhost. Ensure that you have mongodb running on localhost and mongodb accepts connections on standard ports!');
+    log.error('Could not connect to mongodb on %s.', config.db.uri);
+    log.warn('Ensure that you have mongodb running on %s and mongodb accepts connections on standard ports!', config.db.uri);
   }
 });
 
@@ -106,7 +113,7 @@ app.use(function(req, res, next) {
 
 // Handles uncaught exceptions.
 process.on('uncaughtException', function (e) {
-  return console.error('Caught exception: ' + e.stack);
+  return log.error('Caught exception: ', e.stack);
 });
 
 // error handlers
@@ -117,7 +124,8 @@ if (app.get('env') === 'development') {
   app.enable('verbose errors');
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    console.error(err);
+    log.error(err.message);
+    log.verbose('Status: %s | Method: %s', err.status, err.method, err.header)
     res.render('sites/status', {
       title: err.status,
       user: req.user,
@@ -134,7 +142,8 @@ if (app.get('env') === 'production') {
   app.disable('verbose errors');
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    console.error(err);
+    log.error(err.message);
+    log.verbose('Status: %s | Method: %s', err.status, err.method, err.header)
     res.render('sites/status', {
       title: err.status,
       user: req.user,
@@ -148,6 +157,6 @@ if (app.get('env') === 'production') {
 // Fires the server.
 var server = http.createServer(app);
 server.listen(app.get('port'), function() {
-  console.log(process.title +' ('+ process.version +') is running. Process id is: '+ process.pid);
-  console.log(pkg.name +' listening on %s:%d in %s mode.', server.address().address, server.address().port, app.settings.env);
+  log.info('%s (%s) is running. Process id is %d.', process.title, process.version, process.pid);
+  log.info('%s listening on %s:%d in %s mode.', pkg.name, server.address().address, server.address().port, app.settings.env);
 });

@@ -33,23 +33,23 @@ var config = module.exports = {
   loggers: {
     log: {
       console: {
-        level: 'info',
-        handleExceptions: false,
+        level: 'verbose',
+        handleExceptions: true,
         colorize: true,
         timestamp: true,
         prettyPrint: true,
         formatter: true,
         json: false,
-        exitOnError: false,
         label: 'Tabgrid'
       },
       file: {
-        level: 'error',
+        level: 'warn',
         colorize: true,
         prettyPrint: true,
         formatter: true,
+        json: true,
         name: 'errorLog',
-        filename: 'logs/error.log'
+        filename: 'logs/log.log'
       }
     }
   },
