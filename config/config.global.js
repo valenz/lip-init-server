@@ -33,7 +33,7 @@ var config = module.exports = {
   loggers: {
     log: {
       console: {
-        level: 'verbose',
+        level: 'info',
         handleExceptions: true,
         colorize: true,
         timestamp: true,
@@ -43,12 +43,12 @@ var config = module.exports = {
         label: 'Tabgrid'
       },
       file: {
-        level: 'warn',
+        level: 'info',
         colorize: true,
         prettyPrint: true,
         formatter: true,
         json: true,
-        name: 'errorLog',
+        name: 'log',
         filename: 'logs/log.log'
       }
     }
