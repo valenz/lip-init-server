@@ -385,48 +385,46 @@ function postAccountCreate(req, res) {
   console.log('CREATE.ACCOUNT: body request');
   console.log(req.body.username);
 
-  if(req.user) {
-    if(req.body.username && req.body.password && req.body.confirm) {
-      // The passport-local-mongoose package automatically takes care of salting and hashing the password.
-      var user = new Object({
-        username: req.body.username,
-        whoCreated: req.user ? req.user.username : req.body.username,
-        whenCreated: new Date(),
-        whenUpdated: undefined
-      });
+  if(req.body.username && req.body.password && req.body.confirm) {
+    // The passport-local-mongoose package automatically takes care of salting and hashing the password.
+    var user = new Object({
+      username: req.body.username,
+      whoCreated: req.user ? req.user.username : req.body.username,
+      whenCreated: new Date(),
+      whenUpdated: undefined
+    });
 
-      var Account = mongoose.model('account');
+    var Account = mongoose.model('account');
 
-      if(req.body.password === req.body.confirm) {
-        try {
-          Account.register(new Account(user), req.body.password, function(err, doc) {
-            if(err) throw new Error(err);
-            if(!doc) {
-              req.flash('error', 'Data was not found: '+ doc);
-              res.redirect('/settings');
-              throw new Error('Data was not found: '+ doc);
-            }
+    if(req.body.password === req.body.confirm) {
+      try {
+        Account.register(new Account(user), req.body.password, function(err, doc) {
+          if(err) {
+            req.flash('error', JSON.stringify(err.message));
+            res.redirect('create');
+            throw new Error(err);
+          }
+          if(!doc) {
+            req.flash('error', 'Data was not found: '+ doc);
+            res.redirect('create');
+            throw new Error('Data was not found: '+ doc);
+          }
 
-            console.log('CREATE.ACCOUNT: "'+ doc.username +'" has been created successfully.');
-            req.flash('success', 'Account has been created successfully.');
-            res.redirect('/settings');
-          });
-        } catch(e) {
-          console.error(e.stack);
-        }
-      } else {
-        req.flash('info', 'Account could not be created. Passwords did not match.');
-        res.redirect('create');
+          console.log('CREATE.ACCOUNT: "'+ doc.username +'" has been created successfully.');
+          req.flash('success', 'Account has been created successfully.');
+          res.redirect('/settings');
+        });
+      } catch(e) {
+        console.error(e.stack);
       }
     } else {
-      console.log('CONFIRM: Request error.'+ req.body);
-      req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('/settings');
+      req.flash('info', 'Account could not be created. Passwords did not match.');
+      res.redirect('create');
     }
   } else {
-    console.log('CREATE.ACCOUNT: Account could not be created. Session is expired.');
-    req.flash('info', 'Account could not be created. Your session is expired. Please log in.');
-    res.redirect('/');
+    console.log('CONFIRM: Request error.'+ req.body);
+    req.flash('error', 'Request error. Please fill the required fields.');
+    res.redirect('create');
   }
 };
 
@@ -439,17 +437,17 @@ function postAccountCreate(req, res) {
  */
 function postAccountUpdate(req, res) {
   console.log('UPDATE.ACCOUNT: body request');
-  console.log(req.body);
+  console.log(req.user._doc);
 
   if(req.user) {
-    if(req.body.id) {
+    if(req.body.newPassword && req.body.confirm) {
       var query = new Object({ _id: req.user._id });
       if(req.body.newPassword === req.body.confirm) {
         mongoose.model('account').findOne(query, function(err, acc) {
           if(err) throw new Error(err);
           if(!acc) {
             req.flash('error', 'Data was not found: '+ acc);
-            res.redirect('/settings');
+            res.redirect('update');
             throw new Error('Data was not found: '+ acc);
           }
 
@@ -457,7 +455,7 @@ function postAccountUpdate(req, res) {
             if(err) throw new Error(err);
             if(!doc) {
               req.flash('error', 'Data was not found: '+ doc);
-              res.redirect('/settings');
+              res.redirect('update');
               throw new Error('Data was not found: '+ doc);
             }
 
@@ -468,7 +466,7 @@ function postAccountUpdate(req, res) {
                 if(err) throw new Error(err);
                 if(!doc) {
                   req.flash('error', 'Data was not found: '+ doc);
-                  res.redirect('/settings');
+                  res.redirect('update');
                   throw new Error('Data was not found: '+ doc);
                 }
 
@@ -489,7 +487,7 @@ function postAccountUpdate(req, res) {
     } else {
       console.log('CONFIRM: Request error.'+ req.body);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('/settings');
+      res.redirect('update');
     }
   } else {
     console.log('UPDATE.ACCOUNT: Account could not be updated. Session is expired.');
@@ -519,7 +517,7 @@ function postAccountDelete(req, res) {
         if(err) throw new Error(err);
         if(!allAcc) {
           req.flash('error', 'Data was not found: '+ allAcc);
-          res.redirect('/settings');
+          res.redirect('details');
           throw new Error('Data was not found: '+ allAcc);
         }
 
@@ -527,7 +525,7 @@ function postAccountDelete(req, res) {
           if(err) throw new Error(err);
           if(!acc) {
             req.flash('error', 'Data was not found: '+ acc);
-            res.redirect('/settings');
+            res.redirect('details');
             throw new Error('Data was not found: '+ acc);
           }
 
@@ -537,7 +535,7 @@ function postAccountDelete(req, res) {
                 if(err) throw new Error(err);
                 if(!doc) {
                   req.flash('error', 'Data was not found: '+ doc);
-                  res.redirect('/settings');
+                  res.redirect('details');
                   throw new Error('Data was not found: '+ doc);
                 }
 
@@ -560,7 +558,7 @@ function postAccountDelete(req, res) {
     } else {
       console.log('CONFIRM: Request error.'+ req.body);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('/settings');
+      res.redirect('details');
     }
   } else {
     console.log('DELETE.ACCOUNT: Account could not be deleted. Session is expired.');
@@ -594,7 +592,7 @@ function postCategoryCreate(req, res) {
           if(err) throw new Error(err);
           if(!doc) {
             req.flash('error', 'Data was not found: '+ doc);
-            res.redirect('/settings');
+            res.redirect('create');
             throw new Error('Data was not found: '+ doc);
           }
 
@@ -608,7 +606,7 @@ function postCategoryCreate(req, res) {
     } else {
       console.log('CONFIRM: Request error.'+ req.body);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('/settings');
+      res.redirect('create');
     }
   } else {
     console.log('CREATE.CATEGORY: Category could not be created. Session is expired.');
@@ -637,7 +635,7 @@ function postCategoryUpdate(req, res) {
         if(err) throw new Error(err);
         if(!cat) {
           req.flash('error', 'Data was not found: '+ cat);
-          res.redirect('/settings');
+          res.redirect('update');
           throw new Error('Data was not found: '+ cat);
         }
 
@@ -652,7 +650,7 @@ function postCategoryUpdate(req, res) {
               if(err) throw new Error(err);
               if(!doc) {
                 req.flash('error', 'Data was not found: '+ doc);
-                res.redirect('/settings');
+                res.redirect('update');
                 throw new Error('Data was not found: '+ doc);
               }
 
@@ -670,7 +668,7 @@ function postCategoryUpdate(req, res) {
               if(err) throw new Error(err);
               if(!tab) {
                 req.flash('error', 'Data was not found: '+ tab);
-                res.redirect('/settings');
+                res.redirect('update');
                 throw new Error('Data was not found: '+ tab);
               }
 
@@ -680,7 +678,7 @@ function postCategoryUpdate(req, res) {
                 tab.save(function(err, doc) {
                   if(err) {
                     req.flash('error', JSON.stringify(err));
-                    res.redirect('/settings');
+                    res.redirect('update');
                     throw new Error(err);
                   }
                 });
@@ -698,7 +696,7 @@ function postCategoryUpdate(req, res) {
     } else {
       console.log('CONFIRM: Request error.'+ req.body);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('/settings');
+      res.redirect('update');
     }
   } else {
     console.log('UPDATE.CATEGORY: Category could not be updated. Session is expired.');
@@ -932,7 +930,7 @@ function postTabUpdate(req, res) {
             if(err) throw new Error(err);
             if(!cat) {
               req.flash('error', 'Data was not found: '+ cat);
-              res.redirect('/settings');
+              res.redirect('update');
               throw new Error('Data was not found: '+ cat);
             }
 
@@ -1118,7 +1116,7 @@ function postConfirm(req, res) {
     } else {
       console.log('CONFIRM: Request error.'+ req.body);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('/');
+      res.redirect('confirm');
     }
   } else {
     console.log('CONFIRM: Session is expired.');
