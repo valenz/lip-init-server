@@ -73,18 +73,18 @@ var config = module.exports = {
         value: '#F6F6F6'
       },
       // Specifies the scaling factor
-      zoom: 0.15,
+      zoom: 0.4,
       // Defines the rectangular area of the web page to be rasterized
       clip: {
         top: 0,
         left: 0,
-        width: 160,
-        height: 90
+        width: 320,
+        height: 180
       },
       // Sets the size of the viewport for the layout process
       viewport: {
-        width: 160,
-        height: 90
+        width: 320,
+        height: 180
       }
     },
     evaluate: {
