@@ -27,6 +27,7 @@ ul.fa-ul
   li
     a(title='E-Mail' href='mailto:your@mail.com')
       i.fa.fa-envelope
-  li
-    a(title='Help' href='/help')
-      i.fa.fa-question
+  if user
+    li
+      a(title='Help' href='/help')
+        i.fa.fa-question
