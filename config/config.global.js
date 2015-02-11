@@ -39,8 +39,7 @@ var config = module.exports = {
         timestamp: true,
         prettyPrint: true,
         formatter: true,
-        json: false,
-        label: 'Tabgrid'
+        json: false
       },
       file: {
         level: 'info',

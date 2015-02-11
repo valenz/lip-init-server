@@ -18,6 +18,7 @@ var LocalStrategy = require('passport-local').Strategy;
 // Logging
 winston.loggers.add('log', config.loggers.log);
 var log = winston.loggers.get('log');
+log.transports.console.label = pkg.name;
 log.exitOnError = false;
 
 // Configure Express
