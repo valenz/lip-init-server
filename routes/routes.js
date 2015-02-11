@@ -1,9 +1,11 @@
 var Entities = require('html-entities').AllHtmlEntities;
 var mongoose = require('mongoose');
 var urlparse = require('urlparse');
+var winston = require('winston');
 
 var methods = require('../classes/methods/methods');
 var RenderObject = require('../classes/render');
+var log = winston.loggers.get('log');
 var config = require('../config');
 
 var entities = new Entities();
@@ -70,7 +72,7 @@ function login(req, res) {
  * @param {Object} res
  */
 function logout(req, res) {
-  methods.logout(req, res);
+  closeSession(req, res);
   res.redirect('/');
 };
 
@@ -369,8 +371,9 @@ function tabDetails(req, res) {
  * @param {Object} res
  */
 function postLogin(req, res) {
-  console.log('LOGIN: "'+ req.user.username +'" has been logged in.');
-  req.flash('success', 'You are logged in. Welcome, '+ req.user.username +'!');
+  log.info('Logged in %s.', req.user.username);
+  log.verbose('Session cookie', req.session);
+  req.flash('success', 'You are logged in.');
   res.redirect('/accounts/'+ req.user.username);
 };
 
@@ -539,7 +542,7 @@ function postAccountDelete(req, res) {
                   throw new Error('Data was not found: '+ doc);
                 }
 
-                methods.logout(req, res);
+                closeSession(req, res);
 
                 console.log('DELETE.ACCOUNT: "'+ doc.username +'" was deleted successfully. Account objects left (LENGTH): '+ allAcc.length);
                 req.flash('success', 'Account has been deleted successfully.');
@@ -810,7 +813,7 @@ function postTabCreate(req, res) {
           url: req.body.address ? req.body.address : req.body.renderUrl,
           title: title,
           icon: info && info.favicon ? info.favicon : undefined,
-          image: methods.random() + '.' + config.ph.render.format,
+          image: methods.random() + '.' + config.ph.render.options.format,
           category: req.body.category,
           check: req.body.check ? true : false,
           whoCreated: req.user.username,
@@ -1140,3 +1143,16 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) return next();
   res.redirect('/login');
 }
+
+/**
+ * Set a flash message by passing the key, followed by the value, to req.flash()
+ * and remove the req.user property and clear the login session.
+ * @param {Object} req
+ * @param {Object} res
+ */
+function closeSession(req, res) {
+  log.info('Logged out %s.', req.user.username);
+  log.verbose('Session cookie:', req.session);
+  req.flash('success', 'You are logged out.');
+  req.logout();
+};

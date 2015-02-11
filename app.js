@@ -71,8 +71,8 @@ var routes = require('./routes/routes')
 app.get('/', routes.index);
 app.get('/help', routes.help);
 app.get('/login', routes.login);
-app.get('/logout', routes.logout);
 app.get('/settings', routes.settings);
+app.get('/logout', routes.ensureAuthenticated, routes.logout);
 app.get('/accounts/:username', routes.ensureAuthenticated, routes.accounts);
 app.get('/settings/account/create', routes.ensureAuthenticated, routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/account/update', routes.ensureAuthenticated, routes.accountUpdate);
@@ -112,9 +112,9 @@ app.use(function(req, res, next) {
 });
 
 // Handles uncaught exceptions.
-process.on('uncaughtException', function (e) {
+/*process.on('uncaughtException', function (e) {
   return log.error('Caught exception: ', e.stack);
-});
+});*/
 
 // error handlers
 

@@ -61,10 +61,12 @@ var config = module.exports = {
   // http://phantomjs.org/api/webpage/property/settings.html
   ph: {
     render: {
-      // Renders the web page to an image buffer [PNG|GIF|JPEG|PDF]
-      format: 'jpeg',
-      // JPEG compression quality. A higher number will look better, but creates a larger file
-      quality: '100',
+      options: {
+        // Renders the web page to an image buffer [PNG|GIF|JPEG|PDF]
+        format: 'jpeg',
+        // JPEG compression quality. A higher number will look better, but creates a larger file
+        quality: '100',
+      },
       // Number of milliseconds to wait after a page loads before taking the screenshot
       delay: 500,
       // When taking the screenshot, adds a white background otherwise adds color.value
