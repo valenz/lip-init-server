@@ -371,8 +371,7 @@ function tabDetails(req, res) {
  * @param {Object} res
  */
 function postLogin(req, res) {
-  log.info('Logged in %s.', req.user.username);
-  log.verbose('Session cookie', req.session);
+  log.info('%s %s %d - Logged in %s - %s', req.method, req.path, res.statusCode, req.user.username, req.headers['user-agent']);
   req.flash('success', 'You are logged in.');
   res.redirect('/accounts/'+ req.user.username);
 };
@@ -1101,10 +1100,9 @@ function postTabDelete(req, res) {
  * @param {Object} res
  */
 function postConfirm(req, res) {
-  console.log(req.body);
-
   if(req.user) {
-    if(req.body) {
+    if(req.body.id) {
+      log.info(req.body);
       var ro = new RenderObject();
       ro.set({
         title: 'Confirm',
@@ -1117,12 +1115,12 @@ function postConfirm(req, res) {
       });
       res.render('sites/confirm', ro.get());
     } else {
-      console.log('CONFIRM: Request error.'+ req.body);
+      log.info('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('confirm');
     }
   } else {
-    console.log('CONFIRM: Session is expired.');
+    log.error('%s %s %d - "Session is expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
     req.flash('info', 'Your session is expired. Please log in.');
     res.redirect('/');
   }
@@ -1151,8 +1149,7 @@ function ensureAuthenticated(req, res, next) {
  * @param {Object} res
  */
 function closeSession(req, res) {
-  log.info('Logged out %s.', req.user.username);
-  log.verbose('Session cookie:', req.session);
+  log.info('%s %s %d - "Logged out %s" - %s', req.method, req.path, res.statusCode, req.user.username, req.headers['user-agent']);
   req.flash('success', 'You are logged out.');
   req.logout();
 };
