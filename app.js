@@ -75,7 +75,7 @@ app.get('/help', routes.help);
 app.get('/login', routes.login);
 app.get('/logout', routes.ensureAuthenticated, routes.logout);
 app.get('/settings', routes.settings);
-app.get('/settings/logging', routes.logging);
+app.get('/settings/logging', routes.ensureAuthenticated, routes.logging);
 app.get('/accounts/:username', routes.ensureAuthenticated, routes.accounts);
 app.get('/settings/account/create', routes.ensureAuthenticated, routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/account/update', routes.ensureAuthenticated, routes.accountUpdate);
@@ -98,7 +98,6 @@ app.post('/settings/tab/create', routes.postTabCreate);
 app.post('/settings/tab/update', routes.postTabUpdate);
 app.post('/settings/tab/delete', routes.postTabDelete);
 app.post('/settings/:type(account|category|tab)/delete/confirm', routes.postConfirm);
-app.post('/settings/logging', routes.postLogging);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -129,7 +128,6 @@ if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     log.error(err.message);
-    log.verbose('Status: %s | Method: %s', err.status, err.method, err.header)
     res.render('sites/status', {
       title: err.status,
       user: req.user,
@@ -147,7 +145,6 @@ if (app.get('env') === 'production') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     log.error(err.message);
-    log.verbose('Status: %s | Method: %s', err.status, err.method, err.header)
     res.render('sites/status', {
       title: err.status,
       user: req.user,

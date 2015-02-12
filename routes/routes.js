@@ -42,7 +42,6 @@ module.exports.postTabCreate = postTabCreate;
 module.exports.postTabUpdate = postTabUpdate;
 module.exports.postTabDelete = postTabDelete;
 module.exports.postConfirm = postConfirm;
-module.exports.postLogging = postLogging;
 module.exports.ensureAuthenticated = ensureAuthenticated;
 
 /**
@@ -408,7 +407,7 @@ function postLogin(req, res) {
  */
 function postAccountCreate(req, res) {
   if(req.body.username && req.body.password && req.body.confirm) {
-    log.verbose(req.body.username);
+    log.verbose(JSON.stringify(req.body.username));
     // The passport-local-mongoose package automatically takes care of salting and hashing the password.
     var user = new Object({
       username: req.body.username,
@@ -433,7 +432,7 @@ function postAccountCreate(req, res) {
             throw new Error('Data was not found: '+ doc);
           }
 
-          log.verbose(doc._doc);
+          log.verbose(JSON.stringify(doc._doc));
 
           log.info('%s %s %d - "Created %s" - %s', req.method, req.path, res.statusCode, doc.username, req.headers['user-agent']);
           req.flash('success', 'Account has been created successfully.');
@@ -464,7 +463,7 @@ function postAccountCreate(req, res) {
 function postAccountUpdate(req, res) {
   if(req.user) {
     if(req.body.newPassword && req.body.confirm) {
-      log.verbose(req.user._doc);
+      log.verbose(JSON.stringify(req.user._doc));
       var query = new Object({ _id: req.user._id });
       if(req.body.newPassword === req.body.confirm) {
         mongoose.model('account').findOne(query, function(err, acc) {
@@ -494,7 +493,7 @@ function postAccountUpdate(req, res) {
                   throw new Error('Data was not found: '+ doc);
                 }
 
-                log.verbose(doc._doc);
+                log.verbose(JSON.stringify(doc._doc));
 
                 log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc.username, req.headers['user-agent']);
                 req.flash('success', 'Password has been set successfully.');
@@ -535,7 +534,7 @@ function postAccountUpdate(req, res) {
 function postAccountDelete(req, res) {
   if(req.user) {
     if(req.body.id) {
-      log.verbose(req.body);
+      log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
       mongoose.model('account').find(function(err, allAcc) {
         if(err) throw new Error(err);
@@ -563,7 +562,7 @@ function postAccountDelete(req, res) {
                   throw new Error('Data was not found: '+ doc);
                 }
 
-                log.verbose(doc._doc);
+                log.verbose(JSON.stringify(doc._doc));
 
                 closeSession(req, res);
 
@@ -603,7 +602,7 @@ function postAccountDelete(req, res) {
 function postCategoryCreate(req, res) {
   if(req.user) {
     if(req.body.categoryname) {
-      log.verbose(req.body);
+      log.verbose(JSON.stringify(req.body));
       var category = req.body.categoryname;
       var Category = mongoose.model('category');
       var data = new Category({
@@ -620,7 +619,7 @@ function postCategoryCreate(req, res) {
             throw new Error('Data was not found: '+ doc);
           }
 
-          log.verbose(doc._doc);
+          log.verbose(JSON.stringify(doc._doc));
 
           log.info('%s %s %d - "Created %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
           req.flash('success', 'Category "'+ doc.name +'" has been created successfully.');
@@ -653,7 +652,7 @@ function postCategoryCreate(req, res) {
 function postCategoryUpdate(req, res) {
   if(req.user) {
     if(req.body.id) {
-      log.verbose(req.body);
+      log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
       mongoose.model('category').findOne(query, function(err, cat) {
         if(err) throw new Error(err);
@@ -678,7 +677,7 @@ function postCategoryUpdate(req, res) {
                 throw new Error('Data was not found: '+ doc);
               }
 
-              log.verbose(doc._doc);
+              log.verbose(JSON.stringify(doc._doc));
 
               log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
               req.flash('success', 'Category "'+ doc.name +'" has been updated successfully.');
@@ -742,7 +741,7 @@ function postCategoryUpdate(req, res) {
 function postCategoryDelete(req, res) {
   if(req.user) {
     if(req.body.id) {
-      log.verbose(req.body);
+      log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
       mongoose.model('category').findOne(query, function(err, cat) {
         if(err) throw new Error(err);
@@ -787,7 +786,7 @@ function postCategoryDelete(req, res) {
               throw new Error('Data was not found: '+ doc);
             }
 
-            log.verbose(doc._doc);
+            log.verbose(JSON.stringify(doc._doc));
 
             log.info('%s %s %d - "Deleted %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
             req.flash('success', 'Category "'+ doc.name +'" has been deleted successfully.');
@@ -821,7 +820,7 @@ function postCategoryDelete(req, res) {
 function postTabCreate(req, res) {
   if(req.user) {
     if(req.body.renderUrl) {
-      log.verbose(req.body);
+      log.verbose(JSON.stringify(req.body));
       var url = req.body.address ? urlparse(req.body.address).normalize().toString() : urlparse(req.body.renderUrl).normalize().toString();
 
       methods.getPageInfo(url, function(info) {
@@ -875,7 +874,7 @@ function postTabCreate(req, res) {
               });
             }
 
-            log.verbose(doc._doc);
+            log.verbose(JSON.stringify(doc._doc));
 
             methods.renderPage({ url: req.body.renderUrl, filename: doc.image }, function() {
               log.info('%s %s %d - "Created %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
@@ -912,7 +911,7 @@ function postTabCreate(req, res) {
 function postTabUpdate(req, res) {
   if(req.user) {
     if(req.body.renderUrl) {
-      log.verbose(req.body);
+      log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
       mongoose.model('tab').findOne(query, function(err, tab) {
         if(err) throw new Error(err);
@@ -999,7 +998,7 @@ function postTabUpdate(req, res) {
                 throw new Error('Data was not found: '+ doc);
               }
 
-              log.verbose(doc._doc);
+              log.verbose(JSON.stringify(doc._doc));
 
               if(renderUrlTmp == req.body.renderUrl) {
                 log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
@@ -1042,7 +1041,7 @@ function postTabUpdate(req, res) {
 function postTabDelete(req, res) {
   if(req.user) {
     if(req.body.id) {
-      log.verbose(req.body);
+      log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
       mongoose.model('tab').findOne(query, function(err, tab) {
         if(err) throw new Error(err);
@@ -1089,7 +1088,7 @@ function postTabDelete(req, res) {
               throw new Error('Data was not found: '+ doc);
             }
 
-            log.verbose(doc._doc);
+            log.verbose(JSON.stringify(doc._doc));
             methods.clear(doc.image);
 
             log.info('%s %s %d - "Deleted %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
@@ -1121,7 +1120,7 @@ function postTabDelete(req, res) {
 function postConfirm(req, res) {
   if(req.user) {
     if(req.body.id) {
-      log.verbose(req.body);
+      log.verbose(JSON.stringify(req.body));
       var ro = new RenderObject();
       ro.set({
         title: 'Confirm',
@@ -1143,16 +1142,6 @@ function postConfirm(req, res) {
     req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
-};
-
-/**
- * Pass a local variable to the log page.
- * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req
- * @param {Object} res
- */
-function postLogging(req, res) {
-  log.info(req.body);
 };
 
 /**
