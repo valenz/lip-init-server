@@ -384,10 +384,8 @@ function postLogin(req, res) {
  * @return {String} err
  */
 function postAccountCreate(req, res) {
-  console.log('CREATE.ACCOUNT: body request');
-  console.log(req.body.username);
-
   if(req.body.username && req.body.password && req.body.confirm) {
+    log.verbose(req.body.username);
     // The passport-local-mongoose package automatically takes care of salting and hashing the password.
     var user = new Object({
       username: req.body.username,
@@ -412,19 +410,22 @@ function postAccountCreate(req, res) {
             throw new Error('Data was not found: '+ doc);
           }
 
-          console.log('CREATE.ACCOUNT: "'+ doc.username +'" has been created successfully.');
+          log.verbose(doc._doc);
+
+          log.info('%s %s %d - "Created %s" - %s', req.method, req.path, res.statusCode, doc.username, req.headers['user-agent']);
           req.flash('success', 'Account has been created successfully.');
           res.redirect('/settings');
         });
       } catch(e) {
-        console.error(e.stack);
+        log.error(e.stack);
       }
     } else {
+      log.error('%s %s %d - "Passwords did not match" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
       req.flash('info', 'Account could not be created. Passwords did not match.');
       res.redirect('create');
     }
   } else {
-    console.log('CONFIRM: Request error.'+ req.body);
+      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
     req.flash('error', 'Request error. Please fill the required fields.');
     res.redirect('create');
   }
@@ -438,11 +439,9 @@ function postAccountCreate(req, res) {
  * @return {String} err
  */
 function postAccountUpdate(req, res) {
-  console.log('UPDATE.ACCOUNT: body request');
-  console.log(req.user._doc);
-
   if(req.user) {
     if(req.body.newPassword && req.body.confirm) {
+      log.verbose(req.user._doc);
       var query = new Object({ _id: req.user._id });
       if(req.body.newPassword === req.body.confirm) {
         mongoose.model('account').findOne(query, function(err, acc) {
@@ -472,28 +471,30 @@ function postAccountUpdate(req, res) {
                   throw new Error('Data was not found: '+ doc);
                 }
 
-                console.log('UPDATE.ACCOUNT: "'+ doc.username +'" was updated successfully.');
+                log.verbose(doc._doc);
+
+                log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc.username, req.headers['user-agent']);
                 req.flash('success', 'Password has been set successfully.');
                 res.redirect('/settings');
               });
             } catch(e) {
-              console.error(e.stack);
+              log.error(e.stack);
             }
           });
         });
       } else {
-        console.log('UPDATE.ACCOUNT: Account could not be updated. Passwords did not match.');
+        log.error('%s %s %d - "Passwords did not match" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
         req.flash('info', 'Account could not be updated. Passwords did not match.');
         res.redirect('update');
       }
     } else {
-      console.log('CONFIRM: Request error.'+ req.body);
+      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('update');
     }
   } else {
-    console.log('UPDATE.ACCOUNT: Account could not be updated. Session is expired.');
-    req.flash('info', 'Account could not be updated. Your session is expired. Please log in.');
+    log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
+    req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
 };
@@ -509,11 +510,9 @@ function postAccountUpdate(req, res) {
  * @return {String} err
  */
 function postAccountDelete(req, res) {
-  console.log('DELETE.ACCOUNT: body request');
-  console.log(req.body);
-
   if(req.user) {
     if(req.body.id) {
+      log.verbose(req.body);
       var query = new Object({ _id: req.body.id });
       mongoose.model('account').find(function(err, allAcc) {
         if(err) throw new Error(err);
@@ -541,30 +540,32 @@ function postAccountDelete(req, res) {
                   throw new Error('Data was not found: '+ doc);
                 }
 
+                log.verbose(doc._doc);
+
                 closeSession(req, res);
 
-                console.log('DELETE.ACCOUNT: "'+ doc.username +'" was deleted successfully. Account objects left (LENGTH): '+ allAcc.length);
+                log.info('%s %s %d - "Deleted %s" - %s', req.method, req.path, res.statusCode, doc.username, req.headers['user-agent']);
                 req.flash('success', 'Account has been deleted successfully.');
                 res.redirect('/');
               });
             } catch(e) {
-              console.error(e.stack);
+              log.error(e.stack);
             }
           } else {
-            console.log('DELETE.ACCOUNT: "'+ acc.username +'" could not be deleted. Account objects left (LENGTH): '+ allAcc.length);
+            log.warn('%s %s %d - "Ignored %s" - %s', req.method, req.path, res.statusCode, acc.username, req.headers['user-agent']);
             req.flash('info', 'Account could not be deleted. Please create a new one first.');
             res.redirect('details');
           }
         });
       });
     } else {
-      console.log('CONFIRM: Request error.'+ req.body);
+      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('details');
     }
   } else {
-    console.log('DELETE.ACCOUNT: Account could not be deleted. Session is expired.');
-    req.flash('info', 'Account could not be deleted. Your session is expired. Please log in.');
+    log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
+    req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
 };
@@ -577,11 +578,9 @@ function postAccountDelete(req, res) {
  * @return {String} err
  */
 function postCategoryCreate(req, res) {
-  console.log('CREATE.CATEGORY: body request');
-  console.log(req.body);
-
   if(req.user) {
     if(req.body.categoryname) {
+      log.verbose(req.body);
       var category = req.body.categoryname;
       var Category = mongoose.model('category');
       var data = new Category({
@@ -598,21 +597,23 @@ function postCategoryCreate(req, res) {
             throw new Error('Data was not found: '+ doc);
           }
 
-          console.log('CREATE.CATEGORY: "'+ doc.name +'" ('+ doc._id +') has been created.');
+          log.verbose(doc._doc);
+
+          log.info('%s %s %d - "Created %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
           req.flash('success', 'Category "'+ doc.name +'" has been created successfully.');
           res.redirect('/settings');
         });
       } catch(e) {
-        console.error(e.stack);
+        log.error(e.stack);
       }
     } else {
-      console.log('CONFIRM: Request error.'+ req.body);
+      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('create');
     }
   } else {
-    console.log('CREATE.CATEGORY: Category could not be created. Session is expired.');
-    req.flash('info', 'Category could not be created. Your session is expired. Please log in.');
+    log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
+    req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
 };
@@ -627,11 +628,9 @@ function postCategoryCreate(req, res) {
  * @return {String} err
  */
 function postCategoryUpdate(req, res) {
-  console.log('UPDATE.CATEGORY: body request');
-  console.log(req.body);
-
   if(req.user) {
     if(req.body.id) {
+      log.verbose(req.body);
       var query = new Object({ _id: req.body.id });
       mongoose.model('category').findOne(query, function(err, cat) {
         if(err) throw new Error(err);
@@ -656,12 +655,14 @@ function postCategoryUpdate(req, res) {
                 throw new Error('Data was not found: '+ doc);
               }
 
-              console.log('UPDATED.CATEGORY: "'+ doc.name +'" ('+ doc._id +') has been updated.');
+              log.verbose(doc._doc);
+
+              log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
               req.flash('success', 'Category "'+ doc.name +'" has been updated successfully.');
               res.redirect('/settings');
             });
           } catch(e) {
-            console.error(e.stack);
+            log.error(e.stack);
           }
 
           for(var i = 0; i < cat.list.length; i++) {
@@ -685,24 +686,24 @@ function postCategoryUpdate(req, res) {
                   }
                 });
               } catch(e) {
-                console.error(e.stack);
+                log.error(e.stack);
               }
             });
           }
         } else {
-          console.log('UPDATED.CATEGORY: "'+ cat.name +'" ('+ cat._id +') still same. Nothing updated.');
+          log.warn('%s %s %d - "Ignored %s (%s)" - %s', req.method, req.path, res.statusCode, cat._id, cat.name, req.headers['user-agent']);
           req.flash('info', 'Category "'+ cat.name +'" still same. Nothing updated. Please type a different name.');
           res.redirect('/settings');
         }
       });
     } else {
-      console.log('CONFIRM: Request error.'+ req.body);
+      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('update');
     }
   } else {
-    console.log('UPDATE.CATEGORY: Category could not be updated. Session is expired.');
-    req.flash('info', 'Category could not be updated. Your session is expired. Please log in.');
+    log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
+    req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
 };
@@ -716,11 +717,9 @@ function postCategoryUpdate(req, res) {
  * @return {String} err
  */
 function postCategoryDelete(req, res) {
-  console.log('DELETE.CATEGORY: body request');
-  console.log(req.body);
-
   if(req.user) {
     if(req.body.id) {
+      log.verbose(req.body);
       var query = new Object({ _id: req.body.id });
       mongoose.model('category').findOne(query, function(err, cat) {
         if(err) throw new Error(err);
@@ -751,7 +750,7 @@ function postCategoryDelete(req, res) {
                 }
               });
             } catch(e) {
-              console.error(e.stack);
+              log.error(e.stack);
             }
           });
         }
@@ -765,22 +764,24 @@ function postCategoryDelete(req, res) {
               throw new Error('Data was not found: '+ doc);
             }
 
-            console.log('DELETE.CATEGORY: '+ doc.name +' has been deleted.');
+            log.verbose(doc._doc);
+
+            log.info('%s %s %d - "Deleted %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
             req.flash('success', 'Category "'+ doc.name +'" has been deleted successfully.');
             res.redirect('/settings');
           });
         } catch(e) {
-          console.error(e.stack);
+          log.error(e.stack);
         }
       });
     } else {
-      console.log('CONFIRM: Request error.'+ req.body);
+      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('/settings');
     }
   } else {
-    console.log('DELETE.CATEGORY: Category could not be deleted. Session is expired.');
-    req.flash('info', 'Category could not be deleted. Your session is expired. Please log in.');
+    log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
+    req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
 };
@@ -795,11 +796,9 @@ function postCategoryDelete(req, res) {
  * @return {String} err
  */
 function postTabCreate(req, res) {
-  console.log('CREATE.TAB: body request');
-  console.log(req.body);
-
   if(req.user) {
     if(req.body.renderUrl) {
+      log.verbose(req.body);
       var url = req.body.address ? urlparse(req.body.address).normalize().toString() : urlparse(req.body.renderUrl).normalize().toString();
 
       methods.getPageInfo(url, function(info) {
@@ -819,8 +818,6 @@ function postTabCreate(req, res) {
           whenCreated: new Date(),
           whenUpdated: undefined
         });
-
-        console.log('CREATE.TAB: response ' + data);
 
         try {
           data.save(function(err, doc) {
@@ -855,24 +852,26 @@ function postTabCreate(req, res) {
               });
             }
 
+            log.verbose(doc._doc);
+
             methods.renderPage({ url: req.body.renderUrl, filename: doc.image }, function() {
-              console.log('CREATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been created.');
+              log.info('%s %s %d - "Created %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
               req.flash('success', 'Tab has been created successfully.');
               res.redirect('create');
             });
           });
         } catch(e) {
-          console.error(e.stack);
+          log.error(e.stack);
         }
       });
     } else {
-      console.log('CONFIRM: Request error.'+ req.body);
+      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('create');
     }
   } else {
-    console.log('CREATE.TAB: Tab could not be created. Session is expired.');
-    req.flash('info', 'Tab could not be created. Your session is expired. Please log in.');
+    log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
+    req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
 };
@@ -888,11 +887,9 @@ function postTabCreate(req, res) {
  * @return {String} err
  */
 function postTabUpdate(req, res) {
-  console.log('UPDATE.TAB: body request');
-  console.log(req.body);
-
   if(req.user) {
     if(req.body.renderUrl) {
+      log.verbose(req.body);
       var query = new Object({ _id: req.body.id });
       mongoose.model('tab').findOne(query, function(err, tab) {
         if(err) throw new Error(err);
@@ -970,8 +967,6 @@ function postTabUpdate(req, res) {
           tab.whenUpdated = new Date();
           tab.__v = tab.__v + 1;
 
-          console.log('UPDATE.TAB: response ' + tab);
-
           try {
             tab.save(function(err, doc) {
               if(err) throw new Error(err);
@@ -981,31 +976,33 @@ function postTabUpdate(req, res) {
                 throw new Error('Data was not found: '+ doc);
               }
 
+              log.verbose(doc._doc);
+
               if(renderUrlTmp == req.body.renderUrl) {
-                console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
+                log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
                 req.flash('success', 'Tab has been updated successfully.');
                 req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
               } else {
                 methods.renderPage({ url: req.body.renderUrl, filename: doc.image }, function() {
-                  console.log('UPDATE.TAB: "'+ doc.name +'" ('+ doc._id +') has been updated.');
+                  log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
                   req.flash('success', 'Tab has been updated successfully.');
                   req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
                 });
               }
             });
           } catch(e) {
-            console.error(e.stack);
+            log.error(e.stack);
           }
         });
       });
     } else {
-      console.log('CONFIRM: Request error.'+ req.body);
+      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('update');
     }
   } else {
-    console.log('UPDATE.TAB: Tab could not be updated. Session is expired.');
-    req.flash('info', 'Tab could not be updated. Your session is expired. Please log in.');
+    log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
+    req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
 };
@@ -1020,11 +1017,9 @@ function postTabUpdate(req, res) {
  * @return {String} err
  */
 function postTabDelete(req, res) {
-  console.log('DELETE.TAB: body request');
-  console.log(req.body);
-
   if(req.user) {
     if(req.body.id) {
+      log.verbose(req.body);
       var query = new Object({ _id: req.body.id });
       mongoose.model('tab').findOne(query, function(err, tab) {
         if(err) throw new Error(err);
@@ -1057,7 +1052,7 @@ function postTabDelete(req, res) {
                 });
               }
             } catch(e) {
-              console.error(e.stack);
+              log.error(e.stack);
             }
           });
         }
@@ -1071,24 +1066,25 @@ function postTabDelete(req, res) {
               throw new Error('Data was not found: '+ doc);
             }
 
+            log.verbose(doc._doc);
             methods.clear(doc.image);
 
-            console.log('DELETE.TAB: "'+ doc.name +'" has been deleted.');
+            log.info('%s %s %d - "Deleted %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
             req.flash('success', 'Tab has been deleted successfully.');
             doc.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
           });
         } catch(e) {
-          console.error(e.stack);
+          log.error(e.stack);
         }
       });
     } else {
-      console.log('CONFIRM: Request error.'+ req.body);
+      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('/');
     }
   } else {
-    console.log('DELETE.TAB: Tab could not be deleted. Session is expired.');
-    req.flash('info', 'Tab could not be deleted. Your session is expired. Please log in.');
+    log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
+    req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
 };
@@ -1102,7 +1098,7 @@ function postTabDelete(req, res) {
 function postConfirm(req, res) {
   if(req.user) {
     if(req.body.id) {
-      log.info(req.body);
+      log.verbose(req.body);
       var ro = new RenderObject();
       ro.set({
         title: 'Confirm',
@@ -1115,13 +1111,13 @@ function postConfirm(req, res) {
       });
       res.render('sites/confirm', ro.get());
     } else {
-      log.info('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
+      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('confirm');
     }
   } else {
-    log.error('%s %s %d - "Session is expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
-    req.flash('info', 'Your session is expired. Please log in.');
+    log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
+    req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
 };

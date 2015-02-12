@@ -102,13 +102,13 @@ function clear(filename) {
       try {
         fs.unlink(path + filename, function(err) {
           if(err) return log.error(err);
-          log.info('File %s has been deleted.', filename);
+          log.info('Deleted file "%s".', filename);
         });
       } catch(e) {
         log.error(e.stack);
       }
     } else {
-      log.warn('Incorrect path %s of file %s does not exists.', path, filename);
+      log.warn('Incorrect path "%s" of file "%s" does not exists.', path, filename);
     }
   });
 };
@@ -149,9 +149,9 @@ function getPageInfo(url, cb) {
       // Opens the url and loads it to the page
       return page.open(url, function(status) {
         if(status === 'success') {
-          log.info('Status after opening the page %s is: %s', url, status)
+          log.info('Status after opening the page "%s": %s', url, status)
         } else {
-          log.warn('Status after opening the page %s is: %s', url, status);
+          log.warn('Status after opening the page "%s": %s', url, status);
         }
 
         return setTimeout(function() {
@@ -177,6 +177,7 @@ function getPageInfo(url, cb) {
           }, function(info) {
             cb(info);
             ph.exit();
+            log.info('PhantomJS process %s terminated.', ph.process.pid);
           });
         }, config.ph.evaluate.delay);
       });
@@ -249,9 +250,9 @@ function renderPage(obj, cb) {
 
       return page.open(obj.url, function (status) {
         if(status === 'success') {
-          log.info('Status after opening the page %s is: %s', obj.url, status)
+          log.info('Status after opening the page "%s": %s', obj.url, status)
         } else {
-          log.warn('Status after opening the page %s is: %s', obj.url, status);
+          log.warn('Status after opening the page "%s": %s', obj.url, status);
         }
 
         return setTimeout(function() {
@@ -268,6 +269,7 @@ function renderPage(obj, cb) {
             page.render(config.custom.upload + obj.filename, config.ph.render.options, function() {
               cb();
               ph.exit();
+              log.info('PhantomJS process %s terminated.', ph.process.pid);
             });
           }, config.ph.render.color);
         }, config.ph.render.delay);
