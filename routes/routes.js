@@ -19,6 +19,7 @@ module.exports.logout = logout;
 module.exports.index = index;
 module.exports.accounts = accounts;
 module.exports.settings = settings;
+module.exports.log = log;
 module.exports.help = help;
 module.exports.accountCreate = accountCreate;
 module.exports.accountUpdate = accountUpdate;
@@ -30,6 +31,7 @@ module.exports.tabCreate = tabCreate;
 module.exports.tabUpdate = tabUpdate;
 module.exports.tabDetails = tabDetails;
 
+module.exports.postLog = postLog;
 module.exports.postLogin = postLogin;
 module.exports.postAccountCreate = postAccountCreate;
 module.exports.postAccountUpdate = postAccountUpdate;
@@ -183,6 +185,24 @@ function help(req, res) {
     success: req.flash('success')
   });
   res.render('sites/help', ro.get());
+};
+
+/**
+ * Pass a local variable to the log page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+function log(req, res) {
+  var ro = new RenderObject();
+  ro.set({
+    title: 'Log',
+    user: req.user,
+    info: req.flash('info'),
+    error: req.flash('error'),
+    success: req.flash('success')
+  });
+  res.render('sites/log', ro.get());
 };
 
 /**
@@ -1120,6 +1140,16 @@ function postConfirm(req, res) {
     req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
+};
+
+/**
+ * Pass a local variable to the log page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+function postLog(req, res) {
+  log.info(req.body);
 };
 
 /**

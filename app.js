@@ -70,6 +70,7 @@ var routes = require('./routes/routes')
 
 // Configure routes
 app.get('/', routes.index);
+app.get('/log', routes.log);
 app.get('/help', routes.help);
 app.get('/login', routes.login);
 app.get('/settings', routes.settings);
@@ -85,6 +86,7 @@ app.get('/settings/tab/create', routes.ensureAuthenticated, routes.tabCreate);
 app.get('/settings/tab/update', routes.ensureAuthenticated, routes.tabUpdate);
 app.get('/settings/tab/details/:id?', routes.ensureAuthenticated, routes.tabDetails);
 
+//app.post('/log', routes.postLog);
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), routes.postLogin);
 app.post('/settings/account/create', routes.postAccountCreate);
 app.post('/settings/account/update', routes.postAccountUpdate);
