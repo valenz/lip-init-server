@@ -19,7 +19,7 @@ module.exports.logout = logout;
 module.exports.index = index;
 module.exports.accounts = accounts;
 module.exports.settings = settings;
-module.exports.log = log;
+module.exports.logging = logging;
 module.exports.help = help;
 module.exports.accountCreate = accountCreate;
 module.exports.accountUpdate = accountUpdate;
@@ -31,7 +31,6 @@ module.exports.tabCreate = tabCreate;
 module.exports.tabUpdate = tabUpdate;
 module.exports.tabDetails = tabDetails;
 
-module.exports.postLog = postLog;
 module.exports.postLogin = postLogin;
 module.exports.postAccountCreate = postAccountCreate;
 module.exports.postAccountUpdate = postAccountUpdate;
@@ -43,6 +42,7 @@ module.exports.postTabCreate = postTabCreate;
 module.exports.postTabUpdate = postTabUpdate;
 module.exports.postTabDelete = postTabDelete;
 module.exports.postConfirm = postConfirm;
+module.exports.postLogging = postLogging;
 module.exports.ensureAuthenticated = ensureAuthenticated;
 
 /**
@@ -193,16 +193,19 @@ function help(req, res) {
  * @param {Object} req
  * @param {Object} res
  */
-function log(req, res) {
+function logging(req, res) {
   var ro = new RenderObject();
-  ro.set({
-    title: 'Log',
-    user: req.user,
-    info: req.flash('info'),
-    error: req.flash('error'),
-    success: req.flash('success')
+  methods.getLog(function(log) {
+    ro.set({
+      title: 'Logging',
+      file: log,
+      user: req.user,
+      info: req.flash('info'),
+      error: req.flash('error'),
+      success: req.flash('success')
+    });
+    res.render('sites/log', ro.get());
   });
-  res.render('sites/log', ro.get());
 };
 
 /**
@@ -1148,7 +1151,7 @@ function postConfirm(req, res) {
  * @param {Object} req
  * @param {Object} res
  */
-function postLog(req, res) {
+function postLogging(req, res) {
   log.info(req.body);
 };
 

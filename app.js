@@ -24,6 +24,7 @@ log.exitOnError = false;
 // Configure Express
 var app = express();
 app.set('port', process.env.PORT || config.app.set.port);
+app.set('address', process.env.ADDRESS || config.app.set.address);
 app.set('env', process.argv[2] || process.env.NODE_ENV || config.env);
 
 app.set('views', __dirname + config.app.set.views);
@@ -70,11 +71,11 @@ var routes = require('./routes/routes')
 
 // Configure routes
 app.get('/', routes.index);
-app.get('/log', routes.log);
 app.get('/help', routes.help);
 app.get('/login', routes.login);
-app.get('/settings', routes.settings);
 app.get('/logout', routes.ensureAuthenticated, routes.logout);
+app.get('/settings', routes.settings);
+app.get('/settings/logging', routes.logging);
 app.get('/accounts/:username', routes.ensureAuthenticated, routes.accounts);
 app.get('/settings/account/create', routes.ensureAuthenticated, routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/account/update', routes.ensureAuthenticated, routes.accountUpdate);
@@ -86,7 +87,6 @@ app.get('/settings/tab/create', routes.ensureAuthenticated, routes.tabCreate);
 app.get('/settings/tab/update', routes.ensureAuthenticated, routes.tabUpdate);
 app.get('/settings/tab/details/:id?', routes.ensureAuthenticated, routes.tabDetails);
 
-//app.post('/log', routes.postLog);
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }), routes.postLogin);
 app.post('/settings/account/create', routes.postAccountCreate);
 app.post('/settings/account/update', routes.postAccountUpdate);
@@ -98,6 +98,7 @@ app.post('/settings/tab/create', routes.postTabCreate);
 app.post('/settings/tab/update', routes.postTabUpdate);
 app.post('/settings/tab/delete', routes.postTabDelete);
 app.post('/settings/:type(account|category|tab)/delete/confirm', routes.postConfirm);
+app.post('/settings/logging', routes.postLogging);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -159,7 +160,7 @@ if (app.get('env') === 'production') {
 
 // Fires the server.
 var server = http.createServer(app);
-server.listen(app.get('port'), function() {
+server.listen(app.get('port'), app.get('address'), function() {
   log.info('%s (%s) is running. Process id is %d.', process.title, process.version, process.pid);
   log.info('%s listening on %s:%d in %s mode.', pkg.name, server.address().address, server.address().port, app.settings.env);
 });

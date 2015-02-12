@@ -6,6 +6,8 @@ var config = module.exports = {
   // App (required package dependencies)
   app: {
     set: {
+      // Sets address where server listen to
+      address: '',
       // Sets port where server listen to
       port: 9002,
       // Sets location of view pages

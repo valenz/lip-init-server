@@ -13,6 +13,7 @@ module.exports.shorter = shorter;
 module.exports.detach = detach;
 module.exports.paste = paste;
 module.exports.clear = clear;
+module.exports.getLog = getLog;
 module.exports.random = random;
 module.exports.getPageInfo = getPageInfo;
 module.exports.renderPage = renderPage;
@@ -110,6 +111,24 @@ function clear(filename) {
     } else {
       log.warn('Incorrect path "%s" of file "%s" does not exists.', path, filename);
     }
+  });
+};
+
+/**
+ * Returns an object with the content of the file as a callback.
+ * @param {function} cb
+ * @return {Object} l
+ */
+function getLog(cb) {
+  var arr = new Array();
+  require('readline').createInterface({
+    input: fs.createReadStream(config.loggers.log.file.filename),
+    output: process.stdout,
+    terminal: false
+  }).on('line', function(line) {
+    arr.push(line);
+  }).on('close', function() {
+    cb(arr);
   });
 };
 

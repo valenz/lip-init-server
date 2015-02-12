@@ -1,6 +1,22 @@
+extends ../includes/header
+
 block content
 
-  p.log
+  include ../includes/message
+
+  h3.formHeadline= title
+
+  div.logging(style='margin: 0 auto; width: 99.7%;')
+    each line in file
+      div.timestamp
+        span= line
+      //div.level
+        //span= line.level
+      //div.message
+        //span= line.message
+
+  //div(style='margin: 0 auto; width: 99.7%;')
+    //textarea(rows='30' style='width: 99.7%; font-size: 14px;' readonly)= file
 
 
   include ../includes/foot
