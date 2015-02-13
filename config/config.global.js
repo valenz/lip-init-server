@@ -46,6 +46,9 @@ var config = module.exports = {
       file: {
         level: 'info',
         colorize: true,
+        timestamp: function() {
+          return Date();
+        },
         prettyPrint: true,
         formatter: true,
         json: true,
