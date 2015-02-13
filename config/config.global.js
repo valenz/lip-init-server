@@ -67,7 +67,7 @@ var config = module.exports = {
     render: {
       options: {
         // Renders the web page to an image buffer [PNG|GIF|JPEG|PDF]
-        format: 'jpeg',
+        format: 'png',
         // JPEG compression quality. A higher number will look better, but creates a larger file
         quality: '100',
       },
@@ -79,18 +79,18 @@ var config = module.exports = {
         value: '#F6F6F6'
       },
       // Specifies the scaling factor
-      zoom: 0.4,
+      zoom: 0.8,
       // Defines the rectangular area of the web page to be rasterized
       clip: {
         top: 0,
         left: 0,
-        width: 320,
-        height: 180
+        width: 640,
+        height: 360
       },
       // Sets the size of the viewport for the layout process
       viewport: {
-        width: 320,
-        height: 180
+        width: 640,
+        height: 360
       }
     },
     evaluate: {
@@ -101,7 +101,7 @@ var config = module.exports = {
       clo: {
         parameters: {
           // Ignores SSL errors, such as expired or self-signed certificate errors
-          'ignore-ssl-errors': false,
+          'ignore-ssl-errors': true,
           // Sets the SSL protocol for secure connections
           'ssl-protocol': 'any',
           // Sets the encoding used for terminal output
