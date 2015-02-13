@@ -9,6 +9,7 @@ var log = winston.loggers.get('log');
 var config = require('../config');
 
 var entities = new Entities();
+methods.mkdirSync(config.loggers.log.file.filename);
 
 /**
  ********************************* EXPORTS *********************************

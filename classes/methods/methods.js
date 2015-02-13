@@ -1,4 +1,5 @@
 var fs = require('fs');
+var mkdirp = require('mkdirp');
 var winston = require('winston');
 var config = require('../../config');
 var log = winston.loggers.get('log');
@@ -13,6 +14,7 @@ module.exports.shorter = shorter;
 module.exports.detach = detach;
 module.exports.paste = paste;
 module.exports.clear = clear;
+module.exports.mkdirSync = mkdirSync;
 module.exports.getLog = getLog;
 module.exports.random = random;
 module.exports.getPageInfo = getPageInfo;
@@ -115,8 +117,25 @@ function clear(filename) {
 };
 
 /**
+ * Creates logging path and file like "mkdir -p", if not exists.
+ * @param {String} str
+ */
+function mkdirSync(str) {
+  var filepath = str.split('/');
+  var path = '';
+
+  for(var i = 0; i < filepath.length-1; i++) {
+    path += filepath[i]+'/';
+  }
+
+  mkdirp.sync(path, 0755, function (err) {
+    if (err) throw new Error(err);
+  });
+};
+
+/**
  * Returns an object with the content of the file as a callback.
- * @param {function} cb
+ * @param {Function} cb
  * @return {Object} l
  */
 function getLog(cb) {
