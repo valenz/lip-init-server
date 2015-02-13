@@ -122,15 +122,24 @@ function clear(filename) {
  */
 function mkdirSync(str) {
   var filepath = str.split('/');
-  var path = '';
+  if(filepath.length > 1) {
+    var path = '';
 
-  for(var i = 0; i < filepath.length-1; i++) {
-    path += filepath[i]+'/';
+    for(var i = 0; i < filepath.length-1; i++) {
+      path = path.concat(filepath[i]+'/');
+    }
+
+    fs.exists(path, function(exists) {
+      if(!exists) {
+        mkdirp.sync(path, 0755)
+        log.verbose('The path and filename of the logfile has been created.');
+      } else {
+        log.verbose('The path and filename of the logfile already exists.');
+      }
+    });
+  } else {
+    log.verbose('No path of the logfile found. Creation skipped.');
   }
-
-  mkdirp.sync(path, 0755, function (err) {
-    if (err) throw new Error(err);
-  });
 };
 
 /**

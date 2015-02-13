@@ -53,7 +53,10 @@ var config = module.exports = {
         formatter: true,
         json: true,
         name: 'log',
-        filename: 'logs/log.log'
+        filename: 'logs/log.log',
+        maxsize: 512,
+        maxFiles: 1,
+        tailable: true
       }
     }
   },
