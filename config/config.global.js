@@ -7,7 +7,7 @@ var config = module.exports = {
   app: {
     set: {
       // Sets address where server listen to
-      address: '',
+      address: 'localhost',
       // Sets port where server listen to
       port: 9002,
       // Sets location of view pages
