@@ -6,6 +6,8 @@ var config = module.exports = {
   // App (required package dependencies)
   app: {
     set: {
+      // Sets address where server listen to
+      address: 'localhost',
       // Sets port where server listen to
       port: 9002,
       // Sets location of view pages
@@ -25,31 +27,53 @@ var config = module.exports = {
 
   // Database
   db: {
-    uri: process.env.MONGO_URI || 'localhost',
+    uri: 'localhost',
     name: '/lipinit'
   },
 
   // Log levels [silly|debug|verbose|info|warn|error]
   loggers: {
     log: {
+      file: {
+        // Level of messages that this transport should log
+        level: 'info',
+        // Boolean flag indicating if we should colorize output
+        colorize: true,
+        // Boolean flag indicating if we should prepend output with timestamps
+        // If function is specified, its return value will be used instead of timestamps
+        timestamp: function() {
+          return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
+        },
+        // If true, additional JSON metadata objects that are added to
+        // logging string messages will be displayed as a JSON string representation
+        // If function is specified, its return value will be the string representing the meta
+        prettyPrint: true,
+        // If function is specified, its return value will be used instead of default output
+        formatter: true,
+        // If true, messages will be logged as JSON
+        json: true,
+        // The filename of the logfile to write output to
+        filename: 'logs/log.log',
+        // Max size in bytes of the logfile, if the size is exceeded then a
+        // new file is created, a counter will become a suffix of the log file
+        maxsize: 512 * 1024,
+        // Limit the number of files created when the size of the logfile is exceeded
+        maxFiles: 1,
+        // If true, log files will be rolled based on maxsize and maxfiles, but in ascending order
+        // The filename will always have the most recent log lines
+        // The larger the appended number, the older the log file
+        tailable: true
+      },
       console: {
         level: 'info',
-        handleExceptions: false,
+        handleExceptions: true,
         colorize: true,
-        timestamp: true,
+        timestamp: function() {
+          return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
+        },
         prettyPrint: true,
         formatter: true,
-        json: false,
-        exitOnError: false,
-        label: 'Tabgrid'
-      },
-      file: {
-        level: 'error',
-        colorize: true,
-        prettyPrint: true,
-        formatter: true,
-        name: 'errorLog',
-        filename: 'logs/error.log'
+        json: false
       }
     }
   },
@@ -61,10 +85,12 @@ var config = module.exports = {
   // http://phantomjs.org/api/webpage/property/settings.html
   ph: {
     render: {
-      // Renders the web page to an image buffer [PNG|GIF|JPEG|PDF]
-      format: 'jpeg',
-      // JPEG compression quality. A higher number will look better, but creates a larger file
-      quality: '100',
+      options: {
+        // Renders the web page to an image buffer [PNG|GIF|JPEG|PDF]
+        format: 'png',
+        // JPEG compression quality. A higher number will look better, but creates a larger file
+        quality: '100',
+      },
       // Number of milliseconds to wait after a page loads before taking the screenshot
       delay: 500,
       // When taking the screenshot, adds a white background otherwise adds color.value
@@ -73,18 +99,18 @@ var config = module.exports = {
         value: '#F6F6F6'
       },
       // Specifies the scaling factor
-      zoom: 0.4,
+      zoom: 0.8,
       // Defines the rectangular area of the web page to be rasterized
       clip: {
         top: 0,
         left: 0,
-        width: 320,
-        height: 180
+        width: 640,
+        height: 360
       },
       // Sets the size of the viewport for the layout process
       viewport: {
-        width: 320,
-        height: 180
+        width: 640,
+        height: 360
       }
     },
     evaluate: {
@@ -95,7 +121,7 @@ var config = module.exports = {
       clo: {
         parameters: {
           // Ignores SSL errors, such as expired or self-signed certificate errors
-          'ignore-ssl-errors': false,
+          'ignore-ssl-errors': true,
           // Sets the SSL protocol for secure connections
           'ssl-protocol': 'any',
           // Sets the encoding used for terminal output

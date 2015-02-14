@@ -1,17 +1,21 @@
 var fs = require('fs');
+var mkdirp = require('mkdirp');
+var winston = require('winston');
 var config = require('../../config');
+var log = winston.loggers.get('log');
 
 /**
  ********************************* EXPORTS *********************************
  */
 
-module.exports.logout = logout;
 module.exports.getAdminTabs = getAdminTabs;
 module.exports.getAssignedTabs = getAssignedTabs;
 module.exports.shorter = shorter;
 module.exports.detach = detach;
 module.exports.paste = paste;
 module.exports.clear = clear;
+module.exports.mkdirSync = mkdirSync;
+module.exports.getLog = getLog;
 module.exports.random = random;
 module.exports.getPageInfo = getPageInfo;
 module.exports.renderPage = renderPage;
@@ -19,17 +23,6 @@ module.exports.renderPage = renderPage;
 /**
  ********************************* METHODS *********************************
  */
-
-/**
- * Set a flash message by passing the key, followed by the value, to req.flash()
- * and remove the req.user property and clear the login session.
- * @param {Object} req
- * @param {Object} res
- */
-function logout(req, res) {
-  req.flash('success', 'You are logged out.');
-  req.logout();
-};
 
 /**
  * Returns the number of tabs which are assigned to admin view.
@@ -111,15 +104,59 @@ function clear(filename) {
     if(exists) {
       try {
         fs.unlink(path + filename, function(err) {
-          if(err) return console.error(err);
-          console.log('DELETE.FILE: ', filename);
+          if(err) return log.error(err);
+          log.info('Deleted file "%s".', filename);
         });
       } catch(e) {
-        console.error(e.stack);
+        log.error(e.stack);
       }
     } else {
-      console.error('Incorrect path "'+ path +'" or file "'+ filename +'" does not exists.');
+      log.warn('Incorrect path "%s" or file "%s" does not exists.', path, filename);
     }
+  });
+};
+
+/**
+ * Creates logging path and file like "mkdir -p", if not exists.
+ * @param {String} str
+ */
+function mkdirSync(str) {
+  var filepath = str.split('/');
+  if(filepath.length > 1) {
+    var path = '';
+
+    for(var i = 0; i < filepath.length-1; i++) {
+      path = path.concat(filepath[i]+'/');
+    }
+
+    fs.exists(path, function(exists) {
+      if(!exists) {
+        mkdirp.sync(path, 0755)
+        log.verbose('The path and filename of the logfile has been created.');
+      } else {
+        log.verbose('The path and filename of the logfile already exists.');
+      }
+    });
+  } else {
+    log.verbose('No path of the logfile found. Creation skipped.');
+  }
+};
+
+/**
+ * Returns an object with the content of the file as a callback.
+ * @param {Function} cb
+ * @return {Object} l
+ */
+function getLog(cb) {
+  var arr = new Array();
+  require('readline').createInterface({
+    input: fs.createReadStream(config.loggers.log.file.filename),
+    output: process.stdout,
+    terminal: false
+  }).on('line', function(line) {
+    arr.push(JSON.parse(line));
+  }).on('close', function() {
+    cb(arr);
   });
 };
 
@@ -153,12 +190,16 @@ function getPageInfo(url, cb) {
   phantom.create(function(ph) {
     // Makes new PhantomJS WebPage objects
     return ph.createPage(function(page) {
-      console.log('PAGE.INFO.PHANTOM.PROCESS.PID:', ph.process.pid);
-      if(!url) return ph.exit(1);
+      log.info('PhantomJS was started for evaluation. The process ID is %s.', ph.process.pid);
+      if(!url) return ph.exit();
 
       // Opens the url and loads it to the page
       return page.open(url, function(status) {
-        console.log("PAGE.INFO.URL.STATUS: ", status);
+        if(status === 'success') {
+          log.info('Status after opening page "%s": %s', url, status)
+        } else {
+          log.warn('Status after opening page "%s": %s', url, status);
+        }
 
         return setTimeout(function() {
           // Evaluates the given function in the context
@@ -176,7 +217,6 @@ function getPageInfo(url, cb) {
                   return info;
                 }
               } catch(e) {
-                console.error(e.stack);
                 info.favicon = 'https://plus.google.com/_/favicon?domain_url='+ window.location.origin;
                 return info;
               }
@@ -184,6 +224,7 @@ function getPageInfo(url, cb) {
           }, function(info) {
             cb(info);
             ph.exit();
+            log.info('PhantomJS process %s complete and was terminated.', ph.process.pid);
           });
         }, config.ph.evaluate.delay);
       });
@@ -201,8 +242,8 @@ function renderPage(obj, cb) {
 
   phantom.create(config.ph.settings.clo, function (ph) {
     return ph.createPage(function (page) {
-      console.log('PAGE.RENDER.PHANTOM.PROCESS.PID:', ph.process.pid);
-      if(!obj.url) return ph.exit(1);
+      log.info('PhantomJS was started for capturing. The process ID is %s.', ph.process.pid);
+      if(!obj.url) return ph.exit();
 
       // Sets the size of the viewport for the layout process
       page.set('viewportSize', config.ph.render.viewport);
@@ -235,14 +276,14 @@ function renderPage(obj, cb) {
       // This callback is invoked when a web page
       // was unable to load resource.
       page.set('onResourceError', function(resourceError) {
-        console.log('ON.RESOURCE.ERROR: Unable to load resource (ID: #'+ resourceError.id +' URL: '+ resourceError.url +')');
-        console.log('ON.RESOURCE.ERROR: Error code: '+ resourceError.errorCode +'. Description: '+ resourceError.errorString);
+        log.error('Resource Error: Unable to load resource (id: #%s | url: %s)', resourceError.id, resourceError.url);
+        log.error('Resource Error: Error code: %s | Description: %s', resourceError.errorCode, resourceError.errorString);
       });
 
       // This callback is invoked when there is a JavaScript
       // confirm on the web page.
       page.set('onConfirm', function(msg) {
-        console.log('ON.CONFIRM: '+ msg);
+        log.info('JavaScript confirm says: ', msg);
         // true === pressing the OK button
         // false === pressing the Cancel button
         return false;
@@ -251,11 +292,15 @@ function renderPage(obj, cb) {
       // This callback is invoked when a resource requested
       // by the page timeout.
       page.set('onResourceTimeout', function(request) {
-        console.log('ON.RESOURCE.TIMEOUT: Response (ID: #'+ request.id +'): '+ JSON.stringify(request));
+        log.warn('Resource Timeout: Response (ID: #%s)', request.id, request);
       });
 
       return page.open(obj.url, function (status) {
-        console.log("PAGE.RENDER.URL.STATUS: ", status);
+        if(status === 'success') {
+          log.info('Status after opening page "%s": %s', obj.url, status)
+        } else {
+          log.warn('Status after opening page "%s": %s', obj.url, status);
+        }
 
         return setTimeout(function() {
           return page.evaluate(function(color) {
@@ -263,14 +308,15 @@ function renderPage(obj, cb) {
               // Sets background color
               document.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' : color.value ? color.value : '#FFFFFF';
             } catch(e) {
-              return console.error(e.stack);
+              return;
             }
           }, function() {
             // Renders the web page to an image buffer
 	          // and saves it as the specified filename.
-            page.render(config.custom.upload + obj.filename, { format: config.ph.render.format, quality: config.ph.render.quality }, function() {
+            page.render(config.custom.upload + obj.filename, config.ph.render.options, function() {
               cb();
               ph.exit();
+              log.info('PhantomJS process %s complete and was terminated.', ph.process.pid);
             });
           }, config.ph.render.color);
         }, config.ph.render.delay);

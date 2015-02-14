@@ -5,5 +5,7 @@ var config = require('./config.global');
 config.env = 'test';
 config.app.set.port = 9090;
 config.db.name = '/tabtest';
+config.loggers.log.console.level = 'silly';
+config.loggers.log.console.label = 'TEST';
 
 module.exports = config;
