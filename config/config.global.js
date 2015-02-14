@@ -54,7 +54,7 @@ var config = module.exports = {
         json: true,
         name: 'log',
         filename: 'logs/log.log',
-        maxsize: 512,
+        maxsize: 512 * 1024,
         maxFiles: 1,
         tailable: true
       }
