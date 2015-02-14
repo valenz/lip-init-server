@@ -34,29 +34,46 @@ var config = module.exports = {
   // Log levels [silly|debug|verbose|info|warn|error]
   loggers: {
     log: {
+      file: {
+        // Level of messages that this transport should log
+        level: 'info',
+        // Boolean flag indicating if we should colorize output
+        colorize: true,
+        // Boolean flag indicating if we should prepend output with timestamps
+        // If function is specified, its return value will be used instead of timestamps
+        timestamp: function() {
+          return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
+        },
+        // If true, additional JSON metadata objects that are added to
+        // logging string messages will be displayed as a JSON string representation
+        // If function is specified, its return value will be the string representing the meta
+        prettyPrint: true,
+        // If function is specified, its return value will be used instead of default output
+        formatter: true,
+        // If true, messages will be logged as JSON
+        json: true,
+        // The filename of the logfile to write output to
+        filename: 'logs/log.log',
+        // Max size in bytes of the logfile, if the size is exceeded then a
+        // new file is created, a counter will become a suffix of the log file
+        maxsize: 512 * 1024,
+        // Limit the number of files created when the size of the logfile is exceeded
+        maxFiles: 1,
+        // If true, log files will be rolled based on maxsize and maxfiles, but in ascending order
+        // The filename will always have the most recent log lines
+        // The larger the appended number, the older the log file
+        tailable: true
+      },
       console: {
         level: 'info',
         handleExceptions: true,
         colorize: true,
-        timestamp: true,
-        prettyPrint: true,
-        formatter: true,
-        json: false
-      },
-      file: {
-        level: 'info',
-        colorize: true,
         timestamp: function() {
-          return Date();
+          return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
         },
         prettyPrint: true,
         formatter: true,
-        json: true,
-        name: 'log',
-        filename: 'logs/log.log',
-        maxsize: 512 * 1024,
-        maxFiles: 1,
-        tailable: true
+        json: false
       }
     }
   },
