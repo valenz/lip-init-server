@@ -77,7 +77,7 @@ app.get('/logout', routes.ensureAuthenticated, routes.logout);
 app.get('/settings', routes.settings);
 app.get('/settings/logging', routes.ensureAuthenticated, routes.logging);
 app.get('/accounts/:username', routes.ensureAuthenticated, routes.accounts);
-app.get('/settings/account/create', routes.ensureAuthenticated, routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
+app.get('/settings/account/create', /*routes.ensureAuthenticated,*/ routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/account/update', routes.ensureAuthenticated, routes.accountUpdate);
 app.get('/settings/account/details/:id?', routes.ensureAuthenticated, routes.accountDetails);
 app.get('/settings/category/create', routes.ensureAuthenticated, routes.categoryCreate);
