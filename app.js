@@ -59,7 +59,7 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // Connect mongoose
-mongoose.connect(config.db.uri + config.db.name, function(err) {
+mongoose.connect(process.env.MONGO_URI || config.db.uri + config.db.name, function(err) {
   if (err) {
     log.error('Could not connect to mongodb on %s.', config.db.uri);
     log.warn('Ensure that you have mongodb running on %s and mongodb accepts connections on standard ports!', config.db.uri);

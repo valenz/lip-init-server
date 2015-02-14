@@ -27,7 +27,7 @@ var config = module.exports = {
 
   // Database
   db: {
-    uri: process.env.MONGO_URI || 'localhost',
+    uri: 'localhost',
     name: '/lipinit'
   },
 
