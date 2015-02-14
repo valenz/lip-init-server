@@ -116,7 +116,9 @@ app.use(function(req, res, next) {
 
 // Handles uncaught exceptions.
 process.on('uncaughtException', function (e) {
-  return log.error('Caught exception: ', e.message);
+  log.debug('Caught exception: ', e.stack);
+  log.error('Caught exception: ', e.message);
+  return;
 });
 
 // error handlers
