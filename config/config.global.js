@@ -154,6 +154,10 @@ var config = module.exports = {
 
   // Custom
   custom: {
-    upload: 'public/uploads/'
+    upload: 'public/uploads/',
+    shorter: {
+      maxLength: 48,
+      endChars: '...'
+    }
   }
 }

@@ -55,9 +55,11 @@ function getAssignedTabs(obj) {
  * @param {n} Number
  * @return {str} String
  */
-function shorter(str, n) {
+function shorter(str) {
   if(!str) return false;
-  return str.length > n ? str.substring(0, n)+'...' : str;
+  var n = config.custom.shorter.maxLength;
+  n = n >= 10 ? n : 42;
+  return str.length > n ? str.substring(0, n) + config.custom.shorter.endChars : str;
 };
 
 /**

@@ -850,7 +850,7 @@ function postTabCreate(req, res) {
 
         var Tab = mongoose.model('tab');
         var data = new Tab({
-          name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42),
+          name: req.body.name ? methods.shorter(req.body.name) : methods.shorter(title),
           renderUrl: req.body.renderUrl,
           url: req.body.address ? req.body.address : req.body.renderUrl,
           title: title,
@@ -1001,7 +1001,7 @@ function postTabUpdate(req, res) {
         methods.getPageInfo(url, function(info) {
           var title = info && info.title ? entities.decode(info.title) : url;
 
-          tab.name = req.body.name && req.body.address ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42);
+          tab.name = req.body.name && req.body.address ? methods.shorter(req.body.name) : methods.shorter(title);
           tab.renderUrl = req.body.renderUrl;
           tab.url = req.body.address ? req.body.address : req.body.renderUrl;
           tab.title = title;
