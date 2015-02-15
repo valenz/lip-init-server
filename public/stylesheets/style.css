@@ -133,7 +133,7 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
 .grid li {
   width: 182px;
   vertical-align: top;
-  padding: 25px 15px 0px 15px;
+  padding: 20px 15px 0px 15px;
   zoom: 1;
   position: relative;
   *display: inline;
@@ -142,7 +142,7 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
 }
 
 .categoryHeadline {
-  margin: 10px 0 -10px 0;
+  margin: 10px 0 0 0;
   text-align: center;
   width: auto;
   font-weight: lighter;
@@ -181,9 +181,8 @@ li .pic, li .img-container {
   color: #464749;
   width: auto;
   height: auto;
-  margin: 0;
   position: relative;
-  top: -5px;
+  top: -3px;
   font-size: 15px;
   font-weight: lighter;
 }
@@ -200,7 +199,7 @@ li a {
   position: absolute;
   color: #17313A;
   z-index: 1;
-  top: 29px;
+  top: 24px;
   left: 20px;
 }
 
@@ -224,11 +223,11 @@ li a {
 }
 
 .btn-del {
-  top: 25px;
+  top: 21px;
 }
 
 .btn-del-ns {
-  top: -7px;
+  top: -12px;
 }
 
 .btn-del:active, .btn-del-ns:active {
