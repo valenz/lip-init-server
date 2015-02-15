@@ -311,6 +311,8 @@ li a {
 }
 
 .log-message {
+  white-space: pre-wrap;
+  word-break: break-all;
   text-align: left;
   padding-left: 10px;
 }
