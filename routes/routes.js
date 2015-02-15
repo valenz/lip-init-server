@@ -198,6 +198,8 @@ function logging(req, res) {
   methods.getLog(function(log) {
     ro.set({
       title: 'Logging',
+      level: config.loggers.log.file.level,
+      env: config.env,
       file: log,
       user: req.user,
       info: req.flash('info'),
