@@ -35,11 +35,7 @@ app.use(favicon(__dirname + config.app.set.favicon));
 app.use(multer());
 app.use(morgan('dev'));
 
-app.use(expressSession({
-  resave: false, // don't save session if unmodified
-  saveUninitialized: false, // don't create session until something stored
-  secret: 'keyboard cat'
-}));
+app.use(expressSession(config.app.cookie.options));
 
 app.use(flash());
 
@@ -116,7 +112,9 @@ app.use(function(req, res, next) {
 
 // Handles uncaught exceptions.
 process.on('uncaughtException', function (e) {
-  return log.error('Caught exception: ', e.message);
+  log.debug('Caught exception: ', e.stack);
+  log.error('Caught exception: ', e.message);
+  return;
 });
 
 // error handlers

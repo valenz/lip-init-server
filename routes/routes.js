@@ -198,6 +198,8 @@ function logging(req, res) {
   methods.getLog(function(log) {
     ro.set({
       title: 'Logging',
+      level: config.loggers.log.file.level,
+      env: config.env,
       file: log,
       user: req.user,
       info: req.flash('info'),
@@ -423,14 +425,14 @@ function postAccountCreate(req, res) {
       try {
         Account.register(new Account(user), req.body.password, function(err, doc) {
           if(err) {
-            req.flash('error', JSON.stringify(err.message));
-            res.redirect('create');
+            req.flash('error', err.message);
+            res.redirect('/settings');
             throw new Error(err);
           }
           if(!doc) {
-            req.flash('error', 'Data was not found: '+ doc);
+            req.flash('error', 'Data was not found:', doc);
             res.redirect('create');
-            throw new Error('Data was not found: '+ doc);
+            throw new Error('Data was not found:', doc);
           }
 
           log.verbose(JSON.stringify(doc._doc));
@@ -470,33 +472,37 @@ function postAccountUpdate(req, res) {
         mongoose.model('account').findOne(query, function(err, acc) {
           if(err) throw new Error(err);
           if(!acc) {
-            req.flash('error', 'Data was not found: '+ acc);
+            req.flash('error', 'Data was not found:', acc);
             res.redirect('update');
-            throw new Error('Data was not found: '+ acc);
+            throw new Error('Data was not found:', acc);
           }
 
           acc.setPassword(req.body.newPassword, function(err, doc) {
             if(err) throw new Error(err);
             if(!doc) {
-              req.flash('error', 'Data was not found: '+ doc);
+              req.flash('error', 'Data was not found:', doc);
               res.redirect('update');
-              throw new Error('Data was not found: '+ doc);
+              throw new Error('Data was not found:', doc);
             }
 
             doc.whenUpdated = new Date();
 
             try {
               doc.save(function(err, doc) {
-                if(err) throw new Error(err);
+                if(err) {
+                  req.flash('error', err.message);
+                  res.redirect('/settings');
+                  throw new Error(err);
+                }
                 if(!doc) {
-                  req.flash('error', 'Data was not found: '+ doc);
+                  req.flash('error', 'Data was not found:', doc);
                   res.redirect('update');
-                  throw new Error('Data was not found: '+ doc);
+                  throw new Error('Data was not found:', doc);
                 }
 
                 log.verbose(JSON.stringify(doc._doc));
 
-                log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc.username, req.headers['user-agent']);
+                log.info('%s %s %d - "Updated %s" - %s', req.method, req.path, res.statusCode, doc.username, req.headers['user-agent']);
                 req.flash('success', 'Password has been set successfully.');
                 res.redirect('/settings');
               });
@@ -540,27 +546,31 @@ function postAccountDelete(req, res) {
       mongoose.model('account').find(function(err, allAcc) {
         if(err) throw new Error(err);
         if(!allAcc) {
-          req.flash('error', 'Data was not found: '+ allAcc);
+          req.flash('error', 'Data was not found:', allAcc);
           res.redirect('details');
-          throw new Error('Data was not found: '+ allAcc);
+          throw new Error('Data was not found:', allAcc);
         }
 
         mongoose.model('account').findOne(query, function(err, acc) {
           if(err) throw new Error(err);
           if(!acc) {
-            req.flash('error', 'Data was not found: '+ acc);
+            req.flash('error', 'Data was not found:', acc);
             res.redirect('details');
-            throw new Error('Data was not found: '+ acc);
+            throw new Error('Data was not found:', acc);
           }
 
           if(allAcc.length > 1) {
             try {
               acc.remove(function(err, doc) {
-                if(err) throw new Error(err);
+                if(err) {
+                  req.flash('error', err.message);
+                  res.redirect('/settings');
+                  throw new Error(err);
+                }
                 if(!doc) {
-                  req.flash('error', 'Data was not found: '+ doc);
+                  req.flash('error', 'Data was not found:', doc);
                   res.redirect('details');
-                  throw new Error('Data was not found: '+ doc);
+                  throw new Error('Data was not found:', doc);
                 }
 
                 log.verbose(JSON.stringify(doc._doc));
@@ -575,7 +585,7 @@ function postAccountDelete(req, res) {
               log.error(e.stack);
             }
           } else {
-            log.warn('%s %s %d - "Ignored %s" - %s', req.method, req.path, res.statusCode, acc.username, req.headers['user-agent']);
+            log.warn('%s %s %d - "Request ignored %s" - %s', req.method, req.path, res.statusCode, acc.username, req.headers['user-agent']);
             req.flash('info', 'Account could not be deleted. Please create a new one first.');
             res.redirect('details');
           }
@@ -613,17 +623,21 @@ function postCategoryCreate(req, res) {
 
       try {
         data.save(function(err, doc) {
-          if(err) throw new Error(err);
+          if(err) {
+            req.flash('error', 'Category already exists with name %s.', req.body.categoryname);
+            res.redirect('/settings');
+            throw new Error(err);
+          }
           if(!doc) {
-            req.flash('error', 'Data was not found: '+ doc);
+            req.flash('error', 'Data was not found:', doc);
             res.redirect('create');
-            throw new Error('Data was not found: '+ doc);
+            throw new Error('Data was not found:', doc);
           }
 
           log.verbose(JSON.stringify(doc._doc));
 
           log.info('%s %s %d - "Created %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
-          req.flash('success', 'Category "'+ doc.name +'" has been created successfully.');
+          req.flash('success', 'Category "%s" has been created successfully.', doc.name);
           res.redirect('/settings');
         });
       } catch(e) {
@@ -658,30 +672,34 @@ function postCategoryUpdate(req, res) {
       mongoose.model('category').findOne(query, function(err, cat) {
         if(err) throw new Error(err);
         if(!cat) {
-          req.flash('error', 'Data was not found: '+ cat);
+          req.flash('error', 'Data was not found:', cat);
           res.redirect('update');
-          throw new Error('Data was not found: '+ cat);
+          throw new Error('Data was not found:', cat);
         }
 
-        var category = req.body.categoryname;
-        category = category.substr(0, 1).toUpperCase() + category.substr(1, category.length);
+        var catNew = req.body.categoryname;
+        var catOld = cat.name;
 
-        if(category && cat.name !== category) {
-          cat.name = category;
+        if(catNew && cat.name !== catNew) {
+          cat.name = catNew;
 
           try {
             cat.save(function(err, doc) {
-              if(err) throw new Error(err);
+              if(err) {
+                req.flash('error', 'Category already exists with name %s.', req.body.categoryname);
+                res.redirect('/settings');
+                throw new Error(err);
+              }
               if(!doc) {
-                req.flash('error', 'Data was not found: '+ doc);
+                req.flash('error', 'Data was not found:', doc);
                 res.redirect('update');
-                throw new Error('Data was not found: '+ doc);
+                throw new Error('Data was not found:', doc);
               }
 
               log.verbose(JSON.stringify(doc._doc));
 
               log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
-              req.flash('success', 'Category "'+ doc.name +'" has been updated successfully.');
+              req.flash('success', 'Category "%s" has been updated successfully to "%s".', catOld, catNew);
               res.redirect('/settings');
             });
           } catch(e) {
@@ -693,18 +711,18 @@ function postCategoryUpdate(req, res) {
             mongoose.model('tab').findOne(query, function(err, tab) {
               if(err) throw new Error(err);
               if(!tab) {
-                req.flash('error', 'Data was not found: '+ tab);
+                req.flash('error', 'Data was not found:', tab);
                 res.redirect('update');
-                throw new Error('Data was not found: '+ tab);
+                throw new Error('Data was not found:', tab);
               }
 
-              tab.category = category;
+              tab.category = catNew;
 
               try {
                 tab.save(function(err, doc) {
                   if(err) {
-                    req.flash('error', JSON.stringify(err));
-                    res.redirect('update');
+                    req.flash('error', err.message);
+                    res.redirect('/settings');
                     throw new Error(err);
                   }
                 });
@@ -714,8 +732,7 @@ function postCategoryUpdate(req, res) {
             });
           }
         } else {
-          log.warn('%s %s %d - "Ignored %s (%s)" - %s', req.method, req.path, res.statusCode, cat._id, cat.name, req.headers['user-agent']);
-          req.flash('info', 'Category "'+ cat.name +'" still same. Nothing updated. Please type a different name.');
+          log.warn('%s %s %d - "Request ignored %s (%s)" - %s', req.method, req.path, res.statusCode, cat._id, cat.name, req.headers['user-agent']);
           res.redirect('/settings');
         }
       });
@@ -747,9 +764,9 @@ function postCategoryDelete(req, res) {
       mongoose.model('category').findOne(query, function(err, cat) {
         if(err) throw new Error(err);
         if(!cat) {
-          req.flash('error', 'Data was not found: '+ cat);
+          req.flash('error', 'Data was not found:', cat);
           res.redirect('/settings');
-          throw new Error('Data was not found: '+ cat);
+          throw new Error('Data was not found:', cat);
         }
 
         for(var i = 0; i < cat.list.length; i++) {
@@ -757,9 +774,9 @@ function postCategoryDelete(req, res) {
           mongoose.model('tab').findOne(query, function(err, tab) {
             if(err) throw new Error(err);
             if(!tab) {
-              req.flash('error', 'Data was not found: '+ tab);
+              req.flash('error', 'Data was not found:', tab);
               res.redirect('/settings');
-              throw new Error('Data was not found: '+ tab);
+              throw new Error('Data was not found:', tab);
             }
 
             tab.category = undefined;
@@ -767,7 +784,7 @@ function postCategoryDelete(req, res) {
             try {
               tab.save(function(err, doc) {
                 if(err) {
-                  req.flash('error', JSON.stringify(err));
+                  req.flash('error', err.message);
                   res.redirect('/settings');
                   throw new Error(err);
                 }
@@ -780,17 +797,21 @@ function postCategoryDelete(req, res) {
 
         try {
           cat.remove(function(err, doc) {
-            if(err) throw new Error(err);
-            if(!doc) {
-              req.flash('error', 'Data was not found: '+ doc);
+            if(err) {
+              req.flash('error', err.message);
               res.redirect('/settings');
-              throw new Error('Data was not found: '+ doc);
+              throw new Error(err);
+            }
+            if(!doc) {
+              req.flash('error', 'Data was not found:', doc);
+              res.redirect('/settings');
+              throw new Error('Data was not found:', doc);
             }
 
             log.verbose(JSON.stringify(doc._doc));
 
             log.info('%s %s %d - "Deleted %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
-            req.flash('success', 'Category "'+ doc.name +'" has been deleted successfully.');
+            req.flash('success', 'Category "%s" has been deleted successfully.', doc.name);
             res.redirect('/settings');
           });
         } catch(e) {
@@ -829,7 +850,7 @@ function postTabCreate(req, res) {
 
         var Tab = mongoose.model('tab');
         var data = new Tab({
-          name: req.body.name ? methods.shorter(req.body.name, 42) : methods.shorter(title, 42),
+          name: req.body.name ? methods.shorter(req.body.name) : methods.shorter(title),
           renderUrl: req.body.renderUrl,
           url: req.body.address ? req.body.address : req.body.renderUrl,
           title: title,
@@ -844,11 +865,15 @@ function postTabCreate(req, res) {
 
         try {
           data.save(function(err, doc) {
-            if(err) throw new Error(err);
+            if(err) {
+              req.flash('error', err.message);
+              res.redirect('/settings');
+              throw new Error(err);
+            }
             if(!doc) {
-              req.flash('error', 'Data was not found: '+ doc);
+              req.flash('error', 'Data was not found:', doc);
               res.redirect('create');
-              throw new Error('Data was not found: '+ doc);
+              throw new Error('Data was not found:', doc);
             }
 
             if(req.body.category) {
@@ -856,9 +881,9 @@ function postTabCreate(req, res) {
               mongoose.model('category').findOne(query, function(err, cat) {
                 if(err) throw new Error(err);
                 if(!cat) {
-                  req.flash('error', 'Data was not found: '+ cat);
+                  req.flash('error', 'Data was not found:', cat);
                   res.redirect('create');
-                  throw new Error('Data was not found: '+ cat);
+                  throw new Error('Data was not found:', cat);
                 }
 
                 var data = methods.paste(doc._id, cat);
@@ -866,8 +891,8 @@ function postTabCreate(req, res) {
                 if(data) {
                   data.save(function(err, doc) {
                     if(err) {
-                      req.flash('error', JSON.stringify(err));
-                      res.redirect('create');
+                      req.flash('error', err.message);
+                      res.redirect('/settings');
                       throw new Error(err);
                     }
                   });
@@ -917,9 +942,9 @@ function postTabUpdate(req, res) {
       mongoose.model('tab').findOne(query, function(err, tab) {
         if(err) throw new Error(err);
         if(!tab) {
-          req.flash('error', 'Data was not found: '+ tab);
+          req.flash('error', 'Data was not found:', tab);
           res.redirect('update');
-          throw new Error('Data was not found: '+ tab);
+          throw new Error('Data was not found:', tab);
         }
 
         if(tab.category) {
@@ -927,9 +952,9 @@ function postTabUpdate(req, res) {
           mongoose.model('category').findOne(query, function(err, cat) {
             if(err) throw new Error(err);
             if(!cat) {
-              req.flash('error', 'Data was not found: '+ cat);
+              req.flash('error', 'Data was not found:', cat);
               res.redirect('update');
-              throw new Error('Data was not found: '+ cat);
+              throw new Error('Data was not found:', cat);
             }
 
             var data = methods.detach(tab._id, cat);
@@ -937,8 +962,8 @@ function postTabUpdate(req, res) {
             if(data) {
               data.save(function(err, tab) {
                 if(err) {
-                  req.flash('error', JSON.stringify(err));
-                  res.redirect('update');
+                  req.flash('error', err.message);
+                  res.redirect('/settings');
                   throw new Error(err);
                 }
               });
@@ -951,9 +976,9 @@ function postTabUpdate(req, res) {
           mongoose.model('category').findOne(query, function(err, cat) {
             if(err) throw new Error(err);
             if(!cat) {
-              req.flash('error', 'Data was not found: '+ cat);
+              req.flash('error', 'Data was not found:', cat);
               res.redirect('update');
-              throw new Error('Data was not found: '+ cat);
+              throw new Error('Data was not found:', cat);
             }
 
             var data = methods.paste(tab._id, cat);
@@ -961,8 +986,8 @@ function postTabUpdate(req, res) {
             if(data) {
               data.save(function(err, doc) {
                 if(err) {
-                  req.flash('error', JSON.stringify(err));
-                  res.redirect('update');
+                  req.flash('error', err.message);
+                  res.redirect('/settings');
                   throw new Error(err);
                 }
               });
@@ -976,7 +1001,7 @@ function postTabUpdate(req, res) {
         methods.getPageInfo(url, function(info) {
           var title = info && info.title ? entities.decode(info.title) : url;
 
-          tab.name = req.body.name && req.body.address ? req.body.name : methods.shorter(title, 42);
+          tab.name = req.body.name && req.body.address ? methods.shorter(req.body.name) : methods.shorter(title);
           tab.renderUrl = req.body.renderUrl;
           tab.url = req.body.address ? req.body.address : req.body.renderUrl;
           tab.title = title;
@@ -992,11 +1017,15 @@ function postTabUpdate(req, res) {
 
           try {
             tab.save(function(err, doc) {
-              if(err) throw new Error(err);
+              if(err) {
+                req.flash('error', err.message);
+                res.redirect('/settings');
+                throw new Error(err);
+              }
               if(!doc) {
-                req.flash('error', 'Data was not found: '+ doc);
+                req.flash('error', 'Data was not found:', doc);
                 res.redirect('update');
-                throw new Error('Data was not found: '+ doc);
+                throw new Error('Data was not found:', doc);
               }
 
               log.verbose(JSON.stringify(doc._doc));
@@ -1047,9 +1076,9 @@ function postTabDelete(req, res) {
       mongoose.model('tab').findOne(query, function(err, tab) {
         if(err) throw new Error(err);
         if(!tab) {
-          req.flash('error', 'Data was not found: '+ tab);
+          req.flash('error', 'Data was not found:', tab);
           res.redirect('/');
-          throw new Error('Data was not found: '+ tab);
+          throw new Error('Data was not found:', tab);
         }
 
         if(tab.category) {
@@ -1057,9 +1086,9 @@ function postTabDelete(req, res) {
           mongoose.model('category').findOne(query, function(err, cat) {
             if(err) throw new Error(err);
             if(!cat) {
-              req.flash('error', 'Data was not found: '+ cat);
+              req.flash('error', 'Data was not found:', cat);
               res.redirect('/');
-              throw new Error('Data was not found: '+ cat);
+              throw new Error('Data was not found:', cat);
             }
 
             try {
@@ -1068,8 +1097,8 @@ function postTabDelete(req, res) {
               if(data) {
                 data.save(function(err, doc) {
                   if(err) {
-                    req.flash('error', JSON.stringify(err));
-                    res.redirect('/');
+                    req.flash('error', err.message);
+                    res.redirect('/settings');
                     throw new Error(err);
                   }
                 });
@@ -1082,11 +1111,15 @@ function postTabDelete(req, res) {
 
         try {
           tab.remove(function(err, doc) {
-            if(err) throw new Error(err);
+            if(err) {
+              req.flash('error', err.message);
+              res.redirect('/settings');
+              throw new Error(err);
+            }
             if(!doc) {
-              req.flash('error', 'Data was not found: '+ doc);
+              req.flash('error', 'Data was not found:', doc);
               res.redirect('/');
-              throw new Error('Data was not found: '+ doc);
+              throw new Error('Data was not found:', doc);
             }
 
             log.verbose(JSON.stringify(doc._doc));
