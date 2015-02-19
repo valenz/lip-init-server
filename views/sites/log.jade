@@ -11,30 +11,37 @@ block content
         th| Timestamp
         th| Level*
         th| Message
-      - for(var i = file.length-1; i >= 0; --i) {
-        tr
-          td
-            p.log-line= i + 1
-          td
-            p.log-timestamp= file[i].timestamp
-          td
-            if file[i].level == 'error'
-              p.log-level.level-error= file[i].level
-            else if file[i].level == 'warn'
-              p.log-level.level-warn= file[i].level
-            else if file[i].level == 'info'
-              p.log-level.level-info= file[i].level
-            else if file[i].level == 'verbose'
-              p.log-level.level-verbose= file[i].level
-            else if file[i].level == 'debug'
-              p.log-level.level-debug= file[i].level
-            else
-              p.log-level= file[i].level
-          td
-            p.log-message= file[i].message
-      - }
+      each line, i in file
+        +lines(line.timestamp, line.level, line.message, i)
+
+  mixin lines(timestamp, level, message, i)
+    tr
+      td
+        if i+1 == file.length
+          p.log-line
+            a(name='tail')= i+1
+        else
+          p.log-line= i+1
+      td
+        p.log-timestamp= timestamp
+      td
+        if level == 'error'
+          p.log-level.level-error= level
+        else if level == 'warn'
+          p.log-level.level-warn= level
+        else if level == 'info'
+          p.log-level.level-info= level
+        else if level == 'verbose'
+          p.log-level.level-verbose= level
+        else if level == 'debug'
+          p.log-level.level-debug= level
+        else
+          p.log-level= level
+      td
+        p.log-message= message
 
   p.lev-no
-    | *) The current log level is #{level} and runs in #{env} environment mode. You can make changes in the relevant config file.
+    | *) The current log level is #{level} and runs in #{env} environment mode.
+    | You can make changes in the relevant config file.
 
   include ../includes/foot
