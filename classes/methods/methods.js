@@ -164,12 +164,12 @@ function getLog(cb) {
 
 /**
  * Returns random string depending on given length.
- * @param {String} len
+ * @param {Number} len
  * @return {String} str
  */
 function random(len) {
   var c = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  var l = len ? len : 24;
+  var l = len >= 10 ? len : 24;
   var str = '';
 
   for (var i = 0; i < l; i++) {

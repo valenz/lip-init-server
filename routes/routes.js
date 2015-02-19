@@ -412,7 +412,8 @@ function postAccountCreate(req, res) {
   if(req.body.username && req.body.password && req.body.confirm) {
     log.verbose(JSON.stringify(req.body.username));
     // The passport-local-mongoose package automatically takes care of salting and hashing the password.
-    var user = new Object({
+    var ro = new RenderObject();
+    ro.set({
       username: req.body.username,
       whoCreated: req.user ? req.user.username : req.body.username,
       whenCreated: new Date(),
@@ -423,7 +424,7 @@ function postAccountCreate(req, res) {
 
     if(req.body.password === req.body.confirm) {
       try {
-        Account.register(new Account(user), req.body.password, function(err, doc) {
+        Account.register(new Account(ro.get()), req.body.password, function(err, doc) {
           if(err) {
             req.flash('error', err.message);
             res.redirect('/settings');
@@ -616,10 +617,12 @@ function postCategoryCreate(req, res) {
       log.verbose(JSON.stringify(req.body));
       var category = req.body.categoryname;
       var Category = mongoose.model('category');
-      var data = new Category({
+      var ro = new RenderObject();
+      ro.set({
         name: category,
         list: []
       });
+      var data = new Category(ro.get());
 
       try {
         data.save(function(err, doc) {
@@ -849,7 +852,8 @@ function postTabCreate(req, res) {
         var title = info && info.title ? entities.decode(info.title) : url;
 
         var Tab = mongoose.model('tab');
-        var data = new Tab({
+        var ro = new RenderObject();
+        ro.set({
           name: req.body.name ? methods.shorter(req.body.name) : methods.shorter(title),
           renderUrl: req.body.renderUrl,
           url: req.body.address ? req.body.address : req.body.renderUrl,
@@ -862,6 +866,7 @@ function postTabCreate(req, res) {
           whenCreated: new Date(),
           whenUpdated: undefined
         });
+        var data = new Tab(ro.get());
 
         try {
           data.save(function(err, doc) {

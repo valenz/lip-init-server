@@ -7,7 +7,7 @@ function Render() {}
 
 /**
  * Class method getter
- * @return {o} Object
+ * @return {Object} o
  */
 Render.prototype.get = function() {
   return this.o;
@@ -15,7 +15,7 @@ Render.prototype.get = function() {
 
 /**
  * Class method setter
- * @param {o} Object
+ * @param {Object} o
  */
 Render.prototype.set = function(o) {
   this.o = o;
