@@ -65,7 +65,7 @@ function login(req, res) {
     success: req.flash('success')
   });
   res.render('forms/login', ro.get());
-};
+}
 
 /**
  * Calls the exported function logout in methods
@@ -76,7 +76,7 @@ function login(req, res) {
 function logout(req, res) {
   closeSession(req, res);
   res.redirect('/');
-};
+}
 
 /**
  * Selects all documents in collection tab, sorted by the field whenCreated
@@ -106,7 +106,7 @@ function index(req, res) {
       res.render('index', ro.get());
     });
   });
-};
+}
 
 /**
  * Selects all documents in collection tab, sorted by the field whenCreated
@@ -135,7 +135,7 @@ function accounts(req, res) {
       res.render('sites/accounts', ro.get());
     });
   });
-};
+}
 
 /**
  * Selects all documents in collection tab and account, sorted by the field name
@@ -167,7 +167,7 @@ function settings(req, res) {
       });
     });
   });
-};
+}
 
 /**
  * Pass a local variable to the help page.
@@ -185,7 +185,7 @@ function help(req, res) {
     success: req.flash('success')
   });
   res.render('sites/help', ro.get());
-};
+}
 
 /**
  * Pass a local variable to the log page.
@@ -208,7 +208,7 @@ function logging(req, res) {
     });
     res.render('sites/log', ro.get());
   });
-};
+}
 
 /**
  * Pass a local variable to the account_create form page.
@@ -226,7 +226,7 @@ function accountCreate(req, res) {
     success: req.flash('success')
   });
   res.render('forms/account_create', ro.get());
-};
+}
 
 /**
  * Pass a local variable to the account_update form page.
@@ -244,7 +244,7 @@ function accountUpdate(req, res) {
     success: req.flash('success')
   });
   res.render('forms/account_update', ro.get());
-};
+}
 
 /**
  * Pass a local variable to the user_details form page.
@@ -262,7 +262,7 @@ function accountDetails(req, res) {
     success: req.flash('success')
   });
   res.render('forms/account_details', ro.get());
-};
+}
 
 /**
  * Pass a local variable to the category_create form page.
@@ -280,7 +280,7 @@ function categoryCreate(req, res) {
     success: req.flash('success')
   });
   res.render('forms/category_create', ro.get());
-};
+}
 
 /**
  * Pass a local variable to the category_update form page.
@@ -299,7 +299,7 @@ function categoryUpdate(req, res) {
     success: req.flash('success')
   });
   res.render('forms/category_update', ro.get());
-};
+}
 
 /**
  * Pass a local variable to the category_details form page.
@@ -318,7 +318,7 @@ function categoryDetails(req, res) {
     success: req.flash('success')
   });
   res.render('forms/category_details', ro.get());
-};
+}
 
 /**
  * Selects all documents in collection category and pass a local variable to
@@ -341,7 +341,7 @@ function tabCreate(req, res) {
     });
     res.render('forms/tab_create', ro.get());
   });
-};
+}
 
 /**
  * Pass a local variable to the tab_update form page.
@@ -364,7 +364,7 @@ function tabUpdate(req, res) {
     });
     res.render('forms/tab_update', ro.get());
   });
-};
+}
 
 /**
  * Pass a local variable to the tab_details form page.
@@ -383,7 +383,7 @@ function tabDetails(req, res) {
     success: req.flash('success')
   });
   res.render('forms/tab_details', ro.get());
-};
+}
 
 /**
  ******************************* POST METHODS *******************************
@@ -399,7 +399,7 @@ function postLogin(req, res) {
   log.info('%s %s %d - Logged in %s - %s', req.method, req.path, res.statusCode, req.user.username, req.headers['user-agent']);
   req.flash('success', 'You are logged in.');
   res.redirect('/accounts/'+ req.user.username);
-};
+}
 
 /**
  * Creates a new object with request parameters from the submitted form name attributes
@@ -454,7 +454,7 @@ function postAccountCreate(req, res) {
     req.flash('error', 'Request error. Please fill the required fields.');
     res.redirect('create');
   }
-};
+}
 
 /**
  * Selects all documents in collection account with queried object
@@ -526,7 +526,7 @@ function postAccountUpdate(req, res) {
     req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
-};
+}
 
 /**
  * Selects all documents in collection account with queried object
@@ -601,7 +601,7 @@ function postAccountDelete(req, res) {
     req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
-};
+}
 
 /**
  * Creates a new Category with request parameters from the submitted form name
@@ -618,7 +618,7 @@ function postCategoryCreate(req, res) {
       var Category = mongoose.model('category');
       var data = new Category({
         name: category,
-        list: new Array()
+        list: []
       });
 
       try {
@@ -653,7 +653,7 @@ function postCategoryCreate(req, res) {
     req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
-};
+}
 
 /**
  * Selects all documents in collection category with queried object,
@@ -746,7 +746,7 @@ function postCategoryUpdate(req, res) {
     req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
-};
+}
 
 /**
  * Selects all documents in collection category with queried object,
@@ -828,7 +828,7 @@ function postCategoryDelete(req, res) {
     req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
-};
+}
 
 /**
  * Creates a new Tab with request parameters from the submitted form name attributes.
@@ -922,7 +922,7 @@ function postTabCreate(req, res) {
     req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
-};
+}
 
 /**
  * Updated the given Tab with request parameters from the submitted form name
@@ -948,7 +948,7 @@ function postTabUpdate(req, res) {
         }
 
         if(tab.category) {
-          var query = new Object({ name: tab.category });
+          query = new Object({ name: tab.category });
           mongoose.model('category').findOne(query, function(err, cat) {
             if(err) throw new Error(err);
             if(!cat) {
@@ -972,7 +972,7 @@ function postTabUpdate(req, res) {
         }
 
         if(!req.body.check && req.body.category) {
-          var query = new Object({ name: req.body.category });
+          query = new Object({ name: req.body.category });
           mongoose.model('category').findOne(query, function(err, cat) {
             if(err) throw new Error(err);
             if(!cat) {
@@ -1033,12 +1033,20 @@ function postTabUpdate(req, res) {
               if(renderUrlTmp == req.body.renderUrl) {
                 log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
                 req.flash('success', 'Tab has been updated successfully.');
-                req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
+                if(req.body.check) {
+                  res.redirect('/accounts/'+ req.user.username);
+                } else {
+                  res.redirect('/');
+                }
               } else {
                 methods.renderPage({ url: req.body.renderUrl, filename: doc.image }, function() {
                   log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
                   req.flash('success', 'Tab has been updated successfully.');
-                  req.body.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
+                  if(req.body.check) {
+                    res.redirect('/accounts/'+ req.user.username);
+                  } else {
+                    res.redirect('/');
+                  }
                 });
               }
             });
@@ -1057,7 +1065,7 @@ function postTabUpdate(req, res) {
     req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
-};
+}
 
 /**
  * Selects all documents in collection tab with queried object
@@ -1127,7 +1135,11 @@ function postTabDelete(req, res) {
 
             log.info('%s %s %d - "Deleted %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
             req.flash('success', 'Tab has been deleted successfully.');
-            doc.check ? res.redirect('/accounts/'+ req.user.username) : res.redirect('/');
+            if(doc.check) {
+              res.redirect('/accounts/'+ req.user.username);
+            } else {
+              res.redirect('/');
+            }
           });
         } catch(e) {
           log.error(e.stack);
@@ -1143,7 +1155,7 @@ function postTabDelete(req, res) {
     req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
-};
+}
 
 /**
  * Pass a local variable to the confirm page.
@@ -1176,7 +1188,7 @@ function postConfirm(req, res) {
     req.flash('info', 'Session expired. Please log in.');
     res.redirect('/');
   }
-};
+}
 
 /**
  * Simple route middleware to ensure user is authenticated.
@@ -1204,4 +1216,4 @@ function closeSession(req, res) {
   log.info('%s %s %d - "Logged out %s" - %s', req.method, req.path, res.statusCode, req.user.username, req.headers['user-agent']);
   req.flash('success', 'You are logged out.');
   req.logout();
-};
+}

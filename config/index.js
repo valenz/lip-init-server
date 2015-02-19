@@ -1,4 +1,1 @@
-var env = process.env.NODE_ENV || 'development'
-  , cfg = require('./config.'+ env);
-
-module.exports = cfg;
+module.exports = require('./config.'+ process.env.NODE_ENV || 'development');

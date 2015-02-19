@@ -185,4 +185,4 @@ var config = module.exports = {
       endChars: '...'
     }
   }
-}
+};

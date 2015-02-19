@@ -63,7 +63,7 @@ mongoose.connect(process.env.MONGO_URI || config.db.uri + config.db.name, functi
 });
 
 // Route dependencies
-var routes = require('./routes/routes')
+var routes = require('./routes/routes');
 
 // Configure routes
 app.get('/', routes.index);

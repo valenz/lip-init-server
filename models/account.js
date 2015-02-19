@@ -1,6 +1,6 @@
-var mongoose = require('mongoose')
-  , Schema = mongoose.Schema
-  , passportLocalMongoose = require('passport-local-mongoose');
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var passportLocalMongoose = require('passport-local-mongoose');
 
 var Account = new Schema({
     username: {
@@ -29,7 +29,7 @@ Account.plugin(passportLocalMongoose, {
 //  attemptsField: 'attempts',
 //  lastLoginField: 'last',
 //  selectFields: 'undefined',
-    usernameLowerCase: true,
+  usernameLowerCase: true,
 //  populateFields: 'undefined',
 //  encoding: 'hex',
 //  limitAttempts: false,

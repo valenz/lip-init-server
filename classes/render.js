@@ -1,4 +1,4 @@
-var o = new Object();
+var o = {};
 
 /**
  * Constructor
