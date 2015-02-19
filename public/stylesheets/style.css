@@ -617,7 +617,8 @@ form button:active {
 
 .item {
   margin: 3px;
-  padding: 6px 11px 6px 11px;
+  padding: 8px 11px 6px 11px;
+  color: #FFF;
   border: 1px #2D7488 solid;
   border-radius: 3px;
   -webkit-border-radius: 3px;
@@ -640,7 +641,6 @@ form button:active {
 }
 a .item {
   text-decoration: none;
-  color: #FFF;
 
 }
 .item:hover {
