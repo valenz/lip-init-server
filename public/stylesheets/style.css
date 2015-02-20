@@ -1,26 +1,40 @@
+@font-face {
+  font-family: 'libsansbold';
+  src: url(fonts/LiberationSans-Bold.ttf);
+}
+
+@font-face {
+  font-family: 'libsansitalic';
+  src: url(fonts/LiberationSans-Italic.ttf);
+}
+
+@font-face {
+  font-family: 'libsansregular';
+  src: url(fonts/LiberationSans-Regular.ttf);
+}
+
 body {
-  background: #FFF none repeat 100% 0 scroll;
-  color: #464749;
-  font-family: 'Lato', sans-serif;
-  font-weight: 400;
+  font: 100%/1.1 'libsansregular', Arial, Helvetica, sans-serif;
+  background: #FFF url(../images/bg.jpg) repeat 100% 0 scroll;
+  color: #FFF9E5;
 }
 
 
 
 
 /**
- * HEAD
- */
+* HEAD
+*/
 #head {
-  background: #4894AB; /* Old browsers */
-  background: -moz-linear-gradient(top,  #56a1b8 5%, #2d7488 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(5%,#56a1b8), color-stop(100%,#2d7488)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top,  #56a1b8 5%,#2d7488 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top,  #56a1b8 5%,#2d7488 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top,  #56a1b8 5%,#2d7488 100%); /* IE10+ */
-  background: linear-gradient(to bottom,  #56a1b8 5%,#2d7488 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#56a1b8', endColorstr='#2d7488',GradientType=0 ); /* IE6-9 */
-  border-bottom: 1px solid #205260;
+  background: #12282f; /* Old browsers */
+  background: -moz-linear-gradient(top,  #12282f 0%, #0b191e 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#12282f), color-stop(100%,#0b191e)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #12282f 0%,#0b191e 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #12282f 0%,#0b191e 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #12282f 0%,#0b191e 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #12282f 0%,#0b191e 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#12282f', endColorstr='#0b191e',GradientType=0 ); /* IE6-9 */
+  border-bottom: 1px solid #04090B;
   border-top-left-radius: 1px;
   -webkit-border-top-left-radius: 1px;
   -moz-border-top-left-radius: 1px;
@@ -34,12 +48,11 @@ body {
 #logo a {
   width: auto;
   height: 74px;
-  font-family: 'Audiowide', cursive;
+  font: 100%/1.5 'Audiowide', 'libsansbold', Arial, Helvetica, sans-serif;
   font-size: 58px;
   background-color: transparent;
   text-decoration: none;
-  color: #FFF;
-  text-shadow: 0 -1px 2px #FFE799, 0 1px 2px #FFFFFF;
+  color: #FFF9E5;
 }
 
 #logo {
@@ -51,8 +64,8 @@ body {
 
 
 /**
- * MENU
- */
+* MENU
+*/
 .fa-ul {
   margin: 0 auto;
   text-align: center;
@@ -68,18 +81,32 @@ body {
 }
 
 .fa-ul a {
-  color: #FFF;
+  color: #FFF9E5;
   padding: 12px;
+}
+
+.fa-ul li:hover {
+	background-color: #12282f;
+	border-color: #091316;
+	box-shadow: inset 0 1px 0 0 #212121;
+	-moz-box-shadow: inset 0 1px 0 0 #212121;
+	-webkit-box-shadow: inset 0 1px 0 0 #212121;
+}
+
+.fa-ul li:active {
+	outline: 0;
+	box-shadow: inset 1px 3px 5px 0 #101010;
+	-moz-box-shadow: inset 1px 3px 5px 0 #101010;
+	-webkit-box-shadow: inset 1px 3px 5px 0 #101010;
 }
 
 
 
 
 /**
- * MESSAGES
- */
+* MESSAGES
+*/
 .fa-exclamation-circle, .fa-info-circle, .fa-check-circle {
-  padding-left: 10px;
   padding-right: 10px;
 }
 
@@ -121,8 +148,8 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
 
 
 /**
- * GRID
- */
+* GRID
+*/
 .grid {
   margin: 0 auto;
   padding-left: 0;
@@ -142,12 +169,14 @@ p.fallover, p.error, p.info, p.success, p.message, p.no-data, p.no-script {
 }
 
 .categoryHeadline {
-  margin: 10px 0 0 0;
+  padding-bottom: 7px;
+  border-bottom: 1px #17313A solid;
+  margin: 30px 0 0 0;
   text-align: center;
   width: auto;
-  font-weight: lighter;
+  font: 100%/1.5 'libsansbold', Arial, Helvetica, sans-serif;
   font-size: 25px;
-  color: #005A79;
+  color: #FFF9E5;
 }
 
 .length {
@@ -178,7 +207,7 @@ li .pic, li .img-container {
   overflow: hidden;
   text-align: center;
   background: transparent;
-  color: #464749;
+  color: #FFF9E5;
   width: auto;
   height: auto;
   position: relative;
@@ -251,8 +280,8 @@ li a {
 
 
 /**
- * LOG
- */
+* LOG
+*/
 .log-wrapper {
   border: 1px #17313A solid;
   padding: 10px;
@@ -262,7 +291,11 @@ li a {
 }
 
 .lev-no {
-  font-size: 11px;
+  font: 100%/1.1 'libsansitalic', Arial, Helvetica, sans-serif;
+  padding: 0;
+  line-height: 17px;
+  font-size: 12px;
+  color: #C5C8CA;
 }
 
 .line-wrapper {
@@ -324,18 +357,21 @@ li a {
 
 
 /**
- * FORM
- */
+* FORM
+*/
 .formHeadline {
+  padding-bottom: 7px;
+  border-bottom: 1px #17313A solid;
+  width: 102.5%;
   text-align: center;
-  font-weight: lighter;
+  font: 100%/1.1 'libsansbold', Arial, Helvetica, sans-serif;
   font-size: 25px;
-  color: #005A79;
+  color: #FFF9E5;
 }
 
 .form {
-   width: 500px;
-   margin: 0 auto;
+  width: 500px;
+  margin: 0 auto;
 }
 
 .form h3 {
@@ -347,7 +383,7 @@ li a {
   position: relative;
   top: 31px;
   left: 10px;
-  color: #004461;
+  color: #FFF9E5;
   font-size: 13px;
   text-decoration: none;
 }
@@ -371,7 +407,7 @@ li a {
   font-size: 20px;
   padding: 6px 0 5px 5px;
   background: transparent;
-  color: #85888A;
+  color: #A5A8AA;
   border: 0px solid #17313A;
   outline: none;
   z-index: 2;
@@ -390,7 +426,7 @@ li a {
   height: 31px;
   font-size: 20px;
   padding: 6px 5px 5px 5px;
-  color: #464749;
+  color: #17313A;
   border: 1px solid #17313A;
   outline: none;
   z-index: 2;
@@ -418,17 +454,17 @@ form input[type=checkbox] {
 }
 
 .salt {
-    height: 46px;
+  height: 46px;
   resize: none;
 }
 
 .hash {
-    height: 530px;
+  height: 530px;
   resize: none;
 }
 
 .list {
-    height: 79px;
+  height: 79px;
   resize: none;
 }
 
@@ -442,15 +478,15 @@ form label {
   font-size: 17px;
   padding: 25px 0 10px 0;
   display: inline-block;
-  color: #005A79;
+  color: #FFF9E5;
 }
 
 form label:first-child {
-    padding-top: 0px;
+  padding-top: 0px;
 }
 
 form label:last-child {
-    padding-bottom: 0px;
+  padding-bottom: 0px;
 }
 
 form button, .btn-dlt-f {
@@ -460,15 +496,14 @@ form button, .btn-dlt-f {
   width: 16%;
   cursor: pointer;
   font-size: 14px;
-  border: 1px solid #17313A;
-  box-shadow: 0 0 0 1px #FFF9E5;
-  -moz-box-shadow: 0 0 0 1px #FFF9E5;
-  -webkit-box-shadow: 0 0 0 1px #FFF9E5;
-  border-radius: 2px;
-  -webkit-border-radius: 2px;
-  -moz-border-radius: 2px;
-  -webkit-transition: .1s ease-in-out;
-  -moz-transition: .1s ease-in-out;
+  border: 1px #37525b solid;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  box-shadow: 0 0 0 1px #17313A;
+  -moz-box-shadow: 0 0 0 1px #17313A;
+  -webkit-box-shadow: 0 0 0 1px #17313A;
 }
 
 form button {
@@ -491,24 +526,30 @@ form button:active {
 }
 
 .sbt-f {
-  color: #FFF;
-  background-color: #4894AB;
+  color: #FFF9E5;
+  background-color: #2D464D;
 }
 
 .dlt-f, .btn-dlt-f {
-  color: #FFF;
-  background-color: #FF0505;
+  color: #FFF9E5;
+  background-color: #D9534F;
+  border: 1px solid #D43F3A;
 }
 
 .dlt-f .fa, .btn-dlt-f .fa, .sbt-f .fa  {
-  padding: 2px 5px 0 2px;
+  padding: 3px 5px 0 2px;
+}
+
+.sbt-f:hover {
+  border: 1px #FFF9E5 solid;
+  background-color: #233340;
 }
 
 .dlt-f:hover, .btn-dlt-f:hover {
   cursor: pointer;
-  color: #FFF;
+  color: #FFF9E5;
   background-color: #FF0505;
-  border: 1px solid #17313A;
+  border: 1px solid #D43F3A;
   box-shadow: 0 0 0 1px #FFF9E5;
   -moz-box-shadow: 0 0 0 1px #FFF9E5;
   -webkit-box-shadow: 0 0 0 1px #FFF9E5;
@@ -530,25 +571,17 @@ form button:active {
   position: relative;
   top: -23px;
   left: 100px;
-  color: #004461;
+  color: #FFF9E5;
   font-size: 13px;
   text-decoration: none;
-}
-
-.patient {
-  margin-top: -5px;
-  padding: 0;
-  line-height: 17px;
-  font-size: 12px;
-  color: #464749;
 }
 
 
 
 
 /**
- * SETTINGS
- */
+* SETTINGS
+*/
 #adjustments {
   margin: 0 auto;
   padding: 0 0 25px 0;
@@ -560,9 +593,9 @@ form button:active {
   border-bottom: 1px #17313A solid;
   text-align: center;
   width: auto;
-  font-weight: lighter;
+  font: 100%/1.1 'libsansbold', Arial, Helvetica, sans-serif;
   font-size: 25px;
-  color: #005A79;
+  color: #FFF9E5;
 }
 
 .adj {
@@ -618,8 +651,8 @@ form button:active {
 .item {
   margin: 3px;
   padding: 8px 11px 6px 11px;
-  color: #FFF;
-  border: 1px #2D7488 solid;
+  color: #FFF9E5;
+  border: 1px #37525b solid;
   border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -627,7 +660,7 @@ form button:active {
   box-shadow: 0 0 0 1px #17313A;
   -moz-box-shadow: 0 0 0 1px #17313A;
   -webkit-box-shadow: 0 0 0 1px #17313A;
-  background-color: #4894AB;
+  background-color: #2D464D;
 }
 .item div {
   padding-bottom: 3px;
@@ -644,7 +677,8 @@ a .item {
 
 }
 .item:hover {
-  border: 1px #FFF solid;
+  border: 1px #FFF9E5 solid;
+  background-color: #233340;
   cursor: pointer;
 }
 
@@ -657,7 +691,7 @@ a .item {
 
 /** IE Hacks **/
 form input {
-    *height: 28px;
+  *height: 28px;
 }
 
 
@@ -679,9 +713,9 @@ form input {
 
 
 /**
- * The following zoom:1 rule is specifically for IE6 + IE7.
- * Move to separate stylesheet if invalid CSS is a problem.
- */
+* The following zoom:1 rule is specifically for IE6 + IE7.
+* Move to separate stylesheet if invalid CSS is a problem.
+*/
 * html .clearfix,
 *:first-child+html .clearfix {
   zoom: 1;
@@ -691,8 +725,8 @@ form input {
 
 
 /**
- * FOOTER
- */
+* FOOTER
+*/
 #footer p {
   margin: 20px auto;
   height: auto;
@@ -702,7 +736,7 @@ form input {
 
 #footer a {
   text-decoration: none;
-  color: #464749;
+  color: #FFF9E5;
 }
 
 #footer .fa {
