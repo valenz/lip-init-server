@@ -34,7 +34,7 @@ function getAdminTabs(obj) {
   var n = 0;
   for(var i in obj) if(obj[i].check) n++;
   return n;
-};
+}
 
 /**
  * Returns the number of tabs which are assigned to categories.
@@ -46,7 +46,7 @@ function getAssignedTabs(obj) {
   var n = 0;
   for(var i in obj) n += obj[i].list.length;
   return n;
-};
+}
 
 /**
  * Extracts the characters from a string, between two specified indices,
@@ -60,7 +60,7 @@ function shorter(str) {
   var n = config.custom.shorter.maxLength;
   n = n >= 10 ? n : 42;
   return str.length > n ? str.substring(0, n) + config.custom.shorter.endChars : str;
-};
+}
 
 /**
  * Removes items from an array, and returns the new one.
@@ -77,7 +77,7 @@ function detach(str, obj) {
   list.splice(index, 1);
   data.list = list;
   return data;
-};
+}
 
 /**
  * Adds new items to the end of an array, and returns the new one.
@@ -92,7 +92,7 @@ function paste(str, obj) {
   list.push(str);
   data.list = list;
   return data;
-};
+}
 
 /**
  * Tests whether or not the given path exists by checking with the file system
@@ -116,7 +116,7 @@ function clear(filename) {
       log.warn('Incorrect path "%s" or file "%s" does not exists.', path, filename);
     }
   });
-};
+}
 
 /**
  * Creates logging path and file like "mkdir -p", if not exists.
@@ -133,7 +133,7 @@ function mkdirSync(str) {
 
     fs.exists(path, function(exists) {
       if(!exists) {
-        mkdirp.sync(path, 0755)
+        mkdirp.sync(path, 0755);
         log.verbose('The path and filename of the logfile has been created.');
       } else {
         log.verbose('The path and filename of the logfile already exists.');
@@ -142,7 +142,7 @@ function mkdirSync(str) {
   } else {
     log.verbose('No path of the logfile found. Creation skipped.');
   }
-};
+}
 
 /**
  * Returns an object with the content of the file as a callback.
@@ -150,7 +150,7 @@ function mkdirSync(str) {
  * @return {Object} l
  */
 function getLog(cb) {
-  var arr = new Array();
+  var arr = [];
   require('readline').createInterface({
     input: fs.createReadStream(config.loggers.log.file.filename),
     output: process.stdout,
@@ -160,16 +160,16 @@ function getLog(cb) {
   }).on('close', function() {
     cb(arr);
   });
-};
+}
 
 /**
  * Returns random string depending on given length.
- * @param {String} len
+ * @param {Number} len
  * @return {String} str
  */
 function random(len) {
   var c = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-  var l = len ? len : 24;
+  var l = len >= 10 ? len : 24;
   var str = '';
 
   for (var i = 0; i < l; i++) {
@@ -198,7 +198,7 @@ function getPageInfo(url, cb) {
       // Opens the url and loads it to the page
       return page.open(url, function(status) {
         if(status === 'success') {
-          log.info('Status after opening page "%s": %s', url, status)
+          log.info('Status after opening page "%s": %s', url, status);
         } else {
           log.warn('Status after opening page "%s": %s', url, status);
         }
@@ -208,7 +208,7 @@ function getPageInfo(url, cb) {
 	        // of the web page. Execution is sandboxed.
           return page.evaluate(function() {
 
-            var info = new Object();
+            var info = {};
             info.title = document.title;
             var links = document.getElementsByTagName('link');
 
@@ -232,7 +232,7 @@ function getPageInfo(url, cb) {
       });
     });
   });
-};
+}
 
 /**
  * Captures web page from given url and saves it as an image.
@@ -299,7 +299,7 @@ function renderPage(obj, cb) {
 
       return page.open(obj.url, function (status) {
         if(status === 'success') {
-          log.info('Status after opening page "%s": %s', obj.url, status)
+          log.info('Status after opening page "%s": %s', obj.url, status);
         } else {
           log.warn('Status after opening page "%s": %s', obj.url, status);
         }
@@ -325,4 +325,4 @@ function renderPage(obj, cb) {
       });
     });
   });
-};
+}
