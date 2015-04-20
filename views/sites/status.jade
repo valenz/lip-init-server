@@ -16,12 +16,13 @@ html(lang='en')
         span(style='font-family: Audiowide, cursive; font-size: 38px;')= fallover.status
 
       div(style='font-size: 12px; color: #454578;')
-        p= fallover
+        pre= fallover
 
         if header
-          for i, j in header
-            p(style='color: #A6A6A6;').
-              #{j} : #{i}
+          div(style='width: auto; overflow: hidden; white-space: pre-wrap; word-break: break-all;')
+            for i, j in header
+              p(style='color: #A6A6A6;').
+                #{j} : #{i}
 
         p
           a(href='/')| Home

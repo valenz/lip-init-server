@@ -2,42 +2,61 @@ extends ../includes/header
 
 block content
 
-  include ../includes/message
+  .content.container
+    .row
+      .col-xs-1.col-sm-3.col-md-4.col-lg-4
+      .col-xs-10.col-sm-6.col-md-4.col-lg-4
+        include ../includes/message
+      .col-xs-1.col-sm-3.col-md-4.col-lg-4
+    .row
+      .col-xs-2.col-sm-2.col-md-3.col-lg-3
+      .col-xs-8.col-sm-8.col-md-6.col-lg-6
+        h1.page-header= title
 
-  form.form(action='/settings/tab/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-    h3.formHeadline= title
+        .container-fluid
+          form.form(action='/settings/tab/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+            .form-group
+              label(for='renderAddress')| Render Address:
+              input#renderAddress.form-control(type='url' name='renderUrl' title='Render Address' value= query.renderUrl required='required' placeholder='Render Address' autofocus)
+            .form-group
+              label(for='webAddress')| Web Address:
+              input#webAddress.form-control(type='url' name='address' title='Web Address' value= query.url placeholder='Web Address')
+            .form-group
+              label(for='name')| Name:
+              input#name.form-control(type='text' name='name' title='Name' value= query.name placeholder='Name')
+            .form-group
+              .row
+                .col-md-6
+                  label(for='category')| Category:
+                  input(type='hidden' name='id' value= query.id)
+                .col-md-6
+                  .text-right
+                    a(title='Create a category' href='/settings/category/create')
+                      | Create Category
+              select#category.form-control.selectpicker.show-tick.dropup(name='category' data-live-search='true')
+                if(list.length > 0)
+                  option(selected disabled)| Choose a category
+                  each category in list
+                    if category.name == query.category
+                      option(value= category.name selected)= category.name
+                    else
+                      option(value= category.name)= category.name
+                else
+                  option(selected disabled)| No category created yet
+            .row
+              .col-md-10
+                .checkbox
+                  .text-right
+                    label
+                      input(type='checkbox' name='check' title='Access only for admins' checked= query.check ? true : false)
+                      | Admin Tab
+              .col-md-2
+                button#submit.btn.btn-primary.pull-right(type='submit' title='Submit')
+                  i.fa.fa-upload
+                  |  Update
 
-    label| Render Address (required):
-    input.field(type='url' name='renderUrl' title='Render Address (required)' value= query.renderUrl required='required' placeholder='Render Address (required)' autofocus)
-    label| Web Address (optional):
-    input.field(type='url' name='address' title='Web Address (optional)' value= query.url placeholder='Web Address (optional)')
-    label| Name (optional):
-    input.field(type='text' name='name' title='Name (optional)' value= query.name placeholder='Name (optional)')
-    input(type='hidden' name='id' value= query.id)
-    a#detailsLink(title='Create a category' href='/settings/category/create')
-      | Create Category
-    label| Category (optional)
-    select.category(name='category')
-      if(list.length > 0)
-        option(selected disabled)| Choose a category
-        each category in list
-          if category.name == query.category
-            option(value= category.name selected)= category.name
-          else
-            option(value= category.name)= category.name
-      else
-        option(selected disabled)| No category created yet
-    .check
-      span| Admin only?
-      input(type='checkbox', name='check', title='Access only for admins', checked= query.check ? true : false)
+          p.help-block.text-justify
+            | Depending on web page, the capturing may take a few seconds.
+            | This page will reload when the process is complete.
 
-    button#submit.sbt-f(title='Submit')
-      i.fa.fa-refresh
-      | Update
-    a.cancel(href='/' title='Cancel')| Cancel
-
-    p.lev-no
-      | Depending on web page, the capturing may take a few seconds.
-      | This page will reload when the process is complete.
-
-  include ../includes/foot
+      .col-xs-2.col-sm-2.col-md-3.col-lg-3

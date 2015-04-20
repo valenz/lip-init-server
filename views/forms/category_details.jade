@@ -2,31 +2,40 @@ extends ../includes/header
 
 block content
 
-  include ../includes/message
+  .content.container
+    .row
+      .col-xs-1.col-sm-3.col-md-4.col-lg-4
+      .col-xs-10.col-sm-6.col-md-4.col-lg-4
+        include ../includes/message
+      .col-xs-1.col-sm-3.col-md-4.col-lg-4
+    .row
+      .col-xs-1.col-sm-1.col-md-1.col-lg-1
+      .col-xs-10.col-sm-10.col-md-10.col-lg-10
+        h1.page-header= title
+          button#submit.btn.btn-danger.pull-right.btn-delete-dtl(type='submit' title='Submit')
+            i.fa.fa-trash-o
+            |  Delete
 
-  - var l = query.list.replace(new RegExp(',', 'g'), '\n');
-
-  form.form(action='/settings/category/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-    h3.formHeadline= title
-
-    label| Name:
-    input.details(type='text' name='name' title=  query.name value= query.name readonly)
-    label| List:
-    textarea.details.list(name='list' readonly)= l
-
-    label| Identifier:
-    input.details(type='text' name='id' title=  query.id value= query.id readonly)
-    label| Revision:
-    input.details(type='text' name='rev' title=  query.rev value= query.rev readonly)
-
-    .btn-dlt-f
-      a(title='Submit')
-        i.fa.fa-trash-o
-      | Delete
-    noscript
-      button.dlt-f(title='Submit')
-        i.fa.fa-trash-o
-        | Delete
-    a.cancel(href='/settings' title='Cancel')| Cancel
-
-  include ../includes/foot
+        .container-fluid
+          form(role='form' action='/settings/category/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+            input(type='hidden' name='id' value= query.id)
+          table.table.table-condensed.table-hover.table-striped
+            thead
+              tr
+                th Label
+                th Detail
+            tbody
+              tr
+                td.text-nowrap Name
+                td= query.name
+              tr
+                td.text-nowrap Tabs
+                td= query.list.replace(new RegExp(',', 'g'), ', ')
+              tr
+                td.text-nowrap Identifier
+                td= query.id
+              tr
+                td.text-nowrap Revision
+                td= query.rev
+          
+      .col-xs-1.col-sm-1.col-md-1.col-lg-1

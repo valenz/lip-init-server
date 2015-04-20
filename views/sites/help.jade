@@ -2,10 +2,14 @@ extends ../includes/header
 
 block content
 
-  include ../includes/message
+  .content.container
+    .row
+      .col-xs-1.col-sm-3.col-md-4.col-lg-4
+      .col-xs-10.col-sm-6.col-md-4.col-lg-4
+        include ../includes/message
+      .col-xs-1.col-sm-3.col-md-4.col-lg-4
+    h1.page-header= title
 
-  p.info
-    i.fa.fa-info-circle
-    | Here comes the FAQ! Soon ...
-
-  include ../includes/foot
+    p.text-primary
+      i.fa.fa-info-circle
+      |  Here comes the FAQ! Soon ...
