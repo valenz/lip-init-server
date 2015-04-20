@@ -6,10 +6,10 @@
         - i.check ? check_a++ : check_i++
 
   if error && error != 0
-    .text-danger.thumbnail(style='background-color: #FFC2C2;')
-      a.btn-link.pull-right
-        i.fa.fa-times
-      each i in error
+    each i in error
+      .text-danger.thumbnail(style='background-color: #FFC2C2;')
+        a.btn-link.pull-right
+          i.fa.fa-times
         i.fa.fa-exclamation-circle
         |  #{i}
 
@@ -25,17 +25,17 @@
 
   .msg-fade
     if info && info != 0
-      .text-primary.thumbnail(style='background-color: #E5F3FF;')
-        a.btn-link.pull-right
-          i.fa.fa-times
-        each i in info
+      each i in info
+        .text-primary.thumbnail(style='background-color: #E5F3FF;')
+          a.btn-link.pull-right
+            i.fa.fa-times
           i.fa.fa-info-circle
           |  #{i}
 
     if success && success != 0
-      .text-success.thumbnail(style='background-color: #E1FFD1;')
-        a.btn-link.pull-right
-          i.fa.fa-times
-        each i in success
+      each i in success
+        .text-success.thumbnail(style='background-color: #E1FFD1;')
+          a.btn-link.pull-right
+            i.fa.fa-times
           i.fa.fa-check-circle
           |  #{i}

@@ -2,7 +2,7 @@ extends ../includes/header
 
 block content
 
-  .content.container
+  .container
     .row
       .col-xs-1.col-sm-3.col-md-4.col-lg-4
       .col-xs-10.col-sm-6.col-md-4.col-lg-4
@@ -17,9 +17,9 @@ block content
           form.form(action='/settings/account/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
             .form-group
               .row
-                .col-md-6
+                .col-xs-6.col-sm-6.col-md-6.col-lg-6
                   label(for='password')| New Password:
-                .col-md-6
+                .col-xs-6.col-sm-6.col-md-6.col-lg-6
                   .text-right
                     a(title='Account details and delete' href='/settings/account/details')
                       | Details

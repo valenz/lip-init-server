@@ -2,7 +2,7 @@ extends ../includes/header
 
 block content
 
-  .content.container
+  .container
     .row
       .col-xs-1.col-sm-3.col-md-4.col-lg-4
       .col-xs-10.col-sm-6.col-md-4.col-lg-4
@@ -26,10 +26,10 @@ block content
               input#name.form-control(type='text' name='name' title='Name' value= query.name placeholder='Name')
             .form-group
               .row
-                .col-md-6
+                .col-xs-6.col-sm-6.col-md-6.col-lg-6
                   label(for='category')| Category:
                   input(type='hidden' name='id' value= query.id)
-                .col-md-6
+                .col-xs-6.col-sm-6.col-md-6.col-lg-6
                   .text-right
                     a(title='Create a category' href='/settings/category/create')
                       | Create Category
@@ -44,13 +44,13 @@ block content
                 else
                   option(selected disabled)| No category created yet
             .row
-              .col-md-10
+              .col-sm-9.col-md-9.col-lg-10
                 .checkbox
                   .text-right
                     label
                       input(type='checkbox' name='check' title='Access only for admins' checked= query.check ? true : false)
                       | Admin Tab
-              .col-md-2
+              .col-sm-3.col-md-3.col-lg-2
                 button#submit.btn.btn-primary.pull-right(type='submit' title='Submit')
                   i.fa.fa-upload
                   |  Update

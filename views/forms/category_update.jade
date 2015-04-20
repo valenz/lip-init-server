@@ -2,7 +2,7 @@ extends ../includes/header
 
 block content
 
-  .content.container
+  .container
     .row
       .col-xs-1.col-sm-3.col-md-4.col-lg-4
       .col-xs-10.col-sm-6.col-md-4.col-lg-4
@@ -17,10 +17,10 @@ block content
           form.form(action='/settings/category/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
             .form-group
               .row
-                .col-md-6
+                .col-xs-6.col-sm-6.col-md-6.col-lg-6
                   label(for='category')| Category Name:
                   input(type='hidden' name='id' value= query.id)
-                .col-md-6
+                .col-xs-6.col-sm-6.col-md-6.col-lg-6
                   .text-right
                     a(title='Category details and delete' href='/settings/category/details/?name='+query.name+'&list='+query.list+'&id='+query.id+'&rev='+query.rev)
                       | Details

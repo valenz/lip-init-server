@@ -2,7 +2,7 @@ extends ../includes/header
 
 block content
 
-  .content.container
+  .container
     .row
       .col-xs-1.col-sm-3.col-md-4.col-lg-4
       .col-xs-10.col-sm-6.col-md-4.col-lg-4
@@ -15,55 +15,57 @@ block content
 
         .container-fluid.adj
           h3.page-header.text-left| Adjustments
-            button#adjReset.btn.btn-xs.btn-default.pull-right(type='button' title='Submit')
+            button#adjReset.btn.btn-xs.btn-default.pull-right(type='button' title='Reset Adjustments')
               i.fa.fa-eraser
-              |  Reset
-          span= 'Range: '
-          b#rangeFac.text-muted
-          .row
-            .col-md-6
-              | 1.0
-            .col-md-6
-              .text-right
-                | 2.0
-          input(type='range' min='1' max='2' step='0.01')
+          .container-fluid
+            span= 'Range: '
+            b#rangeFac.text-muted
+            .row
+              .col-md-6
+                | 1.0
+              .col-md-6
+                .text-right
+                  | 2.0
+            input(type='range' min='1' max='2' step='0.01')
 
           if user
             h3.page-header.text-left= 'Tabs '
               span.small= '('+ tabs.length +')'
               a.btn.btn-xs.btn-success.pull-right(title='Create Tab' href='/settings/tab/create')
                 i.fa.fa-plus-circle
-                |  New Tab
-            .text-justify
+            ul.list-unstyled.container-fluid
               each item, j in tabs
                 if user && item.check
-                  a.btn.btn-default(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
-                    u(data-item= j)= item.name
+                  li(data-item= j style='display: inline;')
+                    a.btn.btn-default(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
+                      u(data-item= j)= item.name
                 else
-                  a.btn.btn-default(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
-                    div(data-item= j)= item.name
+                  li(data-item= j style='display: inline;')
+                    a.btn.btn-default(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
+                      = ' '+ item.name
 
             h3.page-header.text-left= 'Categories '
               span.small= '('+ list.length +')'
               a.btn.btn-xs.btn-success.pull-right(title='Create Category' href='/settings/category/create')
                 i.fa.fa-plus-circle
-                |  New Category
-            text-justify
+            ul.list-unstyled.container-fluid
               each item, j in list
-                a.btn.btn-default(href='/settings/category/update/?name='+item.name+'&list='+item.list+'&id='+item._id+'&rev='+item.__v)
-                  div(data-item= j)= item.name
+                li(data-item= j style='display: inline;')
+                  a.btn.btn-default(href='/settings/category/update/?name='+item.name+'&list='+item.list+'&id='+item._id+'&rev='+item.__v)
+                    div(data-item= j)= item.name
 
             h3.page-header.text-left= 'Accounts '
               span.small= '('+ accs.length +')'
               a.btn.btn-xs.btn-success.pull-right(title='Create Account' href='/settings/account/create')
                 i.fa.fa-plus-circle
-                |  New Account
-            .text-justify
+            ul.list-unstyled.container-fluid
               each item, j in accs
                 if user && item.id == user.id
-                  a.btn.btn-default(href='/settings/account/update')
-                    div(data-item= j)= item.username
+                  li(data-item= j style='display: inline;')
+                    a.btn.btn-primary(href='/settings/account/update')
+                      div(data-item= j)= item.username
                 else
-                  .btn.btn-default(data-item= j)= item.username
+                  li(data-item= j style='display: inline;')
+                    .btn.btn-default(data-item= j)= item.username
 
       .col-xs-1.col-sm-1.col-md-1.col-lg-1
