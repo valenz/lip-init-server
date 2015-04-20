@@ -30,7 +30,7 @@ block content
 
           if user
             h3.page-header.text-left= 'Tabs '
-              span.small= '('+tabs.length+')'
+              span.small= '('+ tabs.length +')'
               a.btn.btn-xs.btn-success.pull-right(title='Create Tab' href='/settings/tab/create')
                 i.fa.fa-plus-circle
                 |  New Tab
@@ -38,23 +38,23 @@ block content
               each item, j in tabs
                 if user && item.check
                   a.btn.btn-default(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
-                    u(data-item=j)= item.name
+                    u(data-item= j)= item.name
                 else
                   a.btn.btn-default(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
-                    div(data-item=j)= item.name
+                    div(data-item= j)= item.name
 
             h3.page-header.text-left= 'Categories '
-              span.small= '('+list.length+')'
+              span.small= '('+ list.length +')'
               a.btn.btn-xs.btn-success.pull-right(title='Create Category' href='/settings/category/create')
                 i.fa.fa-plus-circle
                 |  New Category
             text-justify
               each item, j in list
                 a.btn.btn-default(href='/settings/category/update/?name='+item.name+'&list='+item.list+'&id='+item._id+'&rev='+item.__v)
-                  div(data-item=j)= item.name
+                  div(data-item= j)= item.name
 
             h3.page-header.text-left= 'Accounts '
-              span.small= '('+accs.length+')'
+              span.small= '('+ accs.length +')'
               a.btn.btn-xs.btn-success.pull-right(title='Create Account' href='/settings/account/create')
                 i.fa.fa-plus-circle
                 |  New Account
@@ -62,8 +62,8 @@ block content
               each item, j in accs
                 if user && item.id == user.id
                   a.btn.btn-default(href='/settings/account/update')
-                    div(data-item=j)= item.username
+                    div(data-item= j)= item.username
                 else
-                  div(data-item=j)= item.username
+                  .btn.btn-default(data-item= j)= item.username
 
       .col-xs-1.col-sm-1.col-md-1.col-lg-1
