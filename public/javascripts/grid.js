@@ -7,12 +7,8 @@ $(function() {
 
 	// Duration of the messages before they disappear
 	setTimeout(function() {
-		$('.msg-fade').find('div').fadeOut('slow', 'swing');
+		$('.msg-modal-sm').find('.close').click();
 	}, 5000);
-	// Messages immediately disappear
-	$('.msg-close').find('a').on('click', function() {
-		$(this).parent().fadeOut('slow', 'swing');
-	});
 });
 
 $(document).ready(function() {
