@@ -22,12 +22,7 @@ block content
             else if !list[i] && !item.category
               +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, j)
       - }
-    if !grid.length-assigned-admintabs
-      .row
-        .col-xs-1.col-sm-3.col-md-4.col-lg-4
-        .col-xs-10.col-sm-6.col-md-4.col-lg-4
-          include includes/message
-        .col-xs-1.col-sm-3.col-md-4.col-lg-4
+    include includes/message
 
   mixin tabs(id, renderUrl, url, title, icon, image, name, category, check, j)
     if !check
