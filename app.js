@@ -33,7 +33,22 @@ app.set('view options', config.app.set.options);
 
 app.use(favicon(__dirname + config.app.set.favicon));
 app.use(multer());
-app.use(morgan('dev'));
+
+// Request logger status codes
+morgan.token('locale', function(req, res) {
+  return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
+});
+morgan.token('status', function(req, res) {
+  var color = 32; // green
+  var status = res.statusCode;
+
+  if (status >= 500) color = 31; // red
+  else if (status >= 400) color = 33; // yellow
+  else if (status >= 300) color = 36; // cyan
+
+  return '\x1b['+color+'m'+status;
+});
+app.use(morgan(config.app.set.morgan));
 
 app.use(expressSession(config.app.cookie.options));
 
