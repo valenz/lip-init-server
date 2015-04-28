@@ -8,7 +8,7 @@
 
 
 ## Requirements
-You need default MongoDB service up and running, PhantomJS and the NodeJS engine (0.10.x).
+You need default MongoDB service up and running, PhantomJS and the NodeJS engine (greater or equal 0.10.x).
 
 
 ## Installation
