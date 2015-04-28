@@ -4,7 +4,10 @@ block content
 
   .container
     include ../includes/message
-    h1.page-header= title
+    h1#help.anchor.page-header= title
+      a.anchorjs-link(href='#help')
+        span.anchorjs-icon
+          i.fa.fa-link
 
     p.text-primary
       i.fa.fa-info-circle

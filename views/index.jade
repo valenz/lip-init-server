@@ -6,12 +6,18 @@ block content
     if grid && grid.length != 0
       - for (var i = list.length; i >= 0 ; --i) {
         if list[i] && list[i].list.length > 0
-          h2.page-header= list[i].name
+          h2.page-header(id= list[i].name.toLowerCase())= list[i].name
+            a.anchorjs-link(href='#'+ list[i].name.toLowerCase())
+              span.anchorjs-icon
+                i.fa.fa-link
             span.small|  (
               = list[i] ? list[i].list.length : grid.length-assigned-admintabs
               | )
         if !list[i] && grid.length-assigned-admintabs > 0
-          h2.page-header| unassigned
+          h2#unassigned.page-header| unassigned
+            a.anchorjs-link(href='#unassigned')
+              span.anchorjs-icon
+                i.fa.fa-link
             span.small|  (
               = grid.length-assigned-admintabs
               | )

@@ -28,14 +28,6 @@ body {
 }
 
 /**
-* FOOT
-*/
-.ft a {
-  color: #000000;
-  font-size: 10px;
-}
-
-/**
  * GRID
  */
 .grid {
@@ -53,6 +45,10 @@ body {
   display: inline-block;
 }
 
+.tabs a {
+  text-decoration: none !important;
+}
+
 .name {
   color: #000000;
   font-size: 16px;
@@ -64,7 +60,7 @@ body {
 }
 
 .mng-fa {
-  display: none;
+  opacity: 0;
   position: relative;
   top: 2px;
 }
@@ -89,6 +85,14 @@ body {
 .btn-delete:hover {
   color: #646E63;
   cursor: default;
+}
+
+/**
+* FOOT
+*/
+.ft a {
+  color: inherit;
+  font-size: 10px;
 }
 
 /**
@@ -117,6 +121,10 @@ body {
 /**
  * HELP
  */
+.email {
+  cursor: pointer;
+}
+
 .break {
   word-wrap: break-word;
 }
@@ -129,4 +137,22 @@ body {
 .scrollable {
   width: auto;
   overflow: scroll;
+}
+
+/**
+ * ANCHOR
+ */
+.anchorjs-link {
+  float: left;
+  width: 1em;
+  height: 1em;
+  margin-left: -1.2em;
+  opacity: 0;
+  color: inherit;
+  text-align: center;
+}
+
+.anchorjs-icon {
+  font-size: 60%;
+  vertical-align: 0.1em;
 }

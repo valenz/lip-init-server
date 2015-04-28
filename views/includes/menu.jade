@@ -1,18 +1,21 @@
 nav.navbar.navbar-inverse.navbar-fixed-top(style='opacity: 0.9;')
   .container-fluid
     .navbar-header
-      button.navbar-toggle.collapsed(type="button", data-toggle="collapse", data-target="#bs-example-navbar-collapse-1")
+      button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-collapse')
         span.sr-only Toggle navigation
         span.icon-bar
         span.icon-bar
         span.icon-bar
+      
       a.navbar-brand(title='Home' href='/')
         | Tabgrid
-    #bs-example-navbar-collapse-1.collapse.navbar-collapse
+    
+    #navbar-collapse.collapse.navbar-collapse
       ul.nav.navbar-nav
         li
           a(title='Link 1' href='/')
             | Link 1
+        
         li
           a(title='Link 2' href='/')
             | Link 2
@@ -22,36 +25,44 @@ nav.navbar.navbar-inverse.navbar-fixed-top(style='opacity: 0.9;')
           li(class= title == 'Create Tab' ? 'active' : '')
             a(title='New Tab' href='/settings/tab/create')
               i.fa.fa-plus-circle
+        
         li(class= title == 'Settings' ? 'active' : '')
           a(title='Settings' href='/settings')
             i.fa.fa-cog
+        
         li
-          a(title='E-Mail' href='mailto:your@mail.com')
+          a.email(title='E-Mail' data-user='your', data-domain='mail.com')
             i.fa.fa-envelope
+        
         if user
           li(class= title == 'Help' ? 'active' : '')
             a(title='Help' href='/help')
               i.fa.fa-question
+        
         if user
           li.dropdown(class= title == user.username || title == 'Logging' ? 'active' : '')
             a.dropdown-toggle(data-toggle='dropdown' title= user.username href='/accounts/'+ user.username)
-              i.fa.fa-user
               |  #{user.username}
               span.caret
+              
               ul.dropdown-menu
                 li
                   a(title= user.username href='/accounts/'+ user.username)
                     i.fa.fa-user
-                    |  Profile
+                    |  Admin Grid
+                
                 li
                   a(title='Log' href='/settings/logging#tail')
                     i.fa.fa-book
                     |  Log
+                
                 li.divider
+                
                 li
                   a(title='Logout' href='/logout')
                     i.fa.fa-sign-out
                     |  Logout
+        
         else
           li(class= title == 'Login' ? 'active' : '')
             a(title='Login' href='/login')

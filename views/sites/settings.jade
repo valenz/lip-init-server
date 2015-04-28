@@ -8,10 +8,32 @@ block content
     .row
       .col-xs-1.col-sm-1.col-md-1.col-lg-1
       .col-xs-10.col-sm-10.col-md-10.col-lg-10
-        h1.page-header= title
+        h1#settings.anchor.page-header= title
+          a.anchorjs-link(href='#settings')
+            span.anchorjs-icon
+              i.fa.fa-link
+          if user
+            .btn-group.pull-right
+              a.btn.btn-success(title='Create Tab' href='/settings/tab/create')
+                i.fa.fa-plus
+                |  Add Tab
+              button.btn.btn-success.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
+                span.caret
+                span.sr-only Toggle Dropdown
+              ul.dropdown-menu(role='menu')
+                li
+                  a(title='Create Category' href='/settings/category/create')
+                    | Add Category
+                li.divider
+                li
+                  a(title='Create Account' href='/settings/account/create')
+                    | Add Account
 
         .container-fluid.adj
-          h3.page-header.text-left| Adjustments
+          h3#adjustments.anchor.page-header.text-left| Adjustments
+            a.anchorjs-link(href='#adjustments')
+              span.anchorjs-icon
+                i.fa.fa-link
             button#adjReset.btn.btn-xs.btn-default.pull-right(type='button' title='Reset Adjustments')
               i.fa.fa-eraser
           .container-fluid
@@ -26,10 +48,11 @@ block content
             input(type='range' min='1' max='2' step='0.01')
 
           if user
-            h3.page-header.text-left= 'Tabs '
+            h3#tabs.anchor.page-header.text-left= 'Tabs '
               span.small= '('+ tabs.length +')'
-              a.btn.btn-xs.btn-success.pull-right(title='Create Tab' href='/settings/tab/create')
-                i.fa.fa-plus-circle
+              a.anchorjs-link(href='#tabs')
+                span.anchorjs-icon
+                  i.fa.fa-link
             ul.list-unstyled.container-fluid
               each item, j in tabs
                 if user && item.check
@@ -41,20 +64,22 @@ block content
                     a.btn.btn-default(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
                       = ' '+ item.name
 
-            h3.page-header.text-left= 'Categories '
+            h3#categories.anchor.page-header.text-left= 'Categories '
               span.small= '('+ list.length +')'
-              a.btn.btn-xs.btn-success.pull-right(title='Create Category' href='/settings/category/create')
-                i.fa.fa-plus-circle
+              a.anchorjs-link(href='#categories')
+                span.anchorjs-icon
+                  i.fa.fa-link
             ul.list-unstyled.container-fluid
               each item, j in list
                 li(data-item= j style='display: inline;')
                   a.btn.btn-default(href='/settings/category/update/?name='+item.name+'&list='+item.list+'&id='+item._id+'&rev='+item.__v)
                     div(data-item= j)= item.name
 
-            h3.page-header.text-left= 'Accounts '
+            h3#accounts.anchor.page-header.text-left= 'Accounts '
               span.small= '('+ accs.length +')'
-              a.btn.btn-xs.btn-success.pull-right(title='Create Account' href='/settings/account/create')
-                i.fa.fa-plus-circle
+              a.anchorjs-link(href='#accounts')
+                span.anchorjs-icon
+                  i.fa.fa-link
             ul.list-unstyled.container-fluid
               each item, j in accs
                 if user && item.id == user.id

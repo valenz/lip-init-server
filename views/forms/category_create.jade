@@ -8,16 +8,20 @@ block content
     .row
       .col-xs-2.col-sm-2.col-md-3.col-lg-3
       .col-xs-8.col-sm-8.col-md-6.col-lg-6
-        h1.page-header= title
+        h1#category_create.anchor.page-header= title
+          a.anchorjs-link(href='#category_create')
+            span.anchorjs-icon
+              i.fa.fa-link
 
         .container-fluid
           form.form(action='/settings/category/create' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
             .form-group
               label(for='category')| Category Name:
-              input#category.form-control(type='text' name='categoryname' title='Category Name' required='required' placeholder='Category Name' autofocus)
-
-            button#submit.btn.btn-primary.pull-right(type='submit' title='Submit')
-              i.fa.fa-upload
-              |  Create
+              .input-group
+                input#category.form-control(type='text' name='categoryname' title='Category Name' required='required' placeholder='Category Name' autofocus)
+                span.input-group-btn
+                  button#submit.btn.btn-primary.pull-right(type='submit' title='Submit')
+                    i.fa.fa-upload
+                    |  Create
 
       .col-xs-2.col-sm-2.col-md-3.col-lg-3

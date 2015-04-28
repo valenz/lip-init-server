@@ -5,7 +5,10 @@ block content
   .container
     if grid && grid.length != 0
       if admintabs > 0
-        h2.page-header| Admin Tabs
+        h2#admintabs.anchor.page-header| Admin Tabs
+          a.anchorjs-link(href='#admintabs')
+            span.anchorjs-icon
+              i.fa.fa-link
           span.small|  (
             = admintabs
             | )

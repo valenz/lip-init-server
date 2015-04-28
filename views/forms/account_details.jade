@@ -8,7 +8,10 @@ block content
     .row
       .col-xs-1.col-sm-1.col-md-1.col-lg-1
       .col-xs-10.col-sm-10.col-md-10.col-lg-10
-        h1.page-header= title
+        h1#account_details.anchor.page-header= title
+          a.anchorjs-link(href='#account_details')
+            span.anchorjs-icon
+              i.fa.fa-link
           button#submit.btn.btn-danger.pull-right.btn-delete-dtl(type='submit' title='Submit')
             i.fa.fa-trash-o
             |  Delete
