@@ -11,8 +11,8 @@ var log = winston.loggers.get('log');
 module.exports.getAdminTabs = getAdminTabs;
 module.exports.getAssignedTabs = getAssignedTabs;
 module.exports.shorter = shorter;
+module.exports.attach = attach;
 module.exports.detach = detach;
-module.exports.paste = paste;
 module.exports.clear = clear;
 module.exports.mkdirSync = mkdirSync;
 module.exports.getLog = getLog;
@@ -63,6 +63,21 @@ function shorter(str) {
 }
 
 /**
+ * Adds new items to the end of an array, and returns the new one.
+ * @param {str} String
+ * @param {obj} Object
+ * @return {data} Object
+ */
+function attach(str, obj) {
+  if(!obj) return false;
+  var data = obj;
+  var list = obj.list;
+  list.push(str);
+  data.list = list;
+  return data;
+}
+
+/**
  * Removes items from an array, and returns the new one.
  * @param {str} String
  * @param {obj} Object
@@ -75,21 +90,6 @@ function detach(str, obj) {
   var index = list.indexOf(str);
   if(index == -1) return false;
   list.splice(index, 1);
-  data.list = list;
-  return data;
-}
-
-/**
- * Adds new items to the end of an array, and returns the new one.
- * @param {str} String
- * @param {obj} Object
- * @return {data} Object
- */
-function paste(str, obj) {
-  if(!obj) return false;
-  var data = obj;
-  var list = obj.list;
-  list.push(str);
   data.list = list;
   return data;
 }
