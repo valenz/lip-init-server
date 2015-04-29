@@ -16,13 +16,7 @@ block content
         .container-fluid
           form.form(action='/settings/account/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
             .form-group
-              .row
-                .col-xs-6.col-sm-6.col-md-6.col-lg-6
-                  label(for='password')| New Password:
-                .col-xs-6.col-sm-6.col-md-6.col-lg-6
-                  .text-right
-                    a(title='Account details and delete' href='/settings/account/details')
-                      | Details
+              label(for='password')| New Password:
               input#password.form-control(type='password' name='newPassword' title='New Password' required='required' placeholder='New Password' autofocus)
             .form-group
               label(for='confirm')| Confirm New Password:

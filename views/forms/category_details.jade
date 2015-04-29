@@ -12,9 +12,24 @@ block content
           a.anchorjs-link(href='#category_details')
             span.anchorjs-icon
               i.fa.fa-link
-          button#submit.btn.btn-danger.pull-right.btn-delete-dtl(type='submit' title='Submit')
-            i.fa.fa-trash-o
-            |  Delete
+          .btn-group.pull-right
+            button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
+              = 'Manage '
+              span.caret
+            ul.dropdown-menu(role='menu')
+              li
+                a(title='Create Category' href='/settings/category/create')
+                  i.fa.fa-plus
+                  |  Add Category
+              li
+                a(title='Update Category' href='/settings/category/update/?name='+query.name+'&id='+query.id)
+                  i.fa.fa-pencil
+                  |  Edit
+              li.divider
+              li
+                a#submit.btn-delete-dtl(title='Delete Category' href='#')
+                  i.fa.fa-trash-o
+                  |  Delete
 
         .container-fluid
           form(role='form' action='/settings/category/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
@@ -27,10 +42,13 @@ block content
             tbody
               tr
                 td.text-nowrap Name
-                td= query.name
+                td
+                  b= query.name
               tr
                 td.text-nowrap Tabs
-                td= query.list.replace(new RegExp(',', 'g'), ', ')
+                td
+                  each item in JSON.parse(query.list)
+                    div= item.name
               tr
                 td.text-nowrap Identifier
                 td= query.id

@@ -23,7 +23,7 @@ nav.navbar.navbar-inverse.navbar-fixed-top(style='opacity: 0.9;')
       ul.nav.navbar-nav.navbar-right
         if user
           li(class= title == 'Create Tab' ? 'active' : '')
-            a(title='New Tab' href='/settings/tab/create')
+            a(title='Create Tab' href='/settings/tab/create')
               i.fa.fa-plus-circle
         
         li(class= title == 'Settings' ? 'active' : '')
@@ -47,9 +47,9 @@ nav.navbar.navbar-inverse.navbar-fixed-top(style='opacity: 0.9;')
               
               ul.dropdown-menu
                 li
-                  a(title= user.username href='/accounts/'+ user.username)
+                  a(title= user.username+"'s Grid" href='/accounts/'+ user.username)
                     i.fa.fa-user
-                    |  Admin Grid
+                    |  Private Grid
                 
                 li
                   a(title='Log' href='/settings/logging#tail')
@@ -59,7 +59,7 @@ nav.navbar.navbar-inverse.navbar-fixed-top(style='opacity: 0.9;')
                 li.divider
                 
                 li
-                  a(title='Logout' href='/logout')
+                  a(title='Logout '+user.username href='/logout')
                     i.fa.fa-sign-out
                     |  Logout
         

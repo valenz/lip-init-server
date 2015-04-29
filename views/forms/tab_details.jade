@@ -12,9 +12,24 @@ block content
           a.anchorjs-link(href='#tab_details')
             span.anchorjs-icon
               i.fa.fa-link
-          button#submit.btn.btn-danger.pull-right.btn-delete-dtl(type='submit' title='Submit')
-            i.fa.fa-trash-o
-            |  Delete
+          .btn-group.pull-right
+            button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
+              = 'Manage '
+              span.caret
+            ul.dropdown-menu(role='menu')
+              li
+                a(title='Create Tab' href='/settings/tab/create')
+                  i.fa.fa-plus
+                  |  Add Tab
+              li
+                a(title='Update Tab' href='/settings/tab/update/?id='+query.id+'&renderUrl='+query.renderUrl+'&url='+query.url+'&name='+query.name+'&category='+query.category)
+                  i.fa.fa-pencil
+                  |  Edit
+              li.divider
+              li
+                a#submit.btn-delete-dtl(title='Delete Tab' href='#')
+                  i.fa.fa-trash-o
+                  |  Delete
         
         .container-fluid
           form(role='form' action='/settings/tab/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
@@ -58,13 +73,15 @@ block content
                     img.img-thumbnail(src= query.icon width='28px')
               tr
                 td.text-nowrap Who Created
-                td= query.whoCreated
+                td
+                  b= query.whoCreated
               tr
                 td.text-nowrap When Created
                 td= query.whenCreated
               tr
                 td.text-nowrap Who Updated
-                td= query.whoUpdated
+                td
+                  b= query.whoUpdated
               tr
                 td.text-nowrap When Updated
                 td= query.whenUpdated

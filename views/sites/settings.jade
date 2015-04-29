@@ -14,13 +14,13 @@ block content
               i.fa.fa-link
           if user
             .btn-group.pull-right
-              a.btn.btn-success(title='Create Tab' href='/settings/tab/create')
-                i.fa.fa-plus
-                |  Add Tab
-              button.btn.btn-success.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
+              button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
+                = 'Manage '
                 span.caret
-                span.sr-only Toggle Dropdown
               ul.dropdown-menu(role='menu')
+                li
+                  a(title='Create Tab' href='/settings/tab/create')
+                    | Add Tab
                 li
                   a(title='Create Category' href='/settings/category/create')
                     | Add Category
@@ -58,7 +58,7 @@ block content
                 if user && item.check
                   li(data-item= j style='display: inline;')
                     a.btn.btn-default(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
-                      u(data-item= j)= item.name
+                      u= item.name
                 else
                   li(data-item= j style='display: inline;')
                     a.btn.btn-default(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
@@ -72,8 +72,8 @@ block content
             ul.list-unstyled.container-fluid
               each item, j in list
                 li(data-item= j style='display: inline;')
-                  a.btn.btn-default(href='/settings/category/update/?name='+item.name+'&list='+item.list+'&id='+item._id+'&rev='+item.__v)
-                    div(data-item= j)= item.name
+                  a.btn.btn-default(href='/settings/category/details/?name='+item.name+'&list='+JSON.stringify(item.list)+'&id='+item._id+'&rev='+item.__v)
+                    div= item.name
 
             h3#accounts.anchor.page-header.text-left= 'Accounts '
               span.small= '('+ accs.length +')'
@@ -84,10 +84,10 @@ block content
               each item, j in accs
                 if user && item.id == user.id
                   li(data-item= j style='display: inline;')
-                    a.btn.btn-primary(href='/settings/account/update')
-                      div(data-item= j)= item.username
+                    a.btn.btn-primary(href='/settings/account/details')
+                      div= item.username
                 else
                   li(data-item= j style='display: inline;')
-                    .btn.btn-default(data-item= j)= item.username
+                    .btn.btn-default= item.username
 
       .col-xs-1.col-sm-1.col-md-1.col-lg-1

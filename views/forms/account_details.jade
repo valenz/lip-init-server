@@ -12,10 +12,25 @@ block content
           a.anchorjs-link(href='#account_details')
             span.anchorjs-icon
               i.fa.fa-link
-          button#submit.btn.btn-danger.pull-right.btn-delete-dtl(type='submit' title='Submit')
-            i.fa.fa-trash-o
-            |  Delete
-        
+          .btn-group.pull-right
+            button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
+              = 'Manage '
+              span.caret
+            ul.dropdown-menu(role='menu')
+              li
+                a(title='Create Account' href='/settings/account/create')
+                  i.fa.fa-plus
+                  |  Add Account
+              li
+                a(title='Update Account' href='/settings/account/update')
+                  i.fa.fa-pencil
+                  |  Edit
+              li.divider
+              li
+                a#submit.btn-delete-dtl(title='Delete Account' href='#')
+                  i.fa.fa-trash-o
+                  |  Delete
+
         .container-fluid
           form(role='form' action='/settings/account/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
             input(type='hidden' name='id' value= user.id)
@@ -27,10 +42,12 @@ block content
             tbody
               tr
                 td.text-nowrap Username
-                td= user.username
+                td
+                  b= user.username
               tr
                 td.text-nowrap Who Created
-                td= user.whoCreated
+                td
+                  b= user.whoCreated
               tr
                 td.text-nowrap When Created
                 td= user.whenCreated
