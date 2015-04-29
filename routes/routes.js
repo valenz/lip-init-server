@@ -710,7 +710,7 @@ function postCategoryUpdate(req, res) {
           }
 
           for(var i = 0; i < cat.list.length; i++) {
-            query = new Object({ _id: cat.list[i] });
+            query = new Object({ _id: cat.list[i].id });
             mongoose.model('tab').findOne(query, function(err, tab) {
               if(err) throw new Error(err);
               if(!tab) {
@@ -774,7 +774,7 @@ function postCategoryDelete(req, res) {
         }
 
         for(var i = 0; i < cat.list.length; i++) {
-          query = new Object({ _id: cat.list[i] });
+          query = new Object({ _id: cat.list[i].id });
           mongoose.model('tab').findOne(query, function(err, tab) {
             if(err) throw new Error(err);
             if(!tab) {
@@ -892,7 +892,7 @@ function postTabCreate(req, res) {
                   throw new Error('Data was not found.', cat);
                 }
 
-                var data = methods.paste(doc._id, cat);
+                var data = methods.attach({id:doc._id, name:doc.name}, cat);
 
                 if(data) {
                   data.save(function(err, doc) {
@@ -987,7 +987,7 @@ function postTabUpdate(req, res) {
               throw new Error('Data was not found.', cat);
             }
 
-            var data = methods.paste(tab._id, cat);
+            var data = methods.attach({id:tab._id, name:tab.name}, cat);
 
             if(data) {
               data.save(function(err, doc) {
