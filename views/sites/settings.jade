@@ -2,68 +2,102 @@ extends ../includes/header
 
 block content
 
-  include ../includes/message
+  .container
+    .row
+      .col-xs-1.col-sm-1.col-md-1.col-lg-1
+      .col-xs-10.col-sm-10.col-md-10.col-lg-10
+        h1#settings.anchor.page-header= title
+          a.anchorjs-link(href='#settings')
+            span.anchorjs-icon
+              i.fa.fa-link
+          if user
+            .btn-group.pull-right
+              button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
+                = 'Manage '
+                span.caret
+              ul.dropdown-menu(role='menu')
+                li
+                  a(data-toggle='tooltip' data-placement='left' data-original-title='Create Tab' href='/settings/tab/create')
+                    | Add Tab
+                li
+                  a(data-toggle='tooltip' data-placement='left' data-original-title='Create Category' href='/settings/category/create')
+                    | Add Category
+                li.divider
+                li
+                  a(data-toggle='tooltip' data-placement='left' data-original-title='Create Account' href='/settings/account/create')
+                    | Add Account
 
-  #adjustments
-    #range
-      h3.settingHeader| Adjustments
-        span.length#adjReset(title='Reset')
-          i.fa.fa-eraser
-      .adj.clearfix
-        div
-          span| Range:
-          span#rangeFac
-        #rangeLeft| 1.0
-        #rangeRight| 2.0
-        input(type='range' min='1' max='2' step='0.01')
+        .container-fluid.adj
+          .panel.panel-settings
+            .panel-heading
+              h2#adjustments.anchor.panel-title| Adjustments
+                a.anchorjs-link(href='#adjustments')
+                  span.anchorjs-icon
+                    i.fa.fa-link
+                .pull-right
+                  a#adjReset.btn.btn-xs.btn-default(type='button' data-toggle='tooltip' data-placement='top' data-original-title='Reset Adjustments' style='margin-top: -2px;')
+                    i.fa.fa-eraser
+            .panel-body.container-fluid
+              span= 'Range: '
+              b#rangeFac.text-muted
+              .row
+                .col-md-6
+                  | 1.0
+                .col-md-6
+                  .text-right
+                    | 3.0
+              input(type='range' min='1' max='3' step='0.01')
 
-    if user
-      #tabs
-        h3.settingHeader| Tabs
-          span.length| (
-            = tabs.length
-            | )
-        .adj.clearfix
-          a#createuser(title='Create Tab' href='/settings/tab/create')
-            .item.itemfloat
-              i.fa.fa-plus-circle
-          each item, j in tabs
-            if user && item.check
-              a(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
-                .item.itemfloat#check(data-item=j)= item.name
-            else
-              a(href='/settings/tab/details/?name='+item.name+'&renderUrl='+item.renderUrl+'&url='+item.url+'&title='+item.title+'&icon='+item.icon+'&image='+item.image+'&category='+item.category+'&check='+item.check+'&whoCreated='+item.whoCreated+'&whoUpdated='+item.whoUpdated+'&whenCreated='+item.whenCreated+'&whenUpdated='+item.whenUpdated+'&id='+item._id+'&rev='+item.__v)
-                .item.itemfloat(data-item=j)= item.name
+          if user
+            .panel.panel-settings
+              .panel-heading
+                h3#tabs.anchor.panel-title= 'Tabs '
+                  span= '('+ tabs.length +')'
+                  a.anchorjs-link(href='#tabs')
+                    span.anchorjs-icon
+                      i.fa.fa-link
+              .panel-body.container-fluid
+                each item, j in tabs
+                  .btn-group(id= item._id data-item= j)
+                    form(role='form' action='/settings/tab/details' method='post' enctype='multipart/form-data')
+                      input(type='hidden' name='id' value= item._id)
+                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Tab Details' style='margin: 0 5px 0 5px;')
+                        if item.check
+                          u= item.name
+                        else
+                          = item.name
 
-    if user
-      #categories
-        h3.settingHeader| Categories
-          span.length| (
-            = list.length
-            | )
-        .adj.clearfix
-          a#createuser(title='Create Category' href='/settings/category/create')
-            .item.itemfloat
-              i.fa.fa-plus-circle
-          each item, j in list
-            a(href='/settings/category/update/?name='+item.name+'&list='+item.list+'&id='+item._id+'&rev='+item.__v)
-              .item.itemfloat(data-item=j)= item.name
+            .panel.panel-settings
+              .panel-heading
+                h3#categories.anchor.panel-title= 'Categories '
+                  span= '('+ cats.length +')'
+                  a.anchorjs-link(href='#categories')
+                    span.anchorjs-icon
+                      i.fa.fa-link
+              .panel-body.container-fluid
+                each item, j in cats
+                  .btn-group(id= item._id data-item= j)
+                    form(role='form' action='/settings/category/details' method='post' enctype='multipart/form-data')
+                      input(type='hidden' name='id' value= item._id)
+                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Category Details' style='margin: 0 5px 0 5px;')
+                        = item.name
 
-    if user
-      #accounts
-        h3.settingHeader| Accounts
-          span.length| (
-            = accs.length
-            | )
-        .adj.clearfix
-          a#createuser(title='Create Account' href='/settings/account/create')
-            .item.itemfloat
-              i.fa.fa-plus-circle
-          each item, j in accs
-            if user && item.id == user.id
-              a(href='/settings/account/update')
-                .item.itemfloat#user(data-item=j)= item.username
-            else
-              .item.itemfloat(data-item=j)= item.username
+            .panel.panel-settings
+              .panel-heading
+                h3#accounts.anchor.panel-title= 'Accounts '
+                  span= '('+ accs.length +')'
+                  a.anchorjs-link(href='#accounts')
+                    span.anchorjs-icon
+                      i.fa.fa-link
+              .panel-body.container-fluid
+                each item, j in accs
+                  .btn-group(id= item._id data-item= j)
+                    form(role='form' action='/settings/account/details' method='post' enctype='multipart/form-data')
+                      input(type='hidden' name='id' value= item._id)
+                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Account Details' style='margin: 0 5px 0 5px;')
+                        if item._id == user.id
+                          u= item.username
+                        else
+                          = item.username
 
-  include ../includes/foot
+      .col-xs-1.col-sm-1.col-md-1.col-lg-1

@@ -21,7 +21,9 @@ var config = module.exports = {
       // Sets location of static client side content
       static: 'public',
       // Sets location of the favicon
-      favicon: '/public/images/favicon.ico'
+      favicon: '/public/images/favicon.ico',
+      // Sets options for request logging
+      morgan: '\x1b[32m:locale \x1b[0m: :method :url :status \x1b[0m:response-time ms | :res[content-length] | :remote-addr :remote-user HTTP/:http-version | :user-agent'
     },
     cookie: {
       options: {

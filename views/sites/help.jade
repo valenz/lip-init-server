@@ -2,10 +2,12 @@ extends ../includes/header
 
 block content
 
-  include ../includes/message
+  .container
+    h1#help.anchor.page-header= title
+      a.anchorjs-link(href='#help')
+        span.anchorjs-icon
+          i.fa.fa-link
 
-  p.info
-    i.fa.fa-info-circle
-    | Here comes the FAQ! Soon ...
-
-  include ../includes/foot
+    p.text-primary
+      i.fa.fa-info-circle
+      |  Here comes the FAQ! Soon ...
