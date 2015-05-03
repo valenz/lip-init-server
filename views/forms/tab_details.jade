@@ -2,54 +2,89 @@ extends ../includes/header
 
 block content
 
-  include ../includes/message
+  .container
+    .row
+      .col-xs-1.col-sm-1.col-md-1.col-lg-1
+      .col-xs-10.col-sm-10.col-md-10.col-lg-10
+        h1#tab_details.anchor.page-header= title
+          a.anchorjs-link(href='#tab_details')
+            span.anchorjs-icon
+              i.fa.fa-link
+          .small.pull-right
+            a.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Create Tab' href='/settings/tab/create' style='margin: 0 5px 0 5px;')
+              i.fa.fa-plus
+              |  Add
+            .btn-group
+              form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
+                input(type='hidden' name='id' value= tab._id)
+                button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Update Tab' type='submit' style='margin: 0 5px 0 5px;')
+                  i.fa.fa-pencil
+                  |  Edit
+            .btn-group
+              form(role='form' action='/settings/tab/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+                input(type='hidden' name='id' value= tab._id)
+                button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Delete Tab' type='submit' style='margin: 0 5px 0 5px;')
+                  i.fa.fa-trash-o
+                  |  Delete
+        
+        .panel.panel-default
+          table.table.table-condensed.table-hover.table-striped
+            thead
+              tr
+                th Label
+                th Detail
+            tbody
+              tr
+                td.text-nowrap Image
+                td
+                  a(href='../../../uploads/'+tab.image)
+                    img.img-thumbnail(src='../../../uploads/'+tab.image width='250px')
+              tr
+                td.text-nowrap Name
+                td
+                  strong= tab.name
+              tr
+                td.text-nowrap Title
+                td= tab.title
+              tr
+                td.text-nowrap Category
+                td= tab.category
+              tr
+                td.text-nowrap Admin Tab
+                td(class= tab.check ? 'text-success' : 'text-danger')
+                  strong= tab.check
+              tr
+                td.text-nowrap Render Address
+                td
+                  a(href= tab.renderUrl)= tab.renderUrl
+              tr
+                td.text-nowrap Web Address
+                td
+                  a(href= tab.url)= tab.url
+              tr
+                td.text-nowrap Icon
+                td
+                  a(href= tab.icon)
+                    img.img-thumbnail(src= tab.icon width='28px')
+              tr
+                td.text-nowrap Who Created
+                td
+                  strong= tab.whoCreated
+              tr
+                td.text-nowrap When Created
+                td= tab.whenCreated
+              tr
+                td.text-nowrap Who Updated
+                td
+                  strong= tab.whoUpdated
+              tr
+                td.text-nowrap When Updated
+                td= tab.whenUpdated
+              tr
+                td.text-nowrap Identifier
+                td.breakall= tab._id
+              tr
+                td.text-nowrap Revision
+                td= tab.__v
 
-  form.form(action='/settings/tab/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-    h3.formHeadline= title
-
-    a(href='../../../uploads/'+query.image)
-      img(src='../../../uploads/'+query.image width='250px')
-
-    #detailsForm
-      label| Name:
-      input.details(type='text' name='name' title= query.name value= query.name readonly)
-      label| Render Address:
-      input.details(type='url' name='renderUrl' title= query.renderUrl value= query.renderUrl readonly)
-      label| Web Address:
-      input.details(type='url' name='address' title= query.url value= query.url readonly)
-      label| Title:
-      input.details(type='text' name='title' title= query.title value= query.title readonly)
-      label| Icon:
-      input.details(type='text' name='icon' title= query.icon value= query.icon readonly)
-      label| Image:
-      input.details(type='text' name='image' title= query.image value= query.image readonly)
-      label| Category:
-      input.details(type='text' name='category' title= query.category value= query.category readonly)
-      label| Admin View:
-      input.details(type='text' name='check' title= query.check value= query.check readonly)
-
-      label| Who Created:
-      input.details(type='text' name='whoCreated' title= query.whoCreated value= query.whoCreated readonly)
-      label| Who Updated:
-      input.details(type='text' name='whoUpdated' title= query.whoUpdated value= query.whoUpdated readonly)
-      label| When Created:
-      input.details(type='text' name='whenCreated' title= query.whenCreated value= query.whenCreated readonly)
-      label| When Updated:
-      input.details(type='text' name='whenUpdated' title= query.whenUpdated value= query.whenUpdated readonly)
-
-      label| Identifier:
-      input.details(type='text' name='id' title=  query.id value= query.id readonly)
-      label| Revision:
-      input.details(type='text' name='rev' title=  query.rev value= query.rev readonly)
-
-    .btn-dlt-f
-      a(title='Submit')
-        i.fa.fa-trash-o
-      | Delete
-    noscript
-      button.dlt-f(title='Submit')
-        i.fa.fa-trash-o
-        | Delete
-    a.cancel(href='/settings' title='Cancel')| Cancel
-
-  include ../includes/foot
+      .col-xs-1.col-sm-1.col-md-1.col-lg-1

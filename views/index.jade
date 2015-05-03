@@ -2,49 +2,58 @@ extends includes/header
 
 block content
 
-  include includes/message
-
-  if grid && grid.length != 0
-    - for (var i = list.length; i >= 0 ; --i) {
-      ul.grid(name= list[i] ? list[i].name : 'unassigned' data-length= list[i] ? list[i].list.length : grid.length-assigned-admintabs)
+  .container
+    if grid && grid.length != 0
+      - for (var i = list.length; i >= 0 ; --i) {
         if list[i] && list[i].list.length > 0
-          h3.categoryHeadline= list[i].name
-            span.length| (
-              = list[i] ? list[i].list.length : grid.length-assigned-admintabs
-              | )
-        else if !list[i] && grid.length-assigned-admintabs > 0
-          h3.categoryHeadline| unassigned
-            span.length| (
-              = grid.length-assigned-admintabs
-              | )
-        each item, j in grid
-          if list[i] && list[i].name == item.category
-            +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, j)
-          else if !list[i] && !item.category
-            +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, j)
-    - }
+          .panel.panel-grid
+            .panel-heading
+              h2.panel-title(id= list[i].name.toLowerCase())= list[i].name
+                a.anchorjs-link(href='#'+ list[i].name.toLowerCase())
+                  span.anchorjs-icon
+                    i.fa.fa-link
+                span|  (
+                  = list[i] ? list[i].list.length : grid.length-assigned-admintabs
+                  | )
+            ul.list-unstyled.panel-body.container-fluid.grid(name= list[i] ? list[i].name : 'unassigned' data-length= list[i] ? list[i].list.length : grid.length-assigned-admintabs)
+              each item, j in grid
+                if list[i] && list[i].name == item.category
+                  +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, j)
+                else if !list[i] && !item.category
+                  +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, j)
+        if !list[i] && grid.length-assigned-admintabs > 0
+          .panel.panel-grid
+            .panel-heading
+              h2#unassigned.panel-title| unassigned
+                a.anchorjs-link(href='#unassigned')
+                  span.anchorjs-icon
+                    i.fa.fa-link
+                span|  (
+                  = grid.length-assigned-admintabs
+                  | )
+            ul.list-unstyled.panel-body.container-fluid.grid(name= list[i] ? list[i].name : 'unassigned' data-length= list[i] ? list[i].list.length : grid.length-assigned-admintabs)
+              each item, j in grid
+                if list[i] && list[i].name == item.category
+                  +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, j)
+                else if !list[i] && !item.category
+                  +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, j)
+      - }
 
   mixin tabs(id, renderUrl, url, title, icon, image, name, category, check, j)
     if !check
-      li.tabs(data-item= j)
-        form.tab-form(action='/settings/tab/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-          div
-            a(href= url ? url : renderUrl title= title ? title : name)
-              div.img-container
-                img.pic(src='uploads/'+ image)
-              div.icon-container
-                img.icon(src= icon)
-              .name= name
-              input(type='hidden' name='id' value= id data-check='unchecked')
-            if user
-              noscript
-                a(href='/settings/tab/update/?id='+id+'&renderUrl='+renderUrl+'&url='+url+'&name='+name+'&category='+category)
-                  i.btn-edit-ns.fa.fa-pencil(title='Edit tab')
-                button.btn-del-ns
-                  i.fa.fa-times(title='Remove tab')
-              a(href='/settings/tab/update/?id='+id+'&renderUrl='+renderUrl+'&url='+url+'&name='+name+'&category='+category)
-                i.btn-edit.fa.fa-pencil(title='Edit tab')
-              a.btn-del
-                i.fa.fa-times(title='Remove tab')
-
-  include includes/foot
+      li.tabs(id= id data-item= j)
+        if user
+          .mng-fa
+            form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
+              input(type='hidden' name='id' value= id)
+              button.btn-link.btn-edit(data-toggle='tooltip' data-placement='top' data-original-title='Update Tab' type='submit')
+                i.fa.fa-pencil
+            form(role='form' action='/settings/tab/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+              input(type='hidden' name='id' value= id)
+              button.btn-link.btn-delete(data-toggle='tooltip' data-placement='top' data-original-title='Delete Tab' type='submit')
+                i.fa.fa-times
+        a(href= url ? url : renderUrl)
+          img.img-thumbnail(data-toggle='tooltip' data-placement='top' data-original-title= title ? title : name src='uploads/'+ image)
+          .mng-vis
+            img.img-rounded.center-block(src= icon width='13px')
+            p.text-center.name.break= name
