@@ -500,7 +500,7 @@ function postAccountUpdate(req, res) {
           if(err) throw new Error(err);
           if(!acc) {
             req.flash('error', 'Data was not found: %s', acc);
-            res.redirect('update');
+            res.redirect('/settings');
             throw new Error('Data was not found.', acc);
           }
 
@@ -510,7 +510,7 @@ function postAccountUpdate(req, res) {
             if(err) throw new Error(err);
             if(!doc) {
               req.flash('error', 'Data was not found: %s', doc);
-              res.redirect('update');
+              res.redirect('/settings');
               throw new Error('Data was not found.', doc);
             }
 
@@ -525,7 +525,7 @@ function postAccountUpdate(req, res) {
                 }
                 if(!doc) {
                   req.flash('error', 'Data was not found: %s', doc);
-                  res.redirect('update');
+                  res.redirect('/settings');
                   throw new Error('Data was not found.', doc);
                 }
 
@@ -543,12 +543,12 @@ function postAccountUpdate(req, res) {
       } else {
         log.error('%s %s %d - "Passwords did not match" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
         req.flash('info', 'Account could not be updated. Passwords did not match.');
-        res.redirect('update');
+        res.redirect('/settings');
       }
     } else {
       log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('update');
+      res.redirect('/settings');
     }
   } else {
     log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
@@ -576,7 +576,7 @@ function postAccountDelete(req, res) {
         if(err) throw new Error(err);
         if(!allAcc) {
           req.flash('error', 'Data was not found: %s', allAcc);
-          res.redirect('details');
+          res.redirect('/settings');
           throw new Error('Data was not found.', allAcc);
         }
 
@@ -584,7 +584,7 @@ function postAccountDelete(req, res) {
           if(err) throw new Error(err);
           if(!acc) {
             req.flash('error', 'Data was not found: %s', acc);
-            res.redirect('details');
+            res.redirect('/settings');
             throw new Error('Data was not found.', acc);
           }
 
@@ -598,7 +598,7 @@ function postAccountDelete(req, res) {
                 }
                 if(!doc) {
                   req.flash('error', 'Data was not found: %s', doc);
-                  res.redirect('details');
+                  res.redirect('/settings');
                   throw new Error('Data was not found.', doc);
                 }
 
@@ -616,14 +616,14 @@ function postAccountDelete(req, res) {
           } else {
             log.warn('%s %s %d - "Request ignored %s" - %s', req.method, req.path, res.statusCode, acc.username, req.headers['user-agent']);
             req.flash('info', 'Account could not be deleted. Please create a new one first.');
-            res.redirect('details');
+            res.redirect('/settings');
           }
         });
       });
     } else {
       log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('details');
+      res.redirect('/settings');
     }
   } else {
     log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
@@ -708,7 +708,7 @@ function postCategoryUpdate(req, res) {
         if(err) throw new Error(err);
         if(!cat) {
           req.flash('error', 'Data was not found: %s', cat);
-          res.redirect('update');
+          res.redirect('/settings');
           throw new Error('Data was not found.', cat);
         }
 
@@ -731,7 +731,7 @@ function postCategoryUpdate(req, res) {
               }
               if(!doc) {
                 req.flash('error', 'Data was not found: %s', doc);
-                res.redirect('update');
+                res.redirect('/settings');
                 throw new Error('Data was not found.', doc);
               }
 
@@ -778,7 +778,7 @@ function postCategoryUpdate(req, res) {
     } else {
       log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('update');
+      res.redirect('/settings');
     }
   } else {
     log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
@@ -984,7 +984,7 @@ function postTabUpdate(req, res) {
         if(err) throw new Error(err);
         if(!tab) {
           req.flash('error', 'Data was not found: %s', tab);
-          res.redirect('update');
+          res.redirect('/settings');
           throw new Error('Data was not found.', tab);
         }
 
@@ -994,7 +994,7 @@ function postTabUpdate(req, res) {
             if(err) throw new Error(err);
             if(!cat) {
               req.flash('error', 'Data was not found: %s', cat);
-              res.redirect('update');
+              res.redirect('/settings');
               throw new Error('Data was not found.', cat);
             }
 
@@ -1018,7 +1018,7 @@ function postTabUpdate(req, res) {
             if(err) throw new Error(err);
             if(!cat) {
               req.flash('error', 'Data was not found: %s', cat);
-              res.redirect('update');
+              res.redirect('/settings');
               throw new Error('Data was not found.', cat);
             }
 
@@ -1065,7 +1065,7 @@ function postTabUpdate(req, res) {
               }
               if(!doc) {
                 req.flash('error', 'Data was not found: %s', doc);
-                res.redirect('update');
+                res.redirect('/settings');
                 throw new Error('Data was not found.', doc);
               }
 
@@ -1099,7 +1099,7 @@ function postTabUpdate(req, res) {
     } else {
       log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('update');
+      res.redirect('/settings');
     }
   } else {
     log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
