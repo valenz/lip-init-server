@@ -3,8 +3,6 @@ extends ../includes/header
 block content
 
   .container
-    include ../includes/message
-
     .row
       .col-xs-2.col-sm-2.col-md-3.col-lg-3
       .col-xs-8.col-sm-8.col-md-6.col-lg-6
@@ -17,42 +15,41 @@ block content
           form.form(role='form' action='/settings/tab/create' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
             .form-group
               label(for='renderAddress')| *Render Address:
-              input#renderAddress.form-control(type='url' name='renderUrl' title='Render Address' required='required' placeholder='Render Address' autofocus)
+              .input-group
+                input#renderAddress.form-control(type='url' name='renderUrl' data-toggle='tooltip' data-placement='top' data-original-title='Render Address' required='required' placeholder='Render Address' autofocus)
+                span.input-group-addon(style='background-color: inherit; padding: 3px 10px 0 10px;')
+                  input(type='checkbox' name='check' data-toggle='tooltip' data-placement='top' data-original-title='Access only for Admins' style='width: 15px; height: 15px;')
             .form-group
               label(for='webAddress')| Web Address:
-              input#webAddress.form-control(type='url' name='address' title='Web Address' placeholder='Web Address')
+              input#webAddress.form-control(type='url' name='address' data-toggle='tooltip' data-placement='top' data-original-title='Web Address' placeholder='Web Address')
             .form-group
               label(for='name')| Name:
-              input#name.form-control(type='text' name='name' title='Name' placeholder='Name')
+              input#name.form-control(type='text' name='name' data-toggle='tooltip' data-placement='top' data-original-title='Name' placeholder='Name')
             .form-group
-              .row
-                .col-xs-6.col-sm-6.col-md-6.col-lg-6
-                  label(for='category')| Category:
-                .col-xs-6.col-sm-6.col-md-6.col-lg-6
-                  .text-right
-                    a(title='Create a category' href='/settings/category/create')
-                      | Create Category
-              select#category.form-control.selectpicker.show-tick.dropup(name='category' data-live-search='true')
-                if(list.length > 0)
-                  option(selected disabled)| Choose a category
-                  each category in list
-                    option(value= category.name)= category.name
-                else
-                  option(selected disabled)| No category created yet
-            .row
-              .col-sm-9.col-md-9.col-lg-10
-                .checkbox
-                  .text-right
-                    label
-                      input(type='checkbox' name='check' title='Access only for admins')
-                      | Admin Tab
-              .col-sm-3.col-md-3.col-lg-2
-                button#submit.btn.btn-primary.pull-right(type='submit' title='Submit')
-                  i.fa.fa-upload
-                  |  Create
+              label(for='category')| Category:
+              .input-group
+                select#category.form-control.selectpicker.show-tick.dropup(name='category' data-live-search='true')
+                  if(cats.length > 0)
+                    option(selected disabled)| Choose a category
+                    each category in cats
+                      option(value= category.name)= category.name
+                  else
+                    option(selected disabled)| No category created yet
+                span.input-group-btn
+                  a.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Create Category' href='/settings/category/create')
+                    i.fa.fa-plus-circle
 
-          p.help-block.text-justify
-            | Depending on web page, the capturing may take a few seconds.
+            button#submit.btn.btn-primary.pull-right(type='submit' data-toggle='tooltip' data-placement='left' data-original-title='Submit')
+              i.fa.fa-upload
+              |  Create
+
+        .container-fluid
+          p.help-block.small.text-justify
+            i.fa.fa-info-circle
+            |  Depending on web page, the capturing may take a few seconds.
             | This page will reload when the process is complete.
+            = ' Check '
+            a(href='/settings/logging#tail')| Log
+            = ' for details.'
 
       .col-xs-2.col-sm-2.col-md-3.col-lg-3

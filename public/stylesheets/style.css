@@ -15,16 +15,25 @@
 
 body {
   padding-top: 70px;
-  font: 100%/1.1 'libsansregular', Arial, Helvetica, sans-serif;
-  color: #000000;
-  /*background: #FFF9E5 url(../images/bg.jpg) repeat 100% 0 scroll;*/
+  font-family: 'libsansregular', Arial, Helvetica, sans-serif;
 }
 
 /**
-* HEAD
-*/
+ * HEAD
+ */
+.navbar-inverse {
+  background-color: #12282f;
+}
 .navbar-brand {
-  font: 100%/1.5 'Audiowide', 'libsansbold', Arial, Helvetica, sans-serif;
+  font-family: 'Audiowide', 'libsansbold', Arial, Helvetica, sans-serif;
+}
+
+/**
+ * MESSAGE
+ */
+.message {
+  position: relative;
+  top: -45px;
 }
 
 /**
@@ -61,38 +70,75 @@ body {
 
 .mng-fa {
   opacity: 0;
+  top: 0;
   position: relative;
-  top: 2px;
 }
 
 .btn-edit {
   position: absolute;
-  left: 6px;
-  color: #17313A;
+  left: 0;
 }
 
 .btn-delete {
   position: absolute;
-  right: 6px;
+  right: 0;
+}
+
+.btn-edit i {
   color: #17313A;
 }
 
-.btn-edit:hover {
+.btn-delete i {
+  color: #17313A;
+}
+
+.btn-edit i:hover {
   color: #646E63;
   cursor: default;
 }
 
-.btn-delete:hover {
+.btn-delete i:hover {
   color: #646E63;
   cursor: default;
 }
 
 /**
-* FOOT
-*/
+ * SETTINGS
+ */
+.panel-title {
+  font-size: 18px;
+}
+
+.panel-settings{
+  border-color: #C0C0C0;
+}
+.panel-settings>.panel-heading{
+  color: #1A242F;
+  background-color: #F5F5FA;
+  opacity: 1;
+  border-color: #B2B2B2;
+}
+
+.panel-grid{
+  border-color: #C0C0C0;
+}
+.panel-grid>.panel-heading{
+  color: #1A242F;
+  background-color: #F5F5FA;
+  opacity: 1;
+  border-color: #B2B2B2;
+}
+
+/**
+ * FOOT
+ */
 .ft a {
   color: inherit;
   font-size: 10px;
+}
+
+.ft a:hover {
+  text-decoration: none;
 }
 
 /**
@@ -146,7 +192,7 @@ body {
   float: left;
   width: 1em;
   height: 1em;
-  margin-left: -1.2em;
+  margin-left: -1.0em;
   opacity: 0;
   color: inherit;
   text-align: center;

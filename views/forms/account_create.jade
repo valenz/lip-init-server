@@ -3,8 +3,6 @@ extends ../includes/header
 block content
 
   .container
-    include ../includes/message
-
     .row
       .col-xs-2.col-sm-2.col-md-3.col-lg-3
       .col-xs-8.col-sm-8.col-md-6.col-lg-6
@@ -17,15 +15,15 @@ block content
           form.form(action='/settings/account/create' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
             .form-group
               label(for='username')| *Username:
-              input#username.form-control(type='text' name='username' title='Username' required='required' placeholder='Username' autofocus)
+              input#username.form-control(type='text' name='username' data-toggle='tooltip' data-placement='top' data-original-title='Username' required='required' placeholder='Username' autofocus)
             .form-group
               label(for='password')| *Password:
-              input#password.form-control(type='password' name='password' title='Password' required='required' placeholder='Password')
+              input#password.form-control(type='password' name='password' data-toggle='tooltip' data-placement='top' data-original-title='Password' required='required' placeholder='Password')
             .form-group
               label(for='confirm')| *Confirm Password:
-              input#confirm.form-control(type='password' name='confirm' title='Confirm Password' required='required' placeholder='Confirm Password')
+              input#confirm.form-control(type='password' name='confirm' data-toggle='tooltip' data-placement='top' data-original-title='Confirm Password' required='required' placeholder='Confirm Password')
 
-            button#submit.btn.btn-primary.pull-right(type='submit' title='Submit')
+            button#submit.btn.btn-primary.pull-right(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Submit')
               i.fa.fa-upload
               |  Create
 

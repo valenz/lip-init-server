@@ -8,7 +8,11 @@ var Category = new Schema({
       required: true,
       trim: true
     },
-    list: Array
+    list: Array,
+    whoCreated: String,
+    whoUpdated: String,
+    whenCreated: Date,
+    whenUpdated: Date
 });
 
 module.exports = mongoose.model('category', Category);

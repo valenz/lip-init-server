@@ -3,8 +3,6 @@ extends ../includes/header
 block content
 
   .container
-    include ../includes/message
-
     .row
       .col-xs-1.col-sm-1.col-md-1.col-lg-1
       .col-xs-10.col-sm-10.col-md-10.col-lg-10
@@ -12,28 +10,24 @@ block content
           a.anchorjs-link(href='#tab_details')
             span.anchorjs-icon
               i.fa.fa-link
-          .btn-group.pull-right
-            button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
-              = 'Manage '
-              span.caret
-            ul.dropdown-menu(role='menu')
-              li
-                a(title='Create Tab' href='/settings/tab/create')
-                  i.fa.fa-plus
-                  |  Add Tab
-              li
-                a(title='Update Tab' href='/settings/tab/update/?id='+query.id+'&renderUrl='+query.renderUrl+'&url='+query.url+'&name='+query.name+'&category='+query.category)
+          .small.pull-right
+            a.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Create Tab' href='/settings/tab/create' style='margin: 0 5px 0 5px;')
+              i.fa.fa-plus
+              |  Add
+            .btn-group
+              form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
+                input(type='hidden' name='id' value= tab._id)
+                button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Update Tab' type='submit' style='margin: 0 5px 0 5px;')
                   i.fa.fa-pencil
                   |  Edit
-              li.divider
-              li
-                a#submit.btn-delete-dtl(title='Delete Tab' href='#')
+            .btn-group
+              form(role='form' action='/settings/tab/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+                input(type='hidden' name='id' value= tab._id)
+                button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Delete Tab' type='submit' style='margin: 0 5px 0 5px;')
                   i.fa.fa-trash-o
                   |  Delete
         
-        .container-fluid
-          form(role='form' action='/settings/tab/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-            input(type='hidden' name='id' value= query.id)
+        .panel.panel-default
           table.table.table-condensed.table-hover.table-striped
             thead
               tr
@@ -43,53 +37,54 @@ block content
               tr
                 td.text-nowrap Image
                 td
-                  a(href='../../../uploads/'+query.image)
-                    img.img-thumbnail(src='../../../uploads/'+query.image width='250px')
+                  a(href='../../../uploads/'+tab.image)
+                    img.img-thumbnail(src='../../../uploads/'+tab.image width='250px')
               tr
                 td.text-nowrap Name
-                td= query.name
+                td
+                  strong= tab.name
               tr
                 td.text-nowrap Title
-                td= query.title
+                td= tab.title
               tr
                 td.text-nowrap Category
-                td= query.category
+                td= tab.category
               tr
                 td.text-nowrap Admin Tab
-                td(class= query.check=='true' ? 'text-success' : 'text-danger')
-                  b= query.check
+                td(class= tab.check ? 'text-success' : 'text-danger')
+                  strong= tab.check
               tr
                 td.text-nowrap Render Address
                 td
-                  a(href= query.renderUrl)= query.renderUrl
+                  a(href= tab.renderUrl)= tab.renderUrl
               tr
                 td.text-nowrap Web Address
                 td
-                  a(href= query.url)= query.url
+                  a(href= tab.url)= tab.url
               tr
                 td.text-nowrap Icon
                 td
-                  a(href= query.icon)
-                    img.img-thumbnail(src= query.icon width='28px')
+                  a(href= tab.icon)
+                    img.img-thumbnail(src= tab.icon width='28px')
               tr
                 td.text-nowrap Who Created
                 td
-                  b= query.whoCreated
+                  strong= tab.whoCreated
               tr
                 td.text-nowrap When Created
-                td= query.whenCreated
+                td= tab.whenCreated
               tr
                 td.text-nowrap Who Updated
                 td
-                  b= query.whoUpdated
+                  strong= tab.whoUpdated
               tr
                 td.text-nowrap When Updated
-                td= query.whenUpdated
+                td= tab.whenUpdated
               tr
                 td.text-nowrap Identifier
-                td.breakall= query.id
+                td.breakall= tab._id
               tr
                 td.text-nowrap Revision
-                td= query.rev
+                td= tab.__v
 
       .col-xs-1.col-sm-1.col-md-1.col-lg-1

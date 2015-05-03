@@ -23,24 +23,24 @@ module.exports.settings = settings;
 module.exports.logging = logging;
 module.exports.help = help;
 module.exports.accountCreate = accountCreate;
-module.exports.accountUpdate = accountUpdate;
-module.exports.accountDetails = accountDetails;
 module.exports.categoryCreate = categoryCreate;
-module.exports.categoryUpdate = categoryUpdate;
-module.exports.categoryDetails = categoryDetails;
 module.exports.tabCreate = tabCreate;
-module.exports.tabUpdate = tabUpdate;
-module.exports.tabDetails = tabDetails;
 
 module.exports.postLogin = postLogin;
 module.exports.postAccountCreate = postAccountCreate;
 module.exports.postAccountUpdate = postAccountUpdate;
+module.exports.postAccountEdit = postAccountEdit;
+module.exports.postAccountDetails = postAccountDetails;
 module.exports.postAccountDelete = postAccountDelete;
 module.exports.postCategoryCreate = postCategoryCreate;
 module.exports.postCategoryUpdate = postCategoryUpdate;
+module.exports.postCategoryEdit = postCategoryEdit;
+module.exports.postCategoryDetails = postCategoryDetails;
 module.exports.postCategoryDelete = postCategoryDelete;
 module.exports.postTabCreate = postTabCreate;
 module.exports.postTabUpdate = postTabUpdate;
+module.exports.postTabEdit = postTabEdit;
+module.exports.postTabDetails = postTabDetails;
 module.exports.postTabDelete = postTabDelete;
 module.exports.postConfirm = postConfirm;
 module.exports.ensureAuthenticated = ensureAuthenticated;
@@ -155,7 +155,7 @@ function settings(req, res) {
         var ro = new RenderObject();
         ro.set({
           title: 'Settings',
-          list: category,
+          cats: category,
           accs: account,
           tabs: tab,
           user: req.user,
@@ -229,42 +229,6 @@ function accountCreate(req, res) {
 }
 
 /**
- * Pass a local variable to the account_update form page.
- * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req
- * @param {Object} res
- */
-function accountUpdate(req, res) {
-  var ro = new RenderObject();
-  ro.set({
-    title: 'Update Account',
-    user: req.user,
-    info: req.flash('info'),
-    error: req.flash('error'),
-    success: req.flash('success')
-  });
-  res.render('forms/account_update', ro.get());
-}
-
-/**
- * Pass a local variable to the user_details form page.
- * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req
- * @param {Object} res
- */
-function accountDetails(req, res) {
-  var ro = new RenderObject();
-  ro.set({
-    title: 'User Details',
-    user: req.user,
-    info: req.flash('info'),
-    error: req.flash('error'),
-    success: req.flash('success')
-  });
-  res.render('forms/account_details', ro.get());
-}
-
-/**
  * Pass a local variable to the category_create form page.
  * Get an array of flash messages by passing the keys to req.flash().
  * @param {Object} req
@@ -283,44 +247,6 @@ function categoryCreate(req, res) {
 }
 
 /**
- * Pass a local variable to the category_update form page.
- * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req
- * @param {Object} res
- */
-function categoryUpdate(req, res) {
-  var ro = new RenderObject();
-  ro.set({
-    title: 'Update Category',
-    query: req.query,
-    user: req.user,
-    info: req.flash('info'),
-    error: req.flash('error'),
-    success: req.flash('success')
-  });
-  res.render('forms/category_update', ro.get());
-}
-
-/**
- * Pass a local variable to the category_details form page.
- * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req
- * @param {Object} res
- */
-function categoryDetails(req, res) {
-  var ro = new RenderObject();
-  ro.set({
-    title: 'Category Details',
-    query: req.query,
-    user: req.user,
-    info: req.flash('info'),
-    error: req.flash('error'),
-    success: req.flash('success')
-  });
-  res.render('forms/category_details', ro.get());
-}
-
-/**
  * Selects all documents in collection category and pass a local variable to
  * the tab_create page. Get an array of flash messages by passing the keys to
  * req.flash().
@@ -333,7 +259,7 @@ function tabCreate(req, res) {
     var ro = new RenderObject();
     ro.set({
       title: 'Create Tab',
-      list: category,
+      cats: category,
       user: req.user,
       info: req.flash('info'),
       error: req.flash('error'),
@@ -341,48 +267,6 @@ function tabCreate(req, res) {
     });
     res.render('forms/tab_create', ro.get());
   });
-}
-
-/**
- * Pass a local variable to the tab_update form page.
- * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req
- * @param {Object} res
- */
-function tabUpdate(req, res) {
-  mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
-    if(err) throw new Error(err);
-    var ro = new RenderObject();
-    ro.set({
-      title: 'Update Tab',
-      list: category,
-      query: req.query,
-      user: req.user,
-      info: req.flash('info'),
-      error: req.flash('error'),
-      success: req.flash('success')
-    });
-    res.render('forms/tab_update', ro.get());
-  });
-}
-
-/**
- * Pass a local variable to the tab_details form page.
- * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req
- * @param {Object} res
- */
-function tabDetails(req, res) {
-  var ro = new RenderObject();
-  ro.set({
-    title: 'Tab Details',
-    query: req.query,
-    user: req.user,
-    info: req.flash('info'),
-    error: req.flash('error'),
-    success: req.flash('success')
-  });
-  res.render('forms/tab_details', ro.get());
 }
 
 /**
@@ -402,6 +286,148 @@ function postLogin(req, res) {
 }
 
 /**
+ * Pass a local variable to the account_update form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+function postAccountEdit(req, res) {
+  var query = new Object({ _id: req.body.id });
+  mongoose.model('account').findOne(query, function(err, acc) {
+    if(err) throw new Error(err);
+    var ro = new RenderObject();
+    ro.set({
+      title: 'Update Account',
+      acc: acc,
+      user: req.user,
+      info: req.flash('info'),
+      error: req.flash('error'),
+      success: req.flash('success')
+    });
+    res.render('forms/account_update', ro.get());
+  });
+}
+
+/**
+ * Pass a local variable to the user_details form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+function postAccountDetails(req, res) {
+  var query = new Object({ _id: req.body.id });
+  mongoose.model('account').findOne(query, function(err, acc) {
+    if(err) throw new Error(err);
+    var ro = new RenderObject();
+    ro.set({
+      title: 'Account Details',
+      acc: acc,
+      user: req.user,
+      info: req.flash('info'),
+      error: req.flash('error'),
+      success: req.flash('success')
+    });
+    res.render('forms/account_details', ro.get());
+  });
+}
+
+/**
+ * Pass a local variable to the category_update form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+function postCategoryEdit(req, res) {
+  var query = new Object({ _id: req.body.id });
+  mongoose.model('category').findOne(query, function(err, cat) {
+    if(err) throw new Error(err);
+    var ro = new RenderObject();
+    ro.set({
+      title: 'Update Category',
+      cat: cat,
+      user: req.user,
+      info: req.flash('info'),
+      error: req.flash('error'),
+      success: req.flash('success')
+    });
+    res.render('forms/category_update', ro.get());
+  });
+}
+
+/**
+ * Pass a local variable to the category_details form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+function postCategoryDetails(req, res) {
+  var query = new Object({ _id: req.body.id });
+  mongoose.model('category').findOne(query, function(err, cat) {
+    if(err) throw new Error(err);
+    var ro = new RenderObject();
+    ro.set({
+      title: 'Category Details',
+      cat: cat,
+      user: req.user,
+      info: req.flash('info'),
+      error: req.flash('error'),
+      success: req.flash('success')
+    });
+    res.render('forms/category_details', ro.get());
+  });
+}
+
+/**
+ * Pass a local variable to the tab_update form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+function postTabEdit(req, res) {
+  var query = new Object({ _id: req.body.id });
+  mongoose.model('tab').findOne(query, function(err, tab) {
+    if(err) throw new Error(err);
+    mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
+      if(err) throw new Error(err);
+      var ro = new RenderObject();
+      ro.set({
+        title: 'Update Tab',
+        cats: category,
+        tab: tab,
+        user: req.user,
+        info: req.flash('info'),
+        error: req.flash('error'),
+        success: req.flash('success')
+      });
+      res.render('forms/tab_update', ro.get());
+    });
+  });
+}
+
+/**
+ * Pass a local variable to the tab_details form page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+function postTabDetails(req, res) {
+  var query = new Object({ _id: req.body.id });
+  mongoose.model('tab').findOne(query, function(err, tab) {
+    if(err) throw new Error(err);
+    var ro = new RenderObject();
+    ro.set({
+      title: 'Tab Details',
+      tab: tab,
+      user: req.user,
+      info: req.flash('info'),
+      error: req.flash('error'),
+      success: req.flash('success')
+    });
+    res.render('forms/tab_details', ro.get());
+  });
+}
+
+/**
  * Creates a new object with request parameters from the submitted form name attributes
  * and tries to save the object to the collection account as a new document.
  * @param {Object} req
@@ -417,7 +443,7 @@ function postAccountCreate(req, res) {
       username: req.body.username,
       whoCreated: req.user ? req.user.username : req.body.username,
       whenCreated: new Date(),
-      whenUpdated: undefined
+      whenUpdated: ''
     });
 
     var Account = mongoose.model('account');
@@ -478,6 +504,8 @@ function postAccountUpdate(req, res) {
             throw new Error('Data was not found.', acc);
           }
 
+          acc.__v = acc.__v + 1;
+
           acc.setPassword(req.body.newPassword, function(err, doc) {
             if(err) throw new Error(err);
             if(!doc) {
@@ -486,7 +514,7 @@ function postAccountUpdate(req, res) {
               throw new Error('Data was not found.', doc);
             }
 
-            doc.whenUpdated = new Date();
+            doc.whenUpdated = new Date().toISOString();
 
             try {
               doc.save(function(err, doc) {
@@ -620,7 +648,11 @@ function postCategoryCreate(req, res) {
       var ro = new RenderObject();
       ro.set({
         name: category,
-        list: []
+        list: [],
+        whoCreated: req.user.username,
+        whoUpdated: '',
+        whenCreated: new Date().toISOString(),
+        whenUpdated: ''
       });
       var data = new Category(ro.get());
 
@@ -685,6 +717,10 @@ function postCategoryUpdate(req, res) {
 
         if(catNew && cat.name !== catNew) {
           cat.name = catNew;
+          cat.whoCreated = cat.whoCreated;
+          cat.whoUpdated = req.user.username;
+          cat.whenCreated = cat.whenCreated;
+          cat.whenUpdated = new Date().toISOString();
 
           try {
             cat.save(function(err, doc) {
@@ -710,12 +746,11 @@ function postCategoryUpdate(req, res) {
           }
 
           for(var i = 0; i < cat.list.length; i++) {
-            query = new Object({ _id: cat.list[i].id });
+            query = new Object({ _id: cat.list[i]._id });
             mongoose.model('tab').findOne(query, function(err, tab) {
               if(err) throw new Error(err);
               if(!tab) {
                 req.flash('error', 'Data was not found: %s', tab);
-                res.redirect('update');
                 throw new Error('Data was not found.', tab);
               }
 
@@ -774,16 +809,15 @@ function postCategoryDelete(req, res) {
         }
 
         for(var i = 0; i < cat.list.length; i++) {
-          query = new Object({ _id: cat.list[i].id });
+          query = new Object({ _id: cat.list[i]._id });
           mongoose.model('tab').findOne(query, function(err, tab) {
             if(err) throw new Error(err);
             if(!tab) {
               req.flash('error', 'Data was not found: %s', tab);
-              res.redirect('/settings');
               throw new Error('Data was not found.', tab);
             }
 
-            tab.category = undefined;
+            tab.category = '';
 
             try {
               tab.save(function(err, doc) {
@@ -857,15 +891,16 @@ function postTabCreate(req, res) {
         ro.set({
           name: req.body.name ? methods.shorter(req.body.name) : methods.shorter(title),
           renderUrl: req.body.renderUrl,
-          url: req.body.address ? req.body.address : req.body.renderUrl,
+          url: url,
           title: title,
-          icon: info && info.favicon ? info.favicon : undefined,
+          icon: info && info.favicon ? info.favicon : '',
           image: methods.random() + '.' + config.ph.render.options.format,
           category: req.body.category,
           check: req.body.check ? true : false,
           whoCreated: req.user.username,
-          whenCreated: new Date(),
-          whenUpdated: undefined
+          whoUpdated: '',
+          whenCreated: new Date().toISOString(),
+          whenUpdated: ''
         });
         var data = new Tab(ro.get());
 
@@ -892,7 +927,7 @@ function postTabCreate(req, res) {
                   throw new Error('Data was not found.', cat);
                 }
 
-                var data = methods.attach({id:doc._id, name:doc.name}, cat);
+                var data = methods.attach(doc, cat);
 
                 if(data) {
                   data.save(function(err, doc) {
@@ -908,7 +943,7 @@ function postTabCreate(req, res) {
 
             log.verbose(JSON.stringify(doc._doc));
 
-            methods.renderPage({ url: req.body.renderUrl, filename: doc.image }, function() {
+            methods.renderPage({ url: urlparse(req.body.renderUrl).normalize().toString(), filename: doc.image }, function() {
               log.info('%s %s %d - "Created %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
               req.flash('success', 'Tab has been created successfully.');
               res.redirect('create');
@@ -987,7 +1022,7 @@ function postTabUpdate(req, res) {
               throw new Error('Data was not found.', cat);
             }
 
-            var data = methods.attach({id:tab._id, name:tab.name}, cat);
+            var data = methods.attach(tab, cat);
 
             if(data) {
               data.save(function(err, doc) {
@@ -1009,16 +1044,16 @@ function postTabUpdate(req, res) {
 
           tab.name = req.body.name && req.body.address ? methods.shorter(req.body.name) : methods.shorter(title);
           tab.renderUrl = req.body.renderUrl;
-          tab.url = req.body.address ? req.body.address : req.body.renderUrl;
+          tab.url = url;
           tab.title = title;
-          tab.icon = info && info.favicon ? info.favicon : undefined;
+          tab.icon = info && info.favicon ? info.favicon : '';
           tab.image = tab.image;
           tab.category = req.body.category;
           tab.check = req.body.check ? true : false;
           tab.whoCreated = tab.whoCreated;
           tab.whoUpdated = req.user.username;
           tab.whenCreated = tab.whenCreated;
-          tab.whenUpdated = new Date();
+          tab.whenUpdated = new Date().toISOString();
           tab.__v = tab.__v + 1;
 
           try {
@@ -1045,7 +1080,7 @@ function postTabUpdate(req, res) {
                   res.redirect('/');
                 }
               } else {
-                methods.renderPage({ url: req.body.renderUrl, filename: doc.image }, function() {
+                methods.renderPage({ url: urlparse(req.body.renderUrl).normalize().toString(), filename: doc.image }, function() {
                   log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
                   req.flash('success', 'Tab has been updated successfully.');
                   if(req.body.check) {
@@ -1101,12 +1136,11 @@ function postTabDelete(req, res) {
             if(err) throw new Error(err);
             if(!cat) {
               req.flash('error', 'Data was not found: %s', cat);
-              res.redirect('/');
               throw new Error('Data was not found.', cat);
             }
 
             try {
-              var data = methods.detach(req.body.id, cat);
+              var data = methods.detach(tab._id, cat);
 
               if(data) {
                 data.save(function(err, doc) {

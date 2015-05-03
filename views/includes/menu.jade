@@ -7,64 +7,66 @@ nav.navbar.navbar-inverse.navbar-fixed-top(style='opacity: 0.9;')
         span.icon-bar
         span.icon-bar
       
-      a.navbar-brand(title='Home' href='/')
+      a.navbar-brand(data-toggle='tooltip' data-placement='bottom' data-original-title='Home' href='/')
         | Tabgrid
     
     #navbar-collapse.collapse.navbar-collapse
       ul.nav.navbar-nav
         li
-          a(title='Link 1' href='/')
+          a(data-toggle='tooltip' data-placement='bottom' data-original-title='Link 1' href='/')
             | Link 1
         
         li
-          a(title='Link 2' href='/')
+          a(data-toggle='tooltip' data-placement='bottom' data-original-title='Link 2' href='/')
             | Link 2
 
       ul.nav.navbar-nav.navbar-right
         if user
           li(class= title == 'Create Tab' ? 'active' : '')
-            a(title='Create Tab' href='/settings/tab/create')
+            a(data-toggle='tooltip' data-placement='bottom' data-original-title='Create Tab' href='/settings/tab/create')
               i.fa.fa-plus-circle
         
         li(class= title == 'Settings' ? 'active' : '')
-          a(title='Settings' href='/settings')
+          a(data-toggle='tooltip' data-placement='bottom' data-original-title='Settings' href='/settings')
             i.fa.fa-cog
         
         li
-          a.email(title='E-Mail' data-user='your', data-domain='mail.com')
+          a.email(data-toggle='tooltip' data-placement='bottom' data-original-title='Email' data-user='your', data-domain='mail.com')
             i.fa.fa-envelope
         
         if user
           li(class= title == 'Help' ? 'active' : '')
-            a(title='Help' href='/help')
-              i.fa.fa-question
+            a(data-toggle='tooltip' data-placement='bottom' data-original-title='Informations' href='/help')
+              i.fa.fa-info-circle
         
         if user
+          - var a = user.username.substr(0, 1).toUpperCase()
+          - var b = user.username.substr(1, user.username.length)
           li.dropdown(class= title == user.username || title == 'Logging' ? 'active' : '')
-            a.dropdown-toggle(data-toggle='dropdown' title= user.username href='/accounts/'+ user.username)
-              |  #{user.username}
+            a.dropdown-toggle(data-toggle='dropdown' href='/accounts/'+ user.username)
+              |  #{a+b}
               span.caret
               
               ul.dropdown-menu
                 li
-                  a(title= user.username+"'s Grid" href='/accounts/'+ user.username)
+                  a(data-toggle='tooltip' data-placement='left' data-original-title= a+b+"'s Grid" href='/accounts/'+ user.username)
                     i.fa.fa-user
-                    |  Private Grid
+                    |  #{a+b}'s Grid
                 
                 li
-                  a(title='Log' href='/settings/logging#tail')
+                  a(data-toggle='tooltip' data-placement='left' data-original-title='Log' href='/settings/logging#tail')
                     i.fa.fa-book
                     |  Log
                 
                 li.divider
                 
                 li
-                  a(title='Logout '+user.username href='/logout')
+                  a(data-toggle='tooltip' data-placement='left' data-original-title='Logout '+user.username href='/logout')
                     i.fa.fa-sign-out
                     |  Logout
         
         else
           li(class= title == 'Login' ? 'active' : '')
-            a(title='Login' href='/login')
+            a(data-toggle='tooltip' data-placement='bottom' data-original-title='Login' href='/login')
               i.fa.fa-sign-in
               |  Login

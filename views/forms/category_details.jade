@@ -3,8 +3,6 @@ extends ../includes/header
 block content
 
   .container
-    include ../includes/message
-
     .row
       .col-xs-1.col-sm-1.col-md-1.col-lg-1
       .col-xs-10.col-sm-10.col-md-10.col-lg-10
@@ -12,28 +10,24 @@ block content
           a.anchorjs-link(href='#category_details')
             span.anchorjs-icon
               i.fa.fa-link
-          .btn-group.pull-right
-            button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-expanded='false')
-              = 'Manage '
-              span.caret
-            ul.dropdown-menu(role='menu')
-              li
-                a(title='Create Category' href='/settings/category/create')
-                  i.fa.fa-plus
-                  |  Add Category
-              li
-                a(title='Update Category' href='/settings/category/update/?name='+query.name+'&id='+query.id)
+          .small.pull-right
+            a.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Create Category' href='/settings/category/create' style='margin: 0 5px 0 5px;')
+              i.fa.fa-plus
+              |  Add
+            .btn-group
+              form(role='form' action='/settings/category/edit' method='post' enctype='multipart/form-data')
+                input(type='hidden' name='id' value= cat._id)
+                button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Update Category' type='submit' style='margin: 0 5px 0 5px;')
                   i.fa.fa-pencil
                   |  Edit
-              li.divider
-              li
-                a#submit.btn-delete-dtl(title='Delete Category' href='#')
+            .btn-group
+              form(role='form' action='/settings/category/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+                input(type='hidden' name='id' value= cat._id)
+                button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Delete Category' type='submit' style='margin: 0 5px 0 5px;')
                   i.fa.fa-trash-o
                   |  Delete
 
-        .container-fluid
-          form(role='form' action='/settings/category/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-            input(type='hidden' name='id' value= query.id)
+        .panel.panel-default
           table.table.table-condensed.table-hover.table-striped
             thead
               tr
@@ -43,17 +37,39 @@ block content
               tr
                 td.text-nowrap Name
                 td
-                  b= query.name
+                  strong= cat.name
               tr
                 td.text-nowrap Tabs
                 td
-                  each item in JSON.parse(query.list)
-                    div= item.name
+                  each item, j in cat.list
+                    div(id= item._id data-item= j)
+                      form(role='form' action='/settings/tab/details' method='post' enctype='multipart/form-data')
+                        input(type='hidden' name='id' value= item._id)
+                        button.btn-link.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Tab Details' type='submit')
+                          = item.name
+                        = ' '
+                        i.fa.fa-angle-right
+                        = ' '
+                        a.small(href= item.url)= item.url
+              tr
+                td.text-nowrap Who Created
+                td
+                  strong= cat.whoCreated
+              tr
+                td.text-nowrap When Created
+                td= cat.whenCreated
+              tr
+                td.text-nowrap Who Updated
+                td
+                  strong= cat.whoUpdated
+              tr
+                td.text-nowrap When Updated
+                td= cat.whenUpdated
               tr
                 td.text-nowrap Identifier
-                td= query.id
+                td= cat._id
               tr
                 td.text-nowrap Revision
-                td= query.rev
+                td= cat.__v
           
       .col-xs-1.col-sm-1.col-md-1.col-lg-1

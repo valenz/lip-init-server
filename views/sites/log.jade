@@ -3,7 +3,6 @@ extends ../includes/header
 block content
 
   .container-fluid
-    include ../includes/message
     h2.page-header= title
 
     .scrollable.thumbnail(style='height: 650px;')
@@ -18,7 +17,7 @@ block content
           each line, i in file
             +lines(line.timestamp, line.level, line.message, i)
 
-    p.help-block
+    p.help-block.small
       | *) The current log level is #{level} and runs in #{env} environment mode.
       | You can make changes in the relevant config file.
 
