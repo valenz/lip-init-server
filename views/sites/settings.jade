@@ -61,7 +61,7 @@ block content
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/tab/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Tab Details' style='margin: 0 5px 0 5px;')
+                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Tab Details' style='margin: 5px;')
                         if item.check
                           u= item.name
                         else
@@ -79,7 +79,7 @@ block content
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/category/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Category Details' style='margin: 0 5px 0 5px;')
+                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Category Details' style='margin: 5px;')
                         = item.name
 
             .panel.panel-settings
@@ -94,7 +94,7 @@ block content
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/account/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Account Details' style='margin: 0 5px 0 5px;')
+                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Account Details' style='margin: 5px;')
                         if item._id == user.id
                           u= item.username
                         else
