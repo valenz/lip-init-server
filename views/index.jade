@@ -44,7 +44,7 @@ block content
       li.tabs(id= id data-item= j)
         if user
           .mng-fa
-            form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
+            form.form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
               input(type='hidden' name='id' value= id)
               button.btn-link.btn-edit(data-toggle='tooltip' data-placement='top' data-original-title='Update Tab' type='submit')
                 i.fa.fa-pencil
