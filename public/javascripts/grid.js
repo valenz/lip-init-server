@@ -1,7 +1,7 @@
 $(function() {
   // Duration of the messages before they disappear
 	setTimeout(function() {
-		$('[data-toggle="popover"]').popover('hide');
+		$('.popclose').click();
 	}, 4000);
 });
 
@@ -16,16 +16,19 @@ $(document).ready(function() {
     selector: '[data-toggle=popover]',
     trigger: 'click',
   	content : '<i class="fa '+content+'"></i><span> '+ $('[data-toggle=popover]').attr('data-message') +' </span>',
-    template: '<div class="popover"><div class="popover-content '+template+'"></div></div>',
+    template: '<div class="popover"><button class="close popclose" type="button" style="margin-top: -3px;"><span>&#215;</span></button><div class="popover-content '+template+'"></div></div>',
     placement: "bottom",
     html: true
   });
-  // Fires popover trigger
+  // Fires trigger to show popover
   $('[data-toggle="popover"]').click();
+	// Fires trigger to hide popover
+	$('.popclose').on('click', function() {
+		$('[data-toggle="popover"]').popover('hide');
+	});
 
   // Loads tooltip library
   $('[data-toggle="tooltip"]').tooltip({
-    animation: false,
     html: true
   });
 

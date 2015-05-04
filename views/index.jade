@@ -46,11 +46,11 @@ block content
           .mng-fa
             form.form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
               input(type='hidden' name='id' value= id)
-              button.btn-link.btn-edit(data-toggle='tooltip' data-placement='top' data-original-title='Update Tab' type='submit')
+              button.btn-link.btn-edit(data-toggle='tooltip' data-placement='top' data-original-title='Update' type='submit')
                 i.fa.fa-pencil
             form(role='form' action='/settings/tab/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
               input(type='hidden' name='id' value= id)
-              button.btn-link.btn-delete(data-toggle='tooltip' data-placement='top' data-original-title='Delete Tab' type='submit')
+              button.btn-link.btn-delete(data-toggle='tooltip' data-placement='top' data-original-title='Delete' type='submit')
                 i.fa.fa-times
         a(href= url ? url : renderUrl)
           img.img-thumbnail(data-toggle='tooltip' data-placement='top' data-original-title= title ? title : name src='uploads/'+ image)
