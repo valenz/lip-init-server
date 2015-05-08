@@ -150,7 +150,7 @@ function settings(req, res) {
     if(err) throw new Error(err);
     mongoose.model('account').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, account) {
       if(err) throw new Error(err);
-      mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
+      mongoose.model('category').find({}, null, { sort: { normalized: 1, name: -1 }, skip: 0, limit: 0 }, function(err, category) {
         if(err) throw new Error(err);
         var ro = new RenderObject();
         ro.set({
@@ -254,7 +254,7 @@ function categoryCreate(req, res) {
  * @param {Object} res
  */
 function tabCreate(req, res) {
-  mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
+  mongoose.model('category').find({}, null, { sort: { normalized: 1, name: -1 }, skip: 0, limit: 0 }, function(err, category) {
     if(err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
@@ -387,7 +387,7 @@ function postTabEdit(req, res) {
   var query = new Object({ _id: req.body.id });
   mongoose.model('tab').findOne(query, function(err, tab) {
     if(err) throw new Error(err);
-    mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
+    mongoose.model('category').find({}, null, { sort: { normalized: 1, name: -1 }, skip: 0, limit: 0 }, function(err, category) {
       if(err) throw new Error(err);
       var ro = new RenderObject();
       ro.set({
@@ -648,6 +648,7 @@ function postCategoryCreate(req, res) {
       var ro = new RenderObject();
       ro.set({
         name: category,
+        normalized: category.toLowerCase(),
         list: [],
         whoCreated: req.user.username,
         whoUpdated: '',
@@ -659,7 +660,7 @@ function postCategoryCreate(req, res) {
       try {
         data.save(function(err, doc) {
           if(err) {
-            req.flash('error', 'Category already exists with name "%s".', req.body.categoryname);
+            req.flash('error', 'Category already exists with name "%s".', category);
             res.redirect('create');
             throw new Error(err);
           }
@@ -717,6 +718,7 @@ function postCategoryUpdate(req, res) {
 
         if(catNew && cat.name !== catNew) {
           cat.name = catNew;
+          cat.normalized = catNew.toLowerCase();
           cat.whoCreated = cat.whoCreated;
           cat.whoUpdated = req.user.username;
           cat.whenCreated = cat.whenCreated;

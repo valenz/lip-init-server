@@ -57,11 +57,20 @@ block content
                     span.anchorjs-icon
                       i.fa.fa-link
               .panel-body.container-fluid
+                - var admintabs = 0
+                each item in tabs
+                  if item.check
+                    - admintabs += 1
+                .progress
+                  .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= (tabs.length-admintabs)+' / '+tabs.length style='width:'+(tabs.length-admintabs)/tabs.length*100+'%;')
+                    | Public
+                  .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= admintabs+' / '+tabs.length style='width:'+(admintabs)/tabs.length*100+'%;')
+                    | Support
                 each item, j in tabs
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/tab/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.title style='margin: 5px;')
+                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.category style='margin: 5px;')
                         if item.check
                           u= item.name
                         else
@@ -75,11 +84,23 @@ block content
                     span.anchorjs-icon
                       i.fa.fa-link
               .panel-body.container-fluid
+                .progress
+                  - var unassigned = tabs.length - admintabs
+                  - var odd = 0
+                  each item, j in cats
+                    - unassigned -= item.list.length
+                    - odd += item.list.length != 0 ? 1 : 0
+                    .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= item.list.length+' / '+tabs.length style='width:'+item.list.length/tabs.length*100+'%;' class= odd%2 == 0 ? 'progress-bar-info' : 'progress-bar-default')
+                      = item.name
+                  .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= admintabs+' / '+tabs.length style='width:'+admintabs/tabs.length*100+'%;')
+                    | Support
+                  .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= unassigned+' / '+tabs.length style='width:'+unassigned/tabs.length*100+'%;')
+                    | unassigned
                 each item, j in cats
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/category/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.name style='margin: 5px;')
+                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.list.length+' / '+tabs.length style='margin: 5px;')
                         = item.name
 
             .panel.panel-settings

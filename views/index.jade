@@ -15,6 +15,12 @@ block content
                 span|  (
                   = list[i] ? list[i].list.length : grid.length-assigned-admintabs
                   | )
+                if user
+                  .pull-right
+                    form(role='form' action='/settings/category/edit' method='post' enctype='multipart/form-data')
+                      input(type='hidden' name='id' value= list[i]._id)
+                      button.btn.btn-xs.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Update Category' style='margin-top: -2px;')
+                        i.fa.fa-pencil
             ul.list-unstyled.panel-body.container-fluid.grid(name= list[i] ? list[i].name : 'unassigned' data-length= list[i] ? list[i].list.length : grid.length-assigned-admintabs)
               each item, j in grid
                 if list[i] && list[i].name == item.category

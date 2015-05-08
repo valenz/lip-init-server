@@ -93,10 +93,10 @@ $(document).ready(function() {
 
   /** Initialize default grid */
   function init() {
-    var grid = new Object();
-    $('li.tabs').each(function(key, value) {
-      var tab = new Object();
-      tab[$(this).find('[type=hidden]').attr('value')] = value.outerHTML;
+    var grid = {};
+    $('.tabs').each(function(key, value) {
+      var tab = {};
+      tab[$(this).attr('data-item')] = value.outerHTML;
       grid[key] = tab;
     });
     return grid;
