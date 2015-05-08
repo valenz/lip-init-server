@@ -32,7 +32,7 @@ block content
               button.btn-link.btn-delete(data-toggle='tooltip' data-placement='top' data-original-title='Delete' type='submit')
                 i.fa.fa-times
         a(href= url)
-          img.img-thumbnail(data-toggle='tooltip' data-placement='top' data-original-title= title ? title : name src='../uploads/'+ image)
+          img.img-thumbnail(data-toggle='tooltip' data-placement='top' data-original-title= title ? title.substr(0, 90) : name src='../uploads/'+ image)
           .mng-vis
             img.img-rounded.center-block(src= icon width='13px')
             p.text-center.name.break= name

@@ -70,9 +70,9 @@ block content
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/tab/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.category style='margin: 5px;')
+                      button.btn(class= item.check ? 'btn-warning' : 'btn-primary' type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.category ? item.category : item.title.substr(0, 90) style='margin: 5px;')
                         if item.check
-                          u= item.name
+                          = item.name
                         else
                           = item.name
 
@@ -96,12 +96,20 @@ block content
                     | Support
                   .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= unassigned+' / '+tabs.length style='width:'+unassigned/tabs.length*100+'%;')
                     | unassigned
+                - var odd = 0
                 each item, j in cats
+                  - odd += item.list.length != 0 ? 1 : 0
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/category/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.list.length+' / '+tabs.length style='margin: 5px;')
+                      button.btn(class= !item.list.length ? 'btn-default' : odd%2 == 0 ? 'btn-info' : 'btn-primary' type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.list.length+' / '+tabs.length style='margin: 5px;')
                         = item.name
+                if admintabs
+                  a.btn.btn-warning(href='/accounts/'+user.username data-toggle='tooltip' data-placement='top' data-original-title= admintabs+' / '+tabs.length style='margin: 5px;')
+                    | Support
+                if unassigned
+                  a.btn.btn-danger(href='/' data-toggle='tooltip' data-placement='top' data-original-title= unassigned+' / '+tabs.length style='margin: 5px;')
+                    | unassigned
 
             .panel.panel-settings
               .panel-heading
