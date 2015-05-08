@@ -8,7 +8,7 @@ var log = winston.loggers.get('log');
  ********************************* EXPORTS *********************************
  */
 
-module.exports.getAdminTabs = getAdminTabs;
+module.exports.getUserTabs = getUserTabs;
 module.exports.getAssignedTabs = getAssignedTabs;
 module.exports.shorter = shorter;
 module.exports.attach = attach;
@@ -25,14 +25,14 @@ module.exports.renderPage = renderPage;
  */
 
 /**
- * Returns the number of tabs which are assigned to admin view.
+ * Returns the number of tabs which are assigned to user view.
  * @param {obj} Object
  * @return {n} Number
  */
-function getAdminTabs(obj) {
+function getUserTabs(obj, user) {
   if(!obj) return 0;
   var n = 0;
-  for(var i in obj) if(obj[i].check) n++;
+  for(var i in obj) if(obj[i].check && obj[i].whoCreated == user) n++;
   return n;
 }
 

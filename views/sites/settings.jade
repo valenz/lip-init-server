@@ -57,22 +57,22 @@ block content
                     span.anchorjs-icon
                       i.fa.fa-link
               .panel-body.container-fluid
-                - var admintabs = 0
+                - var usertabs = 0
                 each item in tabs
                   if item.check
-                    - admintabs += 1
+                    - usertabs += 1
                 .progress
-                  .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= (tabs.length-admintabs)+' / '+tabs.length style='width:'+(tabs.length-admintabs)/tabs.length*100+'%;')
-                    | Public
-                  .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= admintabs+' / '+tabs.length style='width:'+(admintabs)/tabs.length*100+'%;')
-                    | Support
+                  .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= (tabs.length-usertabs)+' / '+tabs.length style='width:'+(tabs.length-usertabs)/tabs.length*100+'%;')
+                    = 'Public'.substr(0, Math.floor((tabs.length-usertabs)/tabs.length*100+usertabs/tabs.length*100*1/3))
+                  .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= usertabs+' / '+tabs.length style='width:'+usertabs/tabs.length*100+'%;')
+                    = 'Support'.substr(0, Math.floor(usertabs/tabs.length*100+usertabs/tabs.length*100*1/3))
                 each item, j in tabs
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/tab/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
                       button.btn(class= item.check ? 'btn-warning' : 'btn-primary' type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.category ? item.category : item.title.substr(0, 90) style='margin: 5px;')
-                        if item.check
-                          = item.name
+                        if user.username == item.whoCreated
+                          u= item.name
                         else
                           = item.name
 
@@ -85,17 +85,18 @@ block content
                       i.fa.fa-link
               .panel-body.container-fluid
                 .progress
-                  - var unassigned = tabs.length - admintabs
+                  - var unassigned = tabs.length - usertabs
                   - var odd = 0
                   each item, j in cats
                     - unassigned -= item.list.length
                     - odd += item.list.length != 0 ? 1 : 0
-                    .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= item.list.length+' / '+tabs.length style='width:'+item.list.length/tabs.length*100+'%;' class= odd%2 == 0 ? 'progress-bar-info' : 'progress-bar-default')
-                      = item.name
-                  .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= admintabs+' / '+tabs.length style='width:'+admintabs/tabs.length*100+'%;')
-                    | Support
+                    - var progWidth = item.list.length/tabs.length*100
+                    .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= item.list.length+' / '+tabs.length style='width:'+progWidth+'%;' class= odd%2 == 0 ? 'progress-bar-info' : 'progress-bar-default')
+                      .text-nowrap= item.name.substr(0, Math.floor(progWidth+progWidth*1/3))
+                  .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= usertabs+' / '+tabs.length style='width:'+usertabs/tabs.length*100+'%;')
+                    = 'Support'.substr(0, Math.floor(usertabs/tabs.length*100+usertabs/tabs.length*100*1/3))
                   .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= unassigned+' / '+tabs.length style='width:'+unassigned/tabs.length*100+'%;')
-                    | unassigned
+                    = 'unassigned'.substr(0, Math.floor(unassigned/tabs.length*100+unassigned/tabs.length*100*1/3))
                 - var odd = 0
                 each item, j in cats
                   - odd += item.list.length != 0 ? 1 : 0
@@ -103,9 +104,12 @@ block content
                     form(role='form' action='/settings/category/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
                       button.btn(class= !item.list.length ? 'btn-default' : odd%2 == 0 ? 'btn-info' : 'btn-primary' type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.list.length+' / '+tabs.length style='margin: 5px;')
-                        = item.name
-                if admintabs
-                  a.btn.btn-warning(href='/accounts/'+user.username data-toggle='tooltip' data-placement='top' data-original-title= admintabs+' / '+tabs.length style='margin: 5px;')
+                        if user.username == item.whoCreated
+                          u= item.name
+                        else
+                          = item.name
+                if usertabs
+                  a.btn.btn-warning(href='/accounts/'+user.username data-toggle='tooltip' data-placement='top' data-original-title= usertabs+' / '+tabs.length style='margin: 5px;')
                     | Support
                 if unassigned
                   a.btn.btn-danger(href='/' data-toggle='tooltip' data-placement='top' data-original-title= unassigned+' / '+tabs.length style='margin: 5px;')
@@ -123,9 +127,9 @@ block content
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/account/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.username style='margin: 5px;')
-                        if item._id == user.id
-                          u= item.username
+                      button.btn(class= item.username == user.username ? 'btn-primary' : 'btn-default' type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.username style='margin: 5px;')
+                        if item.username == user.username
+                          u= user.username
                         else
                           = item.username
 

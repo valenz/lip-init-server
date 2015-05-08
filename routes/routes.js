@@ -97,7 +97,7 @@ function index(req, res) {
         grid: tab,
         list: category,
         user: req.user,
-        admintabs: methods.getAdminTabs(tab),
+        usertabs: methods.getUserTabs(tab),
         assigned: methods.getAssignedTabs(category),
         info: req.flash('info'),
         error: req.flash('error'),
@@ -127,7 +127,7 @@ function accounts(req, res) {
         grid: tab,
         list: category,
         user: req.user,
-        admintabs: methods.getAdminTabs(tab),
+        usertabs: methods.getUserTabs(tab, req.user.username),
         info: req.flash('info'),
         error: req.flash('error'),
         success: req.flash('success')

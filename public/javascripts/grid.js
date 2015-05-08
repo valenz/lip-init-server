@@ -16,7 +16,7 @@ $(document).ready(function() {
     selector: '[data-toggle=popover]',
     trigger: 'click',
   	content : '<i class="fa '+content+'"></i><span> '+ $('[data-toggle=popover]').attr('data-message') +' </span>',
-    template: '<div class="popover"><button class="close popclose" type="button" style="margin-top: -3px;"><span>&#215;</span></button><div class="popover-content '+template+'"></div></div>',
+    template: '<div class="popover" style="width: 100%;"><button class="close popclose" type="button" style="margin: 9px 5px 0 0;"><span>&#215;</span></button><div class="popover-content '+template+' text-center"></div></div>',
     placement: "bottom",
     html: true
   });

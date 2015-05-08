@@ -4,33 +4,34 @@ block content
 
   .container
     if grid && grid.length != 0
-      if admintabs > 0
+      if usertabs > 0
         .panel.panel-grid
           .panel-heading
-            h2#admintabs.anchor.panel-title| Support Tabs
-              a.anchorjs-link(href='#admintabs')
+            - var a = user.username.substr(0, 1).toUpperCase()
+            - var b = user.username.substr(1, user.username.length)
+            h2#usertabs.anchor.panel-title| #{a+b}'s Tabs
+              a.anchorjs-link(href='#usertabs')
                 span.anchorjs-icon
                   i.fa.fa-link
               span|  (
-                = admintabs
+                = usertabs
                 | )
-          ul.list-unstyled.panel-body.container-fluid.grid(name='admintabs' data-length= admintabs)
+          ul.list-unstyled.panel-body.container-fluid.grid(name='usertabs' data-length= usertabs)
             each item, j in grid
-              +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, j)
+              +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, item.whoCreated, j)
 
-  mixin tabs(id, renderUrl, url, title, icon, image, name, category, check, j)
-    if check
+  mixin tabs(id, renderUrl, url, title, icon, image, name, category, check, whoCreated, j)
+    if check && user.username == whoCreated
       li.tabs(id= id data-item= j)
-        if user
-          .mng-fa
-            form.form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
-              input(type='hidden' name='id' value= id)
-              button.btn-link.btn-edit(data-toggle='tooltip' data-placement='top' data-original-title='Update' type='submit')
-                i.fa.fa-pencil
-            form(role='form' action='/settings/tab/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-              input(type='hidden' name='id' value= id)
-              button.btn-link.btn-delete(data-toggle='tooltip' data-placement='top' data-original-title='Delete' type='submit')
-                i.fa.fa-times
+        .mng-fa
+          form.form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
+            input(type='hidden' name='id' value= id)
+            button.btn-link.btn-edit(data-toggle='tooltip' data-placement='top' data-original-title='Update' type='submit')
+              i.fa.fa-pencil
+          form(role='form' action='/settings/tab/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+            input(type='hidden' name='id' value= id)
+            button.btn-link.btn-delete(data-toggle='tooltip' data-placement='top' data-original-title='Delete' type='submit')
+              i.fa.fa-times
         a(href= url)
           img.img-thumbnail(data-toggle='tooltip' data-placement='top' data-original-title= title ? title.substr(0, 90) : name src='../uploads/'+ image)
           .mng-vis

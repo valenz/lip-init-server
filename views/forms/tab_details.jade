@@ -14,18 +14,19 @@ block content
             a.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Create Tab' href='/settings/tab/create' style='margin: 0 5px 0 5px;')
               i.fa.fa-plus
               |  Add
-            .btn-group
-              form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
-                input(type='hidden' name='id' value= tab._id)
-                button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Update Tab' type='submit' style='margin: 0 5px 0 5px;')
-                  i.fa.fa-pencil
-                  |  Edit
-            .btn-group
-              form(role='form' action='/settings/tab/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-                input(type='hidden' name='id' value= tab._id)
-                button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Delete Tab' type='submit' style='margin: 0 5px 0 5px;')
-                  i.fa.fa-trash-o
-                  |  Delete
+            if user && user.username == tab.whoCreated
+              .btn-group
+                form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
+                  input(type='hidden' name='id' value= tab._id)
+                  button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Update Tab' type='submit' style='margin: 0 5px 0 5px;')
+                    i.fa.fa-pencil
+                    |  Edit
+              .btn-group
+                form(role='form' action='/settings/tab/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+                  input(type='hidden' name='id' value= tab._id)
+                  button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Delete Tab' type='submit' style='margin: 0 5px 0 5px;')
+                    i.fa.fa-trash-o
+                    |  Delete
         
         .panel.panel-default
           table.table.table-condensed.table-hover.table-striped
