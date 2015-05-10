@@ -14,7 +14,7 @@ block content
             a.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Create Account' href='/settings/account/create' style='margin: 0 5px 0 5px;')
               i.fa.fa-plus
               |  Add
-            if user && user.id == acc._id
+            if user && user.id == acc._id || user.role == 0
               .btn-group
                 form(role='form' action='/settings/account/edit' method='post' enctype='multipart/form-data')
                   input(type='hidden' name='id' value= acc._id)
@@ -40,12 +40,19 @@ block content
                 td
                   strong= acc.username
               tr
+                td.text-nowrap Role
+                td= acc.role
+              tr
                 td.text-nowrap Who Created
                 td
                   strong= acc.whoCreated
               tr
                 td.text-nowrap When Created
                 td= acc.whenCreated
+              tr
+                td.text-nowrap Who Updated
+                td
+                  strong= acc.whoUpdated
               tr
                 td.text-nowrap When Updated
                 td= acc.whenUpdated

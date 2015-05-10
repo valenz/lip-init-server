@@ -29,10 +29,10 @@ module.exports.renderPage = renderPage;
  * @param {obj} Object
  * @return {n} Number
  */
-function getUserTabs(obj, user) {
+function getUserTabs(obj) {
   if(!obj) return 0;
   var n = 0;
-  for(var i in obj) if(obj[i].check && obj[i].whoCreated == user) n++;
+  for(var i in obj) if(obj[i].check) n++;
   return n;
 }
 

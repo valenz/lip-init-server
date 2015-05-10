@@ -48,7 +48,7 @@ block content
   mixin tabs(id, renderUrl, url, title, icon, image, name, category, check, whoCreated, j)
     if !check
       li.tabs(id= id data-item= j)
-        if user && user.username == whoCreated
+        if user
           .mng-fa
             form.form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
               input(type='hidden' name='id' value= id)

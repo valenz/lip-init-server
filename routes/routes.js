@@ -127,7 +127,8 @@ function accounts(req, res) {
         grid: tab,
         list: category,
         user: req.user,
-        usertabs: methods.getUserTabs(tab, req.user.username),
+        usertabs: methods.getUserTabs(tab),
+        assigned: methods.getAssignedTabs(category),
         info: req.flash('info'),
         error: req.flash('error'),
         success: req.flash('success')
@@ -435,14 +436,15 @@ function postTabDetails(req, res) {
  * @return {String} err
  */
 function postAccountCreate(req, res) {
-  if(req.body.username && req.body.password && req.body.confirm) {
+  if(req.body.username && req.body.password && req.body.confirm && req.body.role) {
     log.verbose(JSON.stringify(req.body.username));
-    // The passport-local-mongoose package automatically takes care of salting and hashing the password.
     var ro = new RenderObject();
     ro.set({
       username: req.body.username,
+      role: req.body.role,
       whoCreated: req.user ? req.user.username : req.body.username,
-      whenCreated: new Date(),
+      whoUpdated: '',
+      whenCreated: new Date().toISOString(),
       whenUpdated: ''
     });
 
@@ -450,6 +452,7 @@ function postAccountCreate(req, res) {
 
     if(req.body.password === req.body.confirm) {
       try {
+        // The passport-local-mongoose package automatically takes care of salting and hashing the password.
         Account.register(new Account(ro.get()), req.body.password, function(err, doc) {
           if(err) {
             req.flash('error', err.message);
@@ -492,7 +495,7 @@ function postAccountCreate(req, res) {
  */
 function postAccountUpdate(req, res) {
   if(req.user) {
-    if(req.body.newPassword && req.body.confirm) {
+    if(req.body.newPassword && req.body.confirm && req.body.role) {
       log.verbose(JSON.stringify(req.user._doc));
       var query = new Object({ _id: req.user._id });
       if(req.body.newPassword === req.body.confirm) {
@@ -504,8 +507,6 @@ function postAccountUpdate(req, res) {
             throw new Error('Data was not found.', acc);
           }
 
-          acc.__v = acc.__v + 1;
-
           acc.setPassword(req.body.newPassword, function(err, doc) {
             if(err) throw new Error(err);
             if(!doc) {
@@ -514,7 +515,10 @@ function postAccountUpdate(req, res) {
               throw new Error('Data was not found.', doc);
             }
 
+            doc.role = req.body.role;
+            doc.whoUpdated = req.user.username;
             doc.whenUpdated = new Date().toISOString();
+            doc.__v = doc.__v + 1;
 
             try {
               doc.save(function(err, doc) {

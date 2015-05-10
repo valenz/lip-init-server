@@ -4,24 +4,24 @@ block content
 
   .container
     if grid && grid.length != 0
-      if usertabs > 0
+      if usertabs-assigned > 0
         .panel.panel-grid
           .panel-heading
             - var a = user.username.substr(0, 1).toUpperCase()
             - var b = user.username.substr(1, user.username.length)
-            h2#usertabs.anchor.panel-title| #{a+b}'s Tabs
+            h2#usertabs.anchor.panel-title= title
               a.anchorjs-link(href='#usertabs')
                 span.anchorjs-icon
                   i.fa.fa-link
               span|  (
-                = usertabs
+                = usertabs-assigned
                 | )
-          ul.list-unstyled.panel-body.container-fluid.grid(name='usertabs' data-length= usertabs)
+          ul.list-unstyled.panel-body.container-fluid.grid(name='usertabs' data-length= usertabs-assigned)
             each item, j in grid
               +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, item.whoCreated, j)
 
   mixin tabs(id, renderUrl, url, title, icon, image, name, category, check, whoCreated, j)
-    if check && user.username == whoCreated
+    if check
       li.tabs(id= id data-item= j)
         .mng-fa
           form.form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
