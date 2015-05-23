@@ -60,20 +60,25 @@ block content
                 - var a = user.username.substr(0, 1).toUpperCase()
                 - var b = user.username.substr(1, user.username.length)
                 - var usertabs = 0
+                - var unassigned = 0
                 each item in tabs
                   if item.check
                     - usertabs += 1
+                  if !item.category && !item.check
+                    - unassigned += 1
                 if tabs.length
                   .progress
-                    .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= (tabs.length-usertabs)+' / '+tabs.length style='width:'+(tabs.length-usertabs)/tabs.length*100+'%;')
-                      = 'Public'.substr(0, Math.floor((tabs.length-usertabs)/tabs.length*100+usertabs/tabs.length*100*1/3))
+                    .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= (tabs.length-usertabs-unassigned)+' / '+tabs.length style='width:'+(tabs.length-usertabs-unassigned)/tabs.length*100+'%;')
+                      = 'Public'.substr(0, Math.floor((tabs.length-usertabs-unassigned)/tabs.length*100+usertabs-unassigned/tabs.length*100*1/3))
                     .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= usertabs+' / '+tabs.length style='width:'+usertabs/tabs.length*100+'%;')
                       = a+b+"'s Grid".substr(0, Math.floor(usertabs/tabs.length*100+usertabs/tabs.length*100*1/3))
+                    .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= unassigned+' / '+tabs.length style='width:'+unassigned/tabs.length*100+'%;')
+                      = 'unassigned'.substr(0, Math.floor(unassigned/tabs.length*100+unassigned/tabs.length*100*1/3))
                 each item, j in tabs
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/tab/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn(class= item.check ? 'btn-warning' : 'btn-primary' type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.category ? item.category : item.title.substr(0, 90) style='margin: 5px;')
+                      button.btn(class= item.check ? 'btn-warning' : !item.category ? 'btn-danger' : 'btn-primary' type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.check ? a+b+"'s Grid" : !item.category ? 'unassigned' : item.category style='margin: 5px;')
                         if user && user.username == item.whoCreated
                           u= item.name
                         else
@@ -89,10 +94,8 @@ block content
               .panel-body.container-fluid
                 if tabs.length
                   .progress
-                    - var unassigned = tabs.length - usertabs
                     - var odd = 0
                     each item, j in cats
-                      - unassigned -= item.list.length
                       - odd += item.list.length != 0 ? 1 : 0
                       - var progWidth = item.list.length/tabs.length*100
                       .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= item.list.length+' / '+tabs.length style='width:'+progWidth+'%;' class= odd%2 == 0 ? 'progress-bar-info' : 'progress-bar-default')
