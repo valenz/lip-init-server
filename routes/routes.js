@@ -1018,30 +1018,6 @@ function postTabUpdate(req, res) {
           });
         }
 
-        if(!req.body.check && req.body.category) {
-          query = new Object({ name: req.body.category });
-          mongoose.model('category').findOne(query, function(err, cat) {
-            if(err) throw new Error(err);
-            if(!cat) {
-              req.flash('error', 'Data was not found: %s', cat);
-              res.redirect('/settings');
-              throw new Error('Data was not found.', cat);
-            }
-
-            var data = methods.attach(tab, cat);
-
-            if(data) {
-              data.save(function(err, doc) {
-                if(err) {
-                  req.flash('error', err.message);
-                  res.redirect('/settings');
-                  throw new Error(err);
-                }
-              });
-            }
-          });
-        }
-
         var renderUrlTmp = tab.renderUrl;
         var url = req.body.address ? urlparse(req.body.address).normalize().toString() : urlparse(req.body.renderUrl).normalize().toString();
 
@@ -1062,6 +1038,30 @@ function postTabUpdate(req, res) {
           tab.whenUpdated = new Date().toISOString();
           tab.__v = tab.__v + 1;
 
+          if(!req.body.check && req.body.category) {
+            query = new Object({ name: req.body.category });
+            mongoose.model('category').findOne(query, function(err, cat) {
+              if(err) throw new Error(err);
+              if(!cat) {
+                req.flash('error', 'Data was not found: %s', cat);
+                res.redirect('/settings');
+                throw new Error('Data was not found.', cat);
+              }
+
+              var data = methods.attach(tab, cat);
+
+              if(data) {
+                data.save(function(err, doc) {
+                  if(err) {
+                    req.flash('error', err.message);
+                    res.redirect('/settings');
+                    throw new Error(err);
+                  }
+                });
+              }
+            });
+          }
+
           try {
             tab.save(function(err, doc) {
               if(err) {
@@ -1077,7 +1077,7 @@ function postTabUpdate(req, res) {
 
               log.verbose(JSON.stringify(doc._doc));
 
-              if(renderUrlTmp == req.body.renderUrl) {
+              methods.renderPage({ url: urlparse(req.body.renderUrl).normalize().toString(), filename: doc.image }, function() {
                 log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
                 req.flash('success', 'Tab has been updated successfully.');
                 if(req.body.check) {
@@ -1085,17 +1085,7 @@ function postTabUpdate(req, res) {
                 } else {
                   res.redirect('/');
                 }
-              } else {
-                methods.renderPage({ url: urlparse(req.body.renderUrl).normalize().toString(), filename: doc.image }, function() {
-                  log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
-                  req.flash('success', 'Tab has been updated successfully.');
-                  if(req.body.check) {
-                    res.redirect('/accounts/'+ req.user.username);
-                  } else {
-                    res.redirect('/');
-                  }
-                });
-              }
+              });
             });
           } catch(e) {
             log.error(e.stack);
