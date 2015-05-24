@@ -55,7 +55,7 @@ var config = module.exports = {
   // Database
   db: {
     uri: 'localhost',
-    name: '/lipinit'
+    name: '/tabgrid'
   },
 
   // Log levels [silly|debug|verbose|info|warn|error]
