@@ -278,23 +278,18 @@ function tabCreate(req, res) {
 /**
  * Increases the value of the preference of a Tab.
  * @param {Object} req
- * @param {Object} res
  */
 function postPrefer(req) {
   var query = new Object({ _id: req.body.id });
   mongoose.model('tab').findOne(query, function(err, tab) {
     if(err) throw new Error(err);
-    if(!tab) {
-      throw new Error('Data was not found.', tab);
-    }
+    if(!tab) throw new Error('Data was not found.', tab);
 
     tab.prefer = tab.prefer ? tab.prefer + 1 : 1;
 
     try {
       tab.save(function(err) {
-        if(err) {
-          throw new Error(err);
-        }
+        if(err) throw new Error(err);
       });
     } catch(e) {
       log.error(e.stack);
