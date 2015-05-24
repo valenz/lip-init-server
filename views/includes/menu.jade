@@ -1,37 +1,72 @@
-ul.fa-ul
-  li
-    if user
-      a(title='Sign out' href='/logout')
-        i.fa.fa-sign-out
-    else
-      a(title='Sign in' href='/login')
-        i.fa.fa-sign-in
+nav.navbar.navbar-inverse.navbar-fixed-top(style='opacity: 0.9;')
+  .container-fluid
+    .navbar-header
+      button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-collapse')
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      
+      a.navbar-brand(data-toggle='tooltip' data-placement='bottom' data-original-title='Home' href='/')
+        | LIP-IT/Technik-Support
+    
+    #navbar-collapse.collapse.navbar-collapse
+      ul.nav.navbar-nav
+        li
+          a(data-toggle='tooltip' data-placement='bottom' data-original-title='Intranet' href='http://intra.mpib-berlin.mpg.de')
+            | Intranet
+        
+        li
+          a(data-toggle='tooltip' data-placement='bottom' data-original-title='MPIB-Berlin' href='http://www.mpib-berlin.mpg.de')
+            | MPIB-Berlin
 
-  if user
-    li
-      a(title='New tab' href='/settings/tab/create')
-        i.fa.fa-plus-circle
-  li
-    a(title='Link 1' href='/')
-      | Link 1
-  li
-    a(title='Link 2' href='/')
-      | Link 2
-  if user
-    li
-      a(title= user.username href='/accounts/'+ user.username)
-        i.fa.fa-user
-  li
-    a(title='Settings' href='/settings')
-      i.fa.fa-cog
-  if user
-    li
-      a(title='Log' href='/settings/logging#tail')
-        i.fa.fa-book
-  li
-    a(title='E-Mail' href='mailto:your@mail.com')
-      i.fa.fa-envelope
-  if user
-    li
-      a(title='Help' href='/help')
-        i.fa.fa-question
+      ul.nav.navbar-nav.navbar-right
+        if user
+          li(class= title == 'Create Tab' ? 'active' : '')
+            a(data-toggle='tooltip' data-placement='bottom' data-original-title='Create Tab' href='/settings/tab/create')
+              i.fa.fa-plus-circle
+        
+        li(class= title == 'Settings' ? 'active' : '')
+          a(data-toggle='tooltip' data-placement='bottom' data-original-title='Settings' href='/settings')
+            i.fa.fa-cog
+        
+        li
+          a.email(data-toggle='tooltip' data-placement='bottom' data-original-title='Email' data-user='lipsupport', data-domain='mpib-berlin.mpg.de')
+            i.fa.fa-envelope
+        
+        if user
+          li(class= title == 'Help' ? 'active' : '')
+            a(data-toggle='tooltip' data-placement='bottom' data-original-title='Informations' href='/help')
+              i.fa.fa-info-circle
+        
+        if user
+          - var a = user.username.substr(0, 1).toUpperCase()
+          - var b = user.username.substr(1, user.username.length)
+          li.dropdown(class= title == user.username || title == 'Logging' ? 'active' : '')
+            a.dropdown-toggle(data-toggle='dropdown' href='/accounts/'+ user.username)
+              |  #{a+b}
+              span.caret
+              
+              ul.dropdown-menu
+                li
+                  a(data-toggle='tooltip' data-placement='left' data-original-title= a+b+"'s Grid" href='/accounts/'+ user.username)
+                    i.fa.fa-user
+                    |  #{a+b}'s Grid
+                
+                li
+                  a(data-toggle='tooltip' data-placement='left' data-original-title='Log' href='/settings/logging#tail')
+                    i.fa.fa-book
+                    |  Log
+                
+                li.divider
+                
+                li
+                  a(data-toggle='tooltip' data-placement='left' data-original-title='Logout '+user.username href='/logout')
+                    i.fa.fa-sign-out
+                    |  Logout
+        
+        else
+          li(class= title == 'Login' ? 'active' : '')
+            a(data-toggle='tooltip' data-placement='bottom' data-original-title='Login' href='/login')
+              i.fa.fa-sign-in
+              |  Login

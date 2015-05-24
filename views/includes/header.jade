@@ -1,31 +1,28 @@
 doctype html
 html(lang='en')
   head
-    meta(charset='utf-8')
+    title LIP-Support | #{title}
 
-    title Tabgrid | #{title}
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
 
     link(rel='stylesheet' type='text/css' href='//fonts.googleapis.com/css?family=Audiowide')
-    link(rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css')
+    link(rel='stylesheet' type='text/css' href='//netdna.bootstrapcdn.com/font-awesome/latest/css/font-awesome.css')
+    link(rel='stylesheet' type='text/css' href='//maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css')
+    link(rel='stylesheet' type='text/css' href='/stylesheets/bootstrap-select.css')
     link(rel='stylesheet' type='text/css' href='/stylesheets/style.css')
-    link(id='size-stylesheet' rel='stylesheet' type='text/css' href='/stylesheets/style.css')
-    noscript
-      link(rel='stylesheet' media='screen and (max-width: 480px)' href='/stylesheets/320.css')
-      link(rel='stylesheet' media='screen and (min-width: 481px) and (max-width: 640px)' href='/stylesheets/480.css')
-      link(rel='stylesheet' media='screen and (min-width: 641px) and (max-width: 820px)' href='/stylesheets/640.css')
-      link(rel='stylesheet' media='screen and (min-width: 821px) and (max-width: 1024px)' href='/stylesheets/style.css')
-      link(rel='stylesheet' media='screen and (min-width: 1025px) and (max-width: 1152px)' href='/stylesheets/1024.css')
-      link(rel='stylesheet' media='screen and (min-width: 1153px)' href='/stylesheets/1152.css')
+      
     block scripts
       script(type='text/javascript' src='//code.jquery.com/jquery-latest.min.js')
       //script(type='text/javascript' src='//ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js')
+      script(type='text/javascript' src='//maxcdn.bootstrapcdn.com/bootstrap/latest/js/bootstrap.min.js')
+      script(type='text/javascript' src='/javascripts/bootstrap-select.js')
       script(type='text/javascript' src='/javascripts/settings.js')
       script(type='text/javascript' src='/javascripts/grid.js')
       //script(type='text/javascript' src='/javascripts/sort.js')
 
   body
-    #head
-      include logo
-      include menu
-
+    include menu
+    include message
     block content
+    include foot

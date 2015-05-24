@@ -2,20 +2,25 @@ extends ../includes/header
 
 block content
 
-  include ../includes/message
+  .container
+    .row
+      .col-xs-2.col-sm-2.col-md-3.col-lg-3
+      .col-xs-8.col-sm-8.col-md-6.col-lg-6
+        h1#category_update.anchor.page-header= title
+          a.anchorjs-link(href='#category_update')
+            span.anchorjs-icon
+              i.fa.fa-link
 
-  form.form(action='/settings/category/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-    h3.formHeadline= title
+        .container-fluid
+          form.form(action='/settings/category/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+            .form-group
+              label(for='category')| *Category Name:
+              input(type='hidden' name='id' value= cat._id)
+              .input-group
+                input#category.form-control(type='text' name='categoryname' data-toggle='tooltip' data-placement='top' data-original-title='Category Name' value= cat.name required='required' placeholder='Category Name (required)' autofocus)
+                span.input-group-btn
+                  button#submit.btn.btn-primary.pull-right(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Submit')
+                    i.fa.fa-refresh
+                    |  Update
 
-    a#detailsLink(title='Category details and delete' href='/settings/category/details/?name='+query.name+'&list='+query.list+'&id='+query.id+'&rev='+query.rev)
-      | Details
-    label| Category Name (required):
-    input.field(type='text' name='categoryname' title='Category Name (required)' value= query.name required='required' placeholder='Category Name (required)' autofocus)
-    input(type='hidden' name='id' value= query.id)
-
-    button#submit.sbt-f(title='Submit')
-      i.fa.fa-refresh
-      | Update
-    a.cancel(href='/settings' title='Cancel')| Cancel
-
-  include ../includes/foot
+      .col-xs-2.col-sm-2.col-md-3.col-lg-3

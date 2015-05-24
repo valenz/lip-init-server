@@ -2,21 +2,38 @@ extends ../includes/header
 
 block content
 
-  include ../includes/message
+  .container
+    .row
+      .col-xs-2.col-sm-2.col-md-3.col-lg-3
+      .col-xs-8.col-sm-8.col-md-6.col-lg-6
+        h1#account_create.anchor.page-header= title
+          a.anchorjs-link(href='#account_create')
+            span.anchorjs-icon
+              i.fa.fa-link
 
-  form.form(action='/settings/account/create' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-    h3.formHeadline= title
+        .container-fluid
+          form.form(action='/settings/account/create' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+            .form-group
+              label(for='username')| *Username:
+              input#username.form-control(type='text' name='username' data-toggle='tooltip' data-placement='top' data-original-title='Username' required='required' placeholder='Username' autofocus)
+            .form-group
+              label(for='password')| *Password:
+              input#password.form-control(type='password' name='password' data-toggle='tooltip' data-placement='top' data-original-title='Password' required='required' placeholder='Password')
+            .form-group
+              label(for='confirm')| *Confirm Password:
+              input#confirm.form-control(type='password' name='confirm' data-toggle='tooltip' data-placement='top' data-original-title='Confirm Password' required='required' placeholder='Confirm Password')
+            .form-group
+              label(for='role')| *Role:
+              .input-group
+                label.radio-inline
+                  input(type='radio', name='role' data-toggle='tooltip' data-placement='top' data-original-title='Admin' required='required' value= 0)
+                  | Admin
+                label.radio-inline
+                  input(type='radio', name='role' data-toggle='tooltip' data-placement='top' data-original-title='User' required='required' value= 1 checked= true)
+                  | User
 
-    label| Username (required):
-    input.field(type='text' name='username' title='Username (required)' required='required' placeholder='Username (required)' autofocus)
-    label| Password (required):
-    input.field(type='password' name='password' title='Password (required)' required='required' placeholder='Password (required)')
-    label| Confirm Password (required):
-    input.field(type='password' name='confirm' title='Confirm Password (required)' required='required' placeholder='Confirm Password (required)')
+            button#submit.btn.btn-primary.pull-right(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Submit')
+              i.fa.fa-upload
+              |  Create
 
-    button#submit.sbt-f(title='Submit')
-      i.fa.fa-upload
-      | Create
-    a.cancel(href='/settings' title='Cancel')| Cancel
-
-  include ../includes/foot
+      .col-xs-2.col-sm-2.col-md-3.col-lg-3

@@ -2,15 +2,21 @@ extends ../includes/header
 
 block content
 
-  include ../includes/message
+  .container
+    .row
+      .col-xs-2.col-sm-2.col-md-3.col-lg-3
+      .col-xs-8.col-sm-8.col-md-6.col-lg-6
+        h1.page-header= title
 
-  form.form(action= action method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-    h3.formHeadline= title
+        form.form(action= action method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+          .row
+            .col-md-6
+              p| Are you sure you want to submit?
+              input.form-control(type='hidden' name='id' value= confirm.id)
+            .col-md-6
+              .pull-right
+                button#submit.btn.btn-danger(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Submit')
+                  i.fa.fa-trash-o
+                  |  Delete
 
-    p| Are you sure you want to submit?
-    input.field(type='hidden' name='id' value= confirm.id)
-
-    button#submit.dlt-f(title='Submit')| Delete
-    a.cancel(href='/' title='Cancel')| Cancel
-
-  include ../includes/foot
+      .col-xs-2.col-sm-2.col-md-3.col-lg-3

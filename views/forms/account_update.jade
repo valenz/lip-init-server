@@ -2,21 +2,35 @@ extends ../includes/header
 
 block content
 
-  include ../includes/message
+  .container
+    .row
+      .col-xs-2.col-sm-2.col-md-3.col-lg-3
+      .col-xs-8.col-sm-8.col-md-6.col-lg-6
+        h1#account_update.anchor.page-header= title
+          a.anchorjs-link(href='#account_update')
+            span.anchorjs-icon
+              i.fa.fa-link
 
-  form.form(action='/settings/account/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-    h3.formHeadline= title
+        .container-fluid
+          form.form(action='/settings/account/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+            .form-group
+              label(for='password')| *New Password:
+              input#password.form-control(type='password' name='newPassword' data-toggle='tooltip' data-placement='top' data-original-title='New Password' required='required' placeholder='New Password' autofocus)
+            .form-group
+              label(for='confirm')| *Confirm New Password:
+              input#confirm.form-control(type='password' name='confirm' data-toggle='tooltip' data-placement='top' data-original-title='Confirm New Password' required='required' placeholder='Confirm New Password')
+            .form-group
+              label(for='role')| *Role:
+              .input-group
+                label.radio-inline
+                  input(type='radio', name='role' data-toggle='tooltip' data-placement='top' data-original-title='Admin' required='required' value= 0 checked= user && user.role == 0 ? true : false)
+                  | Admin
+                label.radio-inline
+                  input(type='radio', name='role' data-toggle='tooltip' data-placement='top' data-original-title='User' required='required' value= 1 checked= user && user.role == 1 ? true : false)
+                  | User
 
-    a#detailsLink(title='Account details and delete' href='/settings/account/details')
-      | Details
-    label| New Password (required):
-    input.field(type='password' name='newPassword' title='New Password (required)' required='required' placeholder='New Password (required)' autofocus)
-    label| Confirm New Password (required):
-    input.field(type='password' name='confirm' title='Confirm New Password (required)' required='required' placeholder='Confirm New Password (required)')
+            button#submit.btn.btn-primary.pull-right(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Submit')
+              i.fa.fa-refresh
+              |  Update
 
-    button#submit.sbt-f(title='Submit')
-      i.fa.fa-refresh
-      | Update
-    a.cancel(href='/settings' title='Cancel')| Cancel
-
-  include ../includes/foot
+      .col-xs-2.col-sm-2.col-md-3.col-lg-3

@@ -2,31 +2,76 @@ extends ../includes/header
 
 block content
 
-  include ../includes/message
+  .container
+    .row
+      .col-xs-1.col-sm-1.col-md-1.col-lg-1
+      .col-xs-10.col-sm-10.col-md-10.col-lg-10
+        h1#category_details.anchor.page-header= title
+          a.anchorjs-link(href='#category_details')
+            span.anchorjs-icon
+              i.fa.fa-link
+          .small.pull-right
+            a.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Create Category' href='/settings/category/create' style='margin: 0 5px 0 5px;')
+              i.fa.fa-plus
+              |  Add
+            if user && user.username == cat.whoCreated
+              .btn-group
+                form(role='form' action='/settings/category/edit' method='post' enctype='multipart/form-data')
+                  input(type='hidden' name='id' value= cat._id)
+                  button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Update Category' type='submit' style='margin: 0 5px 0 5px;')
+                    i.fa.fa-pencil
+                    |  Edit
+              .btn-group
+                form(role='form' action='/settings/category/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
+                  input(type='hidden' name='id' value= cat._id)
+                  button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Delete Category' type='submit' style='margin: 0 5px 0 5px;')
+                    i.fa.fa-trash-o
+                    |  Delete
 
-  - var l = query.list.replace(new RegExp(',', 'g'), '\n');
-
-  form.form(action='/settings/category/delete/confirm' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-    h3.formHeadline= title
-
-    label| Name:
-    input.details(type='text' name='name' title=  query.name value= query.name readonly)
-    label| List:
-    textarea.details.list(name='list' readonly)= l
-
-    label| Identifier:
-    input.details(type='text' name='id' title=  query.id value= query.id readonly)
-    label| Revision:
-    input.details(type='text' name='rev' title=  query.rev value= query.rev readonly)
-
-    .btn-dlt-f
-      a(title='Submit')
-        i.fa.fa-trash-o
-      | Delete
-    noscript
-      button.dlt-f(title='Submit')
-        i.fa.fa-trash-o
-        | Delete
-    a.cancel(href='/settings' title='Cancel')| Cancel
-
-  include ../includes/foot
+        .panel.panel-default
+          table.table.table-condensed.table-hover.table-striped
+            thead
+              tr
+                th Label
+                th Detail
+            tbody
+              tr
+                td.text-nowrap Name
+                td
+                  strong= cat.name
+                  span= ' ('+ cat.normalized +')'
+              tr
+                td.text-nowrap Tabs
+                td
+                  each item, j in cat.list
+                    div(id= item._id data-item= j)
+                      form(role='form' action='/settings/tab/details' method='post' enctype='multipart/form-data')
+                        input(type='hidden' name='id' value= item._id)
+                        button.btn-link.btn-default(data-toggle='tooltip' data-placement='top' data-original-title= item.title type='submit')
+                          = item.name
+                        = ' '
+                        i.fa.fa-angle-right
+                        = ' '
+                        a.small(href= item.url)= item.url
+              tr
+                td.text-nowrap Who Created
+                td
+                  strong= cat.whoCreated
+              tr
+                td.text-nowrap When Created
+                td= cat.whenCreated
+              tr
+                td.text-nowrap Who Updated
+                td
+                  strong= cat.whoUpdated
+              tr
+                td.text-nowrap When Updated
+                td= cat.whenUpdated
+              tr
+                td.text-nowrap Identifier
+                td= cat._id
+              tr
+                td.text-nowrap Revision
+                td= cat.__v
+          
+      .col-xs-1.col-sm-1.col-md-1.col-lg-1

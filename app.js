@@ -89,25 +89,25 @@ app.get('/logout', routes.ensureAuthenticated, routes.logout);
 app.get('/settings', routes.settings);
 app.get('/settings/logging', routes.ensureAuthenticated, routes.logging);
 app.get('/accounts/:username', routes.ensureAuthenticated, routes.accounts);
-app.get('/settings/account/create', /*routes.ensureAuthenticated,*/ routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
-app.get('/settings/account/update', routes.ensureAuthenticated, routes.accountUpdate);
-app.get('/settings/account/details/:id?', routes.ensureAuthenticated, routes.accountDetails);
+app.get('/settings/account/create', routes.ensureAuthenticated, routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/category/create', routes.ensureAuthenticated, routes.categoryCreate);
-app.get('/settings/category/update', routes.ensureAuthenticated, routes.categoryUpdate);
-app.get('/settings/category/details/:id?', routes.ensureAuthenticated, routes.categoryDetails);
 app.get('/settings/tab/create', routes.ensureAuthenticated, routes.tabCreate);
-app.get('/settings/tab/update', routes.ensureAuthenticated, routes.tabUpdate);
-app.get('/settings/tab/details/:id?', routes.ensureAuthenticated, routes.tabDetails);
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: 'Invalid username or password.' }), routes.postLogin);
 app.post('/settings/account/create', routes.postAccountCreate);
 app.post('/settings/account/update', routes.postAccountUpdate);
+app.post('/settings/account/edit', routes.ensureAuthenticated, routes.postAccountEdit);
+app.post('/settings/account/details', routes.ensureAuthenticated, routes.postAccountDetails);
 app.post('/settings/account/delete', routes.postAccountDelete);
 app.post('/settings/category/create', routes.postCategoryCreate);
 app.post('/settings/category/update', routes.postCategoryUpdate);
+app.post('/settings/category/edit', routes.ensureAuthenticated, routes.postCategoryEdit);
+app.post('/settings/category/details', routes.ensureAuthenticated, routes.postCategoryDetails);
 app.post('/settings/category/delete', routes.postCategoryDelete);
 app.post('/settings/tab/create', routes.postTabCreate);
 app.post('/settings/tab/update', routes.postTabUpdate);
+app.post('/settings/tab/edit', routes.ensureAuthenticated, routes.postTabEdit);
+app.post('/settings/tab/details', routes.ensureAuthenticated, routes.postTabDetails);
 app.post('/settings/tab/delete', routes.postTabDelete);
 app.post('/settings/:type(account|category|tab)/delete/confirm', routes.postConfirm);
 

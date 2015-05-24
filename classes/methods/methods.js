@@ -8,11 +8,11 @@ var log = winston.loggers.get('log');
  ********************************* EXPORTS *********************************
  */
 
-module.exports.getAdminTabs = getAdminTabs;
+module.exports.getUserTabs = getUserTabs;
 module.exports.getAssignedTabs = getAssignedTabs;
 module.exports.shorter = shorter;
+module.exports.attach = attach;
 module.exports.detach = detach;
-module.exports.paste = paste;
 module.exports.clear = clear;
 module.exports.mkdirSync = mkdirSync;
 module.exports.getLog = getLog;
@@ -25,11 +25,11 @@ module.exports.renderPage = renderPage;
  */
 
 /**
- * Returns the number of tabs which are assigned to admin view.
+ * Returns the number of tabs which are assigned to user view.
  * @param {obj} Object
  * @return {n} Number
  */
-function getAdminTabs(obj) {
+function getUserTabs(obj) {
   if(!obj) return 0;
   var n = 0;
   for(var i in obj) if(obj[i].check) n++;
@@ -63,33 +63,33 @@ function shorter(str) {
 }
 
 /**
- * Removes items from an array, and returns the new one.
- * @param {str} String
- * @param {obj} Object
+ * Adds new items to the end of an array, and returns the new one.
+ * @param {tab} Object
+ * @param {cat} Object
  * @return {data} Object
  */
-function detach(str, obj) {
-  if(!obj) return false;
-  var data = obj;
-  var list = obj.list;
-  var index = list.indexOf(str);
-  if(index == -1) return false;
-  list.splice(index, 1);
+function attach(tab, cat) {
+  if(!cat) return false;
+  var data = cat;
+  var list = cat.list;
+  list.push(tab);
   data.list = list;
   return data;
 }
 
 /**
- * Adds new items to the end of an array, and returns the new one.
- * @param {str} String
- * @param {obj} Object
+ * Removes items from an array, and returns the new one.
+ * @param {id} String
+ * @param {cat} Object
  * @return {data} Object
  */
-function paste(str, obj) {
-  if(!obj) return false;
-  var data = obj;
-  var list = obj.list;
-  list.push(str);
+function detach(id, cat) {
+  if(!cat) return false;
+  var data = cat;
+  var list = cat.list;
+  list = list.filter(function(e) {
+    return e._id != id.toString();
+  });
   data.list = list;
   return data;
 }
@@ -134,20 +134,19 @@ function mkdirSync(str) {
     fs.exists(path, function(exists) {
       if(!exists) {
         mkdirp.sync(path, 0755);
-        log.verbose('The path and filename of the logfile has been created.');
+        log.verbose('The path for the logfile has been created.');
       } else {
-        log.verbose('The path and filename of the logfile already exists.');
+        log.verbose('The path for the logfile already exists.');
       }
     });
   } else {
-    log.verbose('No path of the logfile found. Creation skipped.');
+    log.verbose('No path for the logfile found. Creation skipped.');
   }
 }
 
 /**
  * Returns an object with the content of the file as a callback.
  * @param {Function} cb
- * @return {Object} l
  */
 function getLog(cb) {
   var arr = [];
@@ -183,7 +182,7 @@ function random(len) {
 /**
  * Returns title and icon from given url.
  * @param {String} url
- * @return {Function} cb
+ * @param {Function} cb
  */
 function getPageInfo(url, cb) {
   var phantom = require('phantom');
@@ -226,7 +225,7 @@ function getPageInfo(url, cb) {
           }, function(info) {
             cb(info);
             ph.exit();
-            log.info('PhantomJS process %s complete and was terminated.', ph.process.pid);
+            log.info('PhantomJS process %s was completed and terminated.', ph.process.pid);
           });
         }, config.ph.evaluate.delay);
       });
@@ -237,7 +236,7 @@ function getPageInfo(url, cb) {
 /**
  * Captures web page from given url and saves it as an image.
  * @param {Object} obj
- * @return {Function} cb
+ * @param {Function} cb
  */
 function renderPage(obj, cb) {
   var phantom = require('phantom');
@@ -318,7 +317,7 @@ function renderPage(obj, cb) {
             page.render(config.custom.upload + obj.filename, config.ph.render.options, function() {
               cb();
               ph.exit();
-              log.info('PhantomJS process %s complete and was terminated.', ph.process.pid);
+              log.info('PhantomJS process %s was completed and terminated.', ph.process.pid);
             });
           }, config.ph.render.color);
         }, config.ph.render.delay);

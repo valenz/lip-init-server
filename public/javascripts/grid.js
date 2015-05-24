@@ -1,66 +1,58 @@
+$(function() {
+  // Duration of the messages before they disappear
+	setTimeout(function() {
+		$('.popclose').click();
+	}, 4000);
+});
+
 $(document).ready(function() {
-  /** Show option buttons on tabs */
-  $('li.tabs').mouseenter(function(e) {
-    $(this).find('[class^=btn]').css('display', 'block');
+  // Gets messages
+  var success = $('[data-toggle=popover]').attr('data-success') == 'true' ? true : false;
+  var error = $('[data-toggle=popover]').attr('data-error') == 'true' ? true : false;
+  var content = success ? 'fa-check-circle' : error ? 'fa-exclamation-circle' : 'fa-info-circle';
+  var template = success ? 'alert-success' : error ? 'alert-danger' : 'alert-info';
+  // Loads popover library
+  $('body').popover({
+    selector: '[data-toggle=popover]',
+    trigger: 'click',
+  	content : '<i class="fa '+content+'"></i><span> '+ $('[data-toggle=popover]').attr('data-message') +' </span>',
+    template: '<div class="popover" style="width: 100%;"><button class="close popclose" type="button" style="margin: 9px 5px 0 0;"><span>&#215;</span></button><div class="popover-content '+template+' text-center"></div></div>',
+    placement: "bottom",
+    html: true
   });
-  $('li.tabs').mouseleave(function(e) {
-    $(this).find('[class^=btn]').css('display', 'none');
+  // Fires trigger to show popover
+  $('[data-toggle="popover"]').click();
+	// Fires trigger to hide popover
+	$('.popclose').on('click', function() {
+		$('[data-toggle="popover"]').popover('hide');
+	});
+
+  // Loads tooltip library
+  $('[data-toggle="tooltip"]').tooltip({
+    html: true
   });
 
-  $('#range').css('display', 'block');
+	// Loads selectpicker library
+	$('.selectpicker').selectpicker();
 
-  /** Submit delete settings */
-  $('.btn-dlt-f').css('display', 'block').on('click', function() {
-    var action = $(this).parent().attr('action');
-    action = action.replace(new RegExp('/confirm', 'g'), '');
-    $(this).parent().attr('action', action).submit();
+  // Show or hide anchor icon
+  $('h1, h2, h3').hover(function() {
+    $(this).find('.anchorjs-link').css('opacity', 1);
+  }, function() {
+    $(this).find('.anchorjs-link').css('opacity', 0);
   });
 
-  /** Submit delete tab */
-  $('.btn-del').on('click', function() {
-    $(this).parent().parent().attr('action', '/settings/tab/delete').submit();
+  // Show or hide option buttons on tabs
+  $('li.tabs').hover(function() {
+    $(this).find('.mng-fa').css('opacity', 1);
+  }, function() {
+    $(this).find('.mng-fa').css('opacity', 0);
   });
 
-  /** Tabs range settings */
-  var liWidth = 182;
-  var imgContainerWidth = 182;
-  var imgContainerHeight = 101;
+  // Tabs range settings
   var factor = localStorage.getItem('range') ? localStorage.getItem('range') : 1;
-  $('.tabs').each(function(key) {
-    $(this).css('width', Math.floor(liWidth*factor)+'px');
-  });
-  $('.img-container').each(function(key) {
-    $(this).css('width', Math.floor(imgContainerWidth*factor)+'px');
-    $(this).css('height', Math.floor(imgContainerHeight*factor)+'px');
-  });
-  $('.pic').each(function(key) {
-    $(this).css('width', Math.floor(imgContainerWidth*factor)+'px');
-    $(this).css('height', Math.floor(imgContainerHeight*factor)+'px');
-  });
-
-  /** Sets different stylesheets for different sized browser windows */
-  function adjustStyle(width) {
-    width = parseInt(width);
-    if (width < 480) {
-      $("#size-stylesheet").attr("href", "/stylesheets/320.css");
-    } else if ((width >= 481) && (width <= 640)) {
-      $("#size-stylesheet").attr("href", "/stylesheets/480.css");
-    } else if ((width >= 641) && (width <= 820)) {
-      $("#size-stylesheet").attr("href", "/stylesheets/640.css");
-    } else if ((width >= 821) && (width <= 1024)) {
-      $("#size-stylesheet").attr("href", "/stylesheets/style.css");
-    } else if ((width >= 1025) && (width <= 1152)) {
-      $("#size-stylesheet").attr("href", "/stylesheets/1024.css");
-    } else {
-      $("#size-stylesheet").attr("href", "/stylesheets/1152.css");
-    }
-  }
-
-  /** Trigger browser windows width */
-  $(function() {
-    adjustStyle($(this).width());
-    $(window).resize(function() {
-      adjustStyle($(this).width());
-    });
+  $('.tabs').each(function() {
+    $(this).css('width', Math.floor($(this).css('width').substr(0,3) * factor) +'px');
+    $(this).find('.name').css('font-size', Math.floor($(this).find('.name').css('font-size').substr(0,2) * (Math.log10(factor) + 1)) +'px');
   });
 });

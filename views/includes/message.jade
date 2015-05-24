@@ -1,37 +1,34 @@
 if grid
   - var check_i = 0
   - var check_a = 0
-    each i in grid
-      - i.check ? check_a++ : check_i++
-
-if error && error != 0
-  p.error
-    each i in error
-      i.fa.fa-exclamation-circle
-      = i
-      | <br />
+  each i in grid
+    - i.check ? check_a++ : check_i++
 
 if info && info != 0
-  p.info
-    each i in info
-      i.fa.fa-info-circle
-      = i
-      | <br />
+  each i in info
+    .container.text-center
+      .message(data-toggle='popover' data-message= i data-info='true')
 
 if success && success != 0
-  p.success
-    each i in success
-      i.fa.fa-check-circle
-      = i
-      | <br />
+  each i in success
+    .container.text-center
+      .message(data-toggle='popover' data-message= i data-success='true')
 
-if( title == 'Index' && check_i == 0 ) || user && ( title == user.username && check_a == 0 )
-  p.no-data
-    i.fa.fa-info-circle.fa-fw
-    | There are currently no Tabs available.
+if error && error != 0
+  each i in error
+    .container.text-center
+      .message(data-toggle='popover' data-message= i data-error='true')
 
-if( title == 'Settings' )
-  noscript
-    p.no-script
+if( ( title == 'Index' && check_i == 0 ) || user && ( title == user.username && check_a == 0 ) )
+  .container.text-center
+    .alert.alert-warning.text-center
+      button.close(type="button", data-dismiss="alert", aria-label="Close")
+        span(aria-hidden="true") &#215;
       i.fa.fa-info-circle
-      | You need to enable Javascript in order to use all features.
+      |  There are currently no Tabs available.
+
+noscript
+  .container.text-center
+    .alert.alert-info.text-center
+      i.fa.fa-info-circle
+      |  You need to enable Javascript in order to use all features.
