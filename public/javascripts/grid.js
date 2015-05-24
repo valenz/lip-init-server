@@ -49,16 +49,18 @@ $(document).ready(function() {
     $(this).find('.mng-fa').css('opacity', 0);
   });
 
-	$('li.tabs a').on('click', function() {
-		var fd = new FormData();
-		fd.append('id', $(this).parent().attr('id'));
-		$.ajax({
-			type: 'POST',
-			url: '/prefer',
-			data: fd,
-			processData: false,
-			contentType: false
-		});
+	$('li.tabs a').on('mousedown', function(e) {
+		if(e.which <= 2) {
+			var fd = new FormData();
+			fd.append('id', $(this).parent().attr('id'));
+			$.ajax({
+				type: 'POST',
+				url: '/prefer',
+				data: fd,
+				processData: false,
+				contentType: false
+			});
+		}
 	});
 
   // Tabs range settings
