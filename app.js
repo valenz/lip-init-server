@@ -93,6 +93,7 @@ app.get('/settings/account/create', /*routes.ensureAuthenticated,*/ routes.accou
 app.get('/settings/category/create', routes.ensureAuthenticated, routes.categoryCreate);
 app.get('/settings/tab/create', routes.ensureAuthenticated, routes.tabCreate);
 
+app.post('/prefer', routes.postPrefer);
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: 'Invalid username or password.' }), routes.postLogin);
 app.post('/settings/account/create', routes.postAccountCreate);
 app.post('/settings/account/update', routes.postAccountUpdate);

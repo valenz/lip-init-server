@@ -26,6 +26,7 @@ module.exports.accountCreate = accountCreate;
 module.exports.categoryCreate = categoryCreate;
 module.exports.tabCreate = tabCreate;
 
+module.exports.postPrefer = postPrefer;
 module.exports.postLogin = postLogin;
 module.exports.postAccountCreate = postAccountCreate;
 module.exports.postAccountUpdate = postAccountUpdate;
@@ -87,7 +88,7 @@ function logout(req, res) {
  * @return {String} err
  */
 function index(req, res) {
-  mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
+  mongoose.model('tab').find({}, null, { sort: { prefer: -1, whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
     if(err) throw new Error(err);
     mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
       if(err) throw new Error(err);
@@ -117,7 +118,7 @@ function index(req, res) {
  * @return {String} err
  */
 function accounts(req, res) {
-  mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
+  mongoose.model('tab').find({}, null, { sort: { prefer: -1, whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
     if(err) throw new Error(err);
     mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
       if(err) throw new Error(err);
@@ -273,6 +274,33 @@ function tabCreate(req, res) {
 /**
  ******************************* POST METHODS *******************************
  */
+
+/**
+ * Increases the value of the preference of a Tab.
+ * @param {Object} req
+ * @param {Object} res
+ */
+function postPrefer(req) {
+  var query = new Object({ _id: req.body.id });
+  mongoose.model('tab').findOne(query, function(err, tab) {
+    if(err) throw new Error(err);
+    if(!tab) {
+      throw new Error('Data was not found.', tab);
+    }
+
+    tab.prefer = tab.prefer ? tab.prefer + 1 : 1;
+
+    try {
+      tab.save(function(err) {
+        if(err) {
+          throw new Error(err);
+        }
+      });
+    } catch(e) {
+      log.error(e.stack);
+    }
+  });
+}
 
 /**
  * Sets a flash message by passing the key, followed by the value, to req.flash()
@@ -903,6 +931,7 @@ function postTabCreate(req, res) {
           image: methods.random() + '.' + config.ph.render.options.format,
           category: req.body.category,
           check: req.body.check ? true : false,
+          prefer: 0,
           whoCreated: req.user.username,
           whoUpdated: '',
           whenCreated: new Date().toISOString(),
@@ -1032,6 +1061,7 @@ function postTabUpdate(req, res) {
           tab.image = tab.image;
           tab.category = req.body.category;
           tab.check = req.body.check ? true : false;
+          tab.prefer = tab.prefer ? tab.prefer : 0;
           tab.whoCreated = tab.whoCreated;
           tab.whoUpdated = req.user.username;
           tab.whenCreated = tab.whenCreated;

@@ -55,6 +55,9 @@ block content
                 td(class= tab.check ? 'text-success' : 'text-danger')
                   strong= tab.check
               tr
+                td.text-nowrap Favorite
+                td= tab.prefer
+              tr
                 td.text-nowrap Render Address
                 td
                   a(href= tab.renderUrl)= tab.renderUrl

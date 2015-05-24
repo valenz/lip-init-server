@@ -28,6 +28,7 @@ var Tab = new Schema({
   },
   check: Boolean,
   category: String,
+  prefer: Number,
   whoCreated: String,
   whoUpdated: String,
   whenCreated: Date,

@@ -49,6 +49,18 @@ $(document).ready(function() {
     $(this).find('.mng-fa').css('opacity', 0);
   });
 
+	$('li.tabs a').on('click', function() {
+		var fd = new FormData();
+		fd.append('id', $(this).parent().attr('id'));
+		$.ajax({
+			type: 'POST',
+			url: '/prefer',
+			data: fd,
+			processData: false,
+			contentType: false
+		});
+	});
+
   // Tabs range settings
   var factor = localStorage.getItem('range') ? localStorage.getItem('range') : 1;
   $('.tabs').each(function() {
