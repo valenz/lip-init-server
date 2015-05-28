@@ -98,12 +98,12 @@ block content
                     each item, j in cats
                       - odd += item.list.length != 0 ? 1 : 0
                       - var progWidth = item.list.length/tabs.length*100
-                      .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= item.list.length+' / '+tabs.length style='width:'+progWidth+'%;' class= odd%2 == 0 ? 'progress-bar-info' : 'progress-bar-default')
-                        .text-nowrap= item.name.substr(0, Math.floor(progWidth+progWidth*1/3))
-                    .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= usertabs+' / '+tabs.length style='width:'+usertabs/tabs.length*100+'%;')
-                      = a+b+"'s Grid".substr(0, Math.floor(usertabs/tabs.length*100+usertabs/tabs.length*100*1/3))
-                    .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= unassigned+' / '+tabs.length style='width:'+unassigned/tabs.length*100+'%;')
-                      = 'unassigned'.substr(0, Math.floor(unassigned/tabs.length*100+unassigned/tabs.length*100*1/3))
+                      .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= item.name style='width:'+progWidth+'%;' class= odd%2 == 0 ? 'progress-bar-info' : 'progress-bar-default')
+                        .text-nowrap= item.list.length
+                    .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= a+b+"'s Grid" style='width:'+usertabs/tabs.length*100+'%;')
+                      = usertabs
+                    .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= 'unassigned' style='width:'+unassigned/tabs.length*100+'%;')
+                      = unassigned
                 - var odd = 0
                 each item, j in cats
                   - odd += item.list.length != 0 ? 1 : 0
