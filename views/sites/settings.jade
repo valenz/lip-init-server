@@ -68,12 +68,12 @@ block content
                     - unassigned += 1
                 if tabs.length
                   .progress
-                    .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= (tabs.length-usertabs-unassigned)+' / '+tabs.length style='width:'+(tabs.length-usertabs-unassigned)/tabs.length*100+'%;')
-                      = 'Public'.substr(0, Math.floor((tabs.length-usertabs-unassigned)/tabs.length*100+usertabs-unassigned/tabs.length*100*1/3))
-                    .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= usertabs+' / '+tabs.length style='width:'+usertabs/tabs.length*100+'%;')
-                      = a+b+"'s Grid".substr(0, Math.floor(usertabs/tabs.length*100+usertabs/tabs.length*100*1/3))
-                    .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= unassigned+' / '+tabs.length style='width:'+unassigned/tabs.length*100+'%;')
-                      = 'unassigned'.substr(0, Math.floor(unassigned/tabs.length*100+unassigned/tabs.length*100*1/3))
+                    .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= 'unassigned' style='width:'+unassigned/tabs.length*100+'%;')
+                      = unassigned
+                    .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= 'Public' style='width:'+(tabs.length-usertabs-unassigned)/tabs.length*100+'%;')
+                      = tabs.length-usertabs-unassigned
+                    .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= a+b+"'s Grid" style='width:'+usertabs/tabs.length*100+'%;')
+                      = usertabs
                 each item, j in tabs
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/tab/details' method='post' enctype='multipart/form-data')
@@ -95,6 +95,8 @@ block content
                 if tabs.length
                   .progress
                     - var odd = 0
+                    .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= 'unassigned' style='width:'+unassigned/tabs.length*100+'%;')
+                      = unassigned
                     each item, j in cats
                       - odd += item.list.length != 0 ? 1 : 0
                       - var progWidth = item.list.length/tabs.length*100
@@ -102,9 +104,10 @@ block content
                         .text-nowrap= item.list.length
                     .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= a+b+"'s Grid" style='width:'+usertabs/tabs.length*100+'%;')
                       = usertabs
-                    .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= 'unassigned' style='width:'+unassigned/tabs.length*100+'%;')
-                      = unassigned
-                - var odd = 0
+                if unassigned
+                  a.btn.btn-danger(href='/' data-toggle='tooltip' data-placement='top' data-original-title= unassigned+' / '+tabs.length style='margin: 5px;')
+                    | unassigned
+                - odd = 0
                 each item, j in cats
                   - odd += item.list.length != 0 ? 1 : 0
                   .btn-group(id= item._id data-item= j)
@@ -118,9 +121,6 @@ block content
                 if usertabs
                   a.btn.btn-warning(href='/accounts/'+user.username data-toggle='tooltip' data-placement='top' data-original-title= usertabs+' / '+tabs.length style='margin: 5px;')
                     | #{a+b}'s Grid
-                if unassigned
-                  a.btn.btn-danger(href='/' data-toggle='tooltip' data-placement='top' data-original-title= unassigned+' / '+tabs.length style='margin: 5px;')
-                    | unassigned
 
             .panel.panel-settings
               .panel-heading

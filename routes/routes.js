@@ -148,7 +148,7 @@ function accounts(req, res) {
  * @return {String} err
  */
 function settings(req, res) {
-  mongoose.model('tab').find({}, null, { sort: { check: 1, name: 1 }, skip: 0, limit: 0 }, function(err, tab) {
+  mongoose.model('tab').find({}, null, { sort: { check: 1, category: 1, name: 1 }, skip: 0, limit: 0 }, function(err, tab) {
     if(err) throw new Error(err);
     mongoose.model('account').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, account) {
       if(err) throw new Error(err);
