@@ -8,8 +8,8 @@ block content
         if list[i] && list[i].list.length > 0
           .panel.panel-grid
             .panel-heading
-              h2.panel-title(id= list[i].name.toLowerCase())= list[i].name
-                a.anchorjs-link(href='#'+ list[i].name.toLowerCase())
+              h2.panel-title(id= list[i].name.replace(/ /g, '').toLowerCase())= list[i].name
+                a.anchorjs-link(href='#'+ list[i].name.replace(/ /g, '').toLowerCase())
                   span.anchorjs-icon
                     i.fa.fa-link
                 span|  (

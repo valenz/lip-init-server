@@ -36,7 +36,7 @@ $(document).ready(function() {
 	$('.selectpicker').selectpicker();
 
   // Show or hide anchor icon
-  $('h1, h2, h3').hover(function() {
+  $('h1, h2, h3, h4, h5, h6').hover(function() {
     $(this).find('.anchorjs-link').css('opacity', 1);
   }, function() {
     $(this).find('.anchorjs-link').css('opacity', 0);
