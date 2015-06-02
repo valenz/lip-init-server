@@ -30,15 +30,41 @@ $(document).ready(function() {
     }
   });
 
-  /** Sets range value */
-  function setRange(r) {
-    if(localStorage.getItem(r.attr('type'))) {
-      r.val(localStorage.getItem(r.attr('type')));
-      $('.adj').find('#rangeFac').text(r.val());
-    } else {
-      r.val(1);
-      $('.adj').find('#rangeFac').text('1');
+  // activate sidebar
+  $('.sidenav').affix();
 
+  // activate scrollspy menu
+  var $body   = $(document.body);
+  var navHeight = $('.navbar').outerHeight(true) + 10;
+
+  $body.scrollspy({
+    target: 'nav',
+    offset: navHeight
+  });
+
+  // smooth scrolling chapters and anchors
+  $('a[href*=#]:not([href^=#collapse])').click(function() {
+    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+      var target = $(this.hash);
+      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+      if (target.length) {
+        $('html,body').animate({
+          scrollTop: target.offset().top - 60
+        }, 1000);
+        return false;
+      }
     }
-  }
+  });
 });
+
+/** Sets range value */
+function setRange(r) {
+  if(localStorage.getItem(r.attr('type'))) {
+    r.val(localStorage.getItem(r.attr('type')));
+    $('.adj').find('#rangeFac').text(r.val());
+  } else {
+    r.val(1);
+    $('.adj').find('#rangeFac').text('1');
+
+  }
+}

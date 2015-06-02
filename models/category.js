@@ -8,6 +8,11 @@ var Category = new Schema({
       required: true,
       trim: true
     },
+    normalized: {
+      type: String,
+      required: true,
+      trim: true
+    },
     list: Array,
     whoCreated: String,
     whoUpdated: String,

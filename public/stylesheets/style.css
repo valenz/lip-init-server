@@ -15,7 +15,7 @@
 
 body {
   padding-top: 70px;
-  font-family: 'libsansregular', Arial, Helvetica, sans-serif;
+  font: 15px/20px 'libsansregular', Arial, Helvetica, sans-serif;
 }
 
 /**
@@ -34,6 +34,7 @@ body {
 .message {
   position: relative;
   top: -45px;
+  left: -8px;
 }
 
 /**
@@ -59,8 +60,12 @@ body {
 }
 
 .name {
-  color: #000000;
+  color: #1A242F;
   font-size: 16px;
+}
+
+.name:hover {
+  text-decoration: underline;
 }
 
 .mng-vis {
@@ -74,32 +79,24 @@ body {
   position: relative;
 }
 
-.btn-edit {
+.btn-edit, .btn-delete {
   position: absolute;
+}
+
+.btn-edit {
   left: 0;
 }
 
 .btn-delete {
-  position: absolute;
   right: 0;
 }
 
-.btn-edit i {
+.btn-edit, .btn-delete {
   color: #17313A;
 }
 
-.btn-delete i {
-  color: #17313A;
-}
-
-.btn-edit i:hover {
-  color: #646E63;
-  cursor: default;
-}
-
-.btn-delete i:hover {
-  color: #646E63;
-  cursor: default;
+.btn-edit:focus, .btn-edit:hover, .btn-delete:focus, .btn-delete:hover {
+  color: #838D81;
 }
 
 /**

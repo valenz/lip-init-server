@@ -57,12 +57,29 @@ block content
                     span.anchorjs-icon
                       i.fa.fa-link
               .panel-body.container-fluid
+                - var a = user.username.substr(0, 1).toUpperCase()
+                - var b = user.username.substr(1, user.username.length)
+                - var usertabs = 0
+                - var unassigned = 0
+                each item in tabs
+                  if item.check
+                    - usertabs += 1
+                  if !item.category && !item.check
+                    - unassigned += 1
+                if tabs.length
+                  .progress
+                    .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= 'unassigned' style='width:'+unassigned/tabs.length*100+'%;')
+                      = unassigned
+                    .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= 'Public' style='width:'+(tabs.length-usertabs-unassigned)/tabs.length*100+'%;')
+                      = tabs.length-usertabs-unassigned
+                    .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= a+b+"'s Grid" style='width:'+usertabs/tabs.length*100+'%;')
+                      = usertabs
                 each item, j in tabs
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/tab/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Tab Details' style='margin: 0 5px 0 5px;')
-                        if item.check
+                      button.btn(class= item.check ? 'btn-warning' : !item.category ? 'btn-danger' : 'btn-primary' type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.check ? a+b+"'s Grid" : !item.category ? 'unassigned' : item.category style='margin: 5px;')
+                        if user && user.username == item.whoCreated
                           u= item.name
                         else
                           = item.name
@@ -75,12 +92,35 @@ block content
                     span.anchorjs-icon
                       i.fa.fa-link
               .panel-body.container-fluid
+                if tabs.length
+                  .progress
+                    - var odd = 0
+                    .progress-bar.progress-bar-danger(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= 'unassigned' style='width:'+unassigned/tabs.length*100+'%;')
+                      = unassigned
+                    each item, j in cats
+                      - odd += item.list.length != 0 ? 1 : 0
+                      - var progWidth = item.list.length/tabs.length*100
+                      .progress-bar(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= item.name style='width:'+progWidth+'%;' class= odd%2 == 0 ? 'progress-bar-info' : 'progress-bar-default')
+                        .text-nowrap= item.list.length
+                    .progress-bar.progress-bar-warning(role='progressbar' data-toggle='tooltip' data-placement='top' data-original-title= a+b+"'s Grid" style='width:'+usertabs/tabs.length*100+'%;')
+                      = usertabs
+                if unassigned
+                  a.btn.btn-danger(href='/' data-toggle='tooltip' data-placement='top' data-original-title= unassigned+' / '+tabs.length style='margin: 5px;')
+                    | unassigned
+                - odd = 0
                 each item, j in cats
+                  - odd += item.list.length != 0 ? 1 : 0
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/category/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Category Details' style='margin: 0 5px 0 5px;')
-                        = item.name
+                      button.btn(class= !item.list.length ? 'btn-default' : odd%2 == 0 ? 'btn-info' : 'btn-primary' type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.list.length+' / '+tabs.length style='margin: 5px;')
+                        if user && user.username == item.whoCreated
+                          u= item.name
+                        else
+                          = item.name
+                if usertabs
+                  a.btn.btn-warning(href='/accounts/'+user.username data-toggle='tooltip' data-placement='top' data-original-title= usertabs+' / '+tabs.length style='margin: 5px;')
+                    | #{a+b}'s Grid
 
             .panel.panel-settings
               .panel-heading
@@ -94,9 +134,9 @@ block content
                   .btn-group(id= item._id data-item= j)
                     form(role='form' action='/settings/account/details' method='post' enctype='multipart/form-data')
                       input(type='hidden' name='id' value= item._id)
-                      button.btn.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Account Details' style='margin: 0 5px 0 5px;')
-                        if item._id == user.id
-                          u= item.username
+                      button.btn(class= user && item._id == user.id ? 'btn-primary' : 'btn-default' type='submit' data-toggle='tooltip' data-placement='top' data-original-title= item.username style='margin: 5px;')
+                        if user && item._id == user.id
+                          u= user.username
                         else
                           = item.username
 

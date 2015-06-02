@@ -26,6 +26,7 @@ module.exports.accountCreate = accountCreate;
 module.exports.categoryCreate = categoryCreate;
 module.exports.tabCreate = tabCreate;
 
+module.exports.postPrefer = postPrefer;
 module.exports.postLogin = postLogin;
 module.exports.postAccountCreate = postAccountCreate;
 module.exports.postAccountUpdate = postAccountUpdate;
@@ -87,7 +88,7 @@ function logout(req, res) {
  * @return {String} err
  */
 function index(req, res) {
-  mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
+  mongoose.model('tab').find({}, null, { sort: { prefer: -1, whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
     if(err) throw new Error(err);
     mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
       if(err) throw new Error(err);
@@ -97,7 +98,7 @@ function index(req, res) {
         grid: tab,
         list: category,
         user: req.user,
-        admintabs: methods.getAdminTabs(tab),
+        usertabs: methods.getUserTabs(tab),
         assigned: methods.getAssignedTabs(category),
         info: req.flash('info'),
         error: req.flash('error'),
@@ -117,7 +118,7 @@ function index(req, res) {
  * @return {String} err
  */
 function accounts(req, res) {
-  mongoose.model('tab').find({}, null, { sort: { whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
+  mongoose.model('tab').find({}, null, { sort: { prefer: -1, whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
     if(err) throw new Error(err);
     mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
       if(err) throw new Error(err);
@@ -127,7 +128,8 @@ function accounts(req, res) {
         grid: tab,
         list: category,
         user: req.user,
-        admintabs: methods.getAdminTabs(tab),
+        usertabs: methods.getUserTabs(tab),
+        assigned: methods.getAssignedTabs(category),
         info: req.flash('info'),
         error: req.flash('error'),
         success: req.flash('success')
@@ -146,11 +148,11 @@ function accounts(req, res) {
  * @return {String} err
  */
 function settings(req, res) {
-  mongoose.model('tab').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, tab) {
+  mongoose.model('tab').find({}, null, { sort: { check: 1, category: 1, name: 1 }, skip: 0, limit: 0 }, function(err, tab) {
     if(err) throw new Error(err);
     mongoose.model('account').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, account) {
       if(err) throw new Error(err);
-      mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
+      mongoose.model('category').find({}, null, { sort: { normalized: 1, name: -1 }, skip: 0, limit: 0 }, function(err, category) {
         if(err) throw new Error(err);
         var ro = new RenderObject();
         ro.set({
@@ -254,7 +256,7 @@ function categoryCreate(req, res) {
  * @param {Object} res
  */
 function tabCreate(req, res) {
-  mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
+  mongoose.model('category').find({}, null, { sort: { normalized: 1, name: -1 }, skip: 0, limit: 0 }, function(err, category) {
     if(err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
@@ -272,6 +274,28 @@ function tabCreate(req, res) {
 /**
  ******************************* POST METHODS *******************************
  */
+
+/**
+ * Increases the value of the preference of a Tab.
+ * @param {Object} req
+ */
+function postPrefer(req) {
+  var query = new Object({ _id: req.body.id });
+  mongoose.model('tab').findOne(query, function(err, tab) {
+    if(err) throw new Error(err);
+    if(!tab) throw new Error('Data was not found.', tab);
+
+    tab.prefer = tab.prefer ? tab.prefer + 1 : 1;
+
+    try {
+      tab.save(function(err) {
+        if(err) throw new Error(err);
+      });
+    } catch(e) {
+      log.error(e.stack);
+    }
+  });
+}
 
 /**
  * Sets a flash message by passing the key, followed by the value, to req.flash()
@@ -387,7 +411,7 @@ function postTabEdit(req, res) {
   var query = new Object({ _id: req.body.id });
   mongoose.model('tab').findOne(query, function(err, tab) {
     if(err) throw new Error(err);
-    mongoose.model('category').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, category) {
+    mongoose.model('category').find({}, null, { sort: { normalized: 1, name: -1 }, skip: 0, limit: 0 }, function(err, category) {
       if(err) throw new Error(err);
       var ro = new RenderObject();
       ro.set({
@@ -435,14 +459,15 @@ function postTabDetails(req, res) {
  * @return {String} err
  */
 function postAccountCreate(req, res) {
-  if(req.body.username && req.body.password && req.body.confirm) {
+  if(req.body.username && req.body.password && req.body.confirm && req.body.role) {
     log.verbose(JSON.stringify(req.body.username));
-    // The passport-local-mongoose package automatically takes care of salting and hashing the password.
     var ro = new RenderObject();
     ro.set({
       username: req.body.username,
+      role: req.body.role,
       whoCreated: req.user ? req.user.username : req.body.username,
-      whenCreated: new Date(),
+      whoUpdated: '',
+      whenCreated: new Date().toISOString(),
       whenUpdated: ''
     });
 
@@ -450,6 +475,7 @@ function postAccountCreate(req, res) {
 
     if(req.body.password === req.body.confirm) {
       try {
+        // The passport-local-mongoose package automatically takes care of salting and hashing the password.
         Account.register(new Account(ro.get()), req.body.password, function(err, doc) {
           if(err) {
             req.flash('error', err.message);
@@ -492,7 +518,7 @@ function postAccountCreate(req, res) {
  */
 function postAccountUpdate(req, res) {
   if(req.user) {
-    if(req.body.newPassword && req.body.confirm) {
+    if(req.body.newPassword && req.body.confirm && req.body.role) {
       log.verbose(JSON.stringify(req.user._doc));
       var query = new Object({ _id: req.user._id });
       if(req.body.newPassword === req.body.confirm) {
@@ -500,21 +526,22 @@ function postAccountUpdate(req, res) {
           if(err) throw new Error(err);
           if(!acc) {
             req.flash('error', 'Data was not found: %s', acc);
-            res.redirect('update');
+            res.redirect('/settings');
             throw new Error('Data was not found.', acc);
           }
-
-          acc.__v = acc.__v + 1;
 
           acc.setPassword(req.body.newPassword, function(err, doc) {
             if(err) throw new Error(err);
             if(!doc) {
               req.flash('error', 'Data was not found: %s', doc);
-              res.redirect('update');
+              res.redirect('/settings');
               throw new Error('Data was not found.', doc);
             }
 
+            doc.role = req.body.role;
+            doc.whoUpdated = req.user.username;
             doc.whenUpdated = new Date().toISOString();
+            doc.__v = doc.__v + 1;
 
             try {
               doc.save(function(err, doc) {
@@ -525,7 +552,7 @@ function postAccountUpdate(req, res) {
                 }
                 if(!doc) {
                   req.flash('error', 'Data was not found: %s', doc);
-                  res.redirect('update');
+                  res.redirect('/settings');
                   throw new Error('Data was not found.', doc);
                 }
 
@@ -543,12 +570,12 @@ function postAccountUpdate(req, res) {
       } else {
         log.error('%s %s %d - "Passwords did not match" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
         req.flash('info', 'Account could not be updated. Passwords did not match.');
-        res.redirect('update');
+        res.redirect('/settings');
       }
     } else {
       log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('update');
+      res.redirect('/settings');
     }
   } else {
     log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
@@ -576,7 +603,7 @@ function postAccountDelete(req, res) {
         if(err) throw new Error(err);
         if(!allAcc) {
           req.flash('error', 'Data was not found: %s', allAcc);
-          res.redirect('details');
+          res.redirect('/settings');
           throw new Error('Data was not found.', allAcc);
         }
 
@@ -584,7 +611,7 @@ function postAccountDelete(req, res) {
           if(err) throw new Error(err);
           if(!acc) {
             req.flash('error', 'Data was not found: %s', acc);
-            res.redirect('details');
+            res.redirect('/settings');
             throw new Error('Data was not found.', acc);
           }
 
@@ -598,7 +625,7 @@ function postAccountDelete(req, res) {
                 }
                 if(!doc) {
                   req.flash('error', 'Data was not found: %s', doc);
-                  res.redirect('details');
+                  res.redirect('/settings');
                   throw new Error('Data was not found.', doc);
                 }
 
@@ -616,14 +643,14 @@ function postAccountDelete(req, res) {
           } else {
             log.warn('%s %s %d - "Request ignored %s" - %s', req.method, req.path, res.statusCode, acc.username, req.headers['user-agent']);
             req.flash('info', 'Account could not be deleted. Please create a new one first.');
-            res.redirect('details');
+            res.redirect('/settings');
           }
         });
       });
     } else {
       log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('details');
+      res.redirect('/settings');
     }
   } else {
     log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
@@ -648,6 +675,7 @@ function postCategoryCreate(req, res) {
       var ro = new RenderObject();
       ro.set({
         name: category,
+        normalized: category.toLowerCase(),
         list: [],
         whoCreated: req.user.username,
         whoUpdated: '',
@@ -659,7 +687,7 @@ function postCategoryCreate(req, res) {
       try {
         data.save(function(err, doc) {
           if(err) {
-            req.flash('error', 'Category already exists with name "%s".', req.body.categoryname);
+            req.flash('error', 'Category already exists with name "%s".', category);
             res.redirect('create');
             throw new Error(err);
           }
@@ -708,7 +736,7 @@ function postCategoryUpdate(req, res) {
         if(err) throw new Error(err);
         if(!cat) {
           req.flash('error', 'Data was not found: %s', cat);
-          res.redirect('update');
+          res.redirect('/settings');
           throw new Error('Data was not found.', cat);
         }
 
@@ -717,6 +745,7 @@ function postCategoryUpdate(req, res) {
 
         if(catNew && cat.name !== catNew) {
           cat.name = catNew;
+          cat.normalized = catNew.toLowerCase();
           cat.whoCreated = cat.whoCreated;
           cat.whoUpdated = req.user.username;
           cat.whenCreated = cat.whenCreated;
@@ -731,7 +760,7 @@ function postCategoryUpdate(req, res) {
               }
               if(!doc) {
                 req.flash('error', 'Data was not found: %s', doc);
-                res.redirect('update');
+                res.redirect('/settings');
                 throw new Error('Data was not found.', doc);
               }
 
@@ -778,7 +807,7 @@ function postCategoryUpdate(req, res) {
     } else {
       log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('update');
+      res.redirect('/settings');
     }
   } else {
     log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
@@ -897,6 +926,7 @@ function postTabCreate(req, res) {
           image: methods.random() + '.' + config.ph.render.options.format,
           category: req.body.category,
           check: req.body.check ? true : false,
+          prefer: 0,
           whoCreated: req.user.username,
           whoUpdated: '',
           whenCreated: new Date().toISOString(),
@@ -984,7 +1014,7 @@ function postTabUpdate(req, res) {
         if(err) throw new Error(err);
         if(!tab) {
           req.flash('error', 'Data was not found: %s', tab);
-          res.redirect('update');
+          res.redirect('/settings');
           throw new Error('Data was not found.', tab);
         }
 
@@ -994,7 +1024,7 @@ function postTabUpdate(req, res) {
             if(err) throw new Error(err);
             if(!cat) {
               req.flash('error', 'Data was not found: %s', cat);
-              res.redirect('update');
+              res.redirect('/settings');
               throw new Error('Data was not found.', cat);
             }
 
@@ -1002,30 +1032,6 @@ function postTabUpdate(req, res) {
 
             if(data) {
               data.save(function(err, tab) {
-                if(err) {
-                  req.flash('error', err.message);
-                  res.redirect('/settings');
-                  throw new Error(err);
-                }
-              });
-            }
-          });
-        }
-
-        if(!req.body.check && req.body.category) {
-          query = new Object({ name: req.body.category });
-          mongoose.model('category').findOne(query, function(err, cat) {
-            if(err) throw new Error(err);
-            if(!cat) {
-              req.flash('error', 'Data was not found: %s', cat);
-              res.redirect('update');
-              throw new Error('Data was not found.', cat);
-            }
-
-            var data = methods.attach(tab, cat);
-
-            if(data) {
-              data.save(function(err, doc) {
                 if(err) {
                   req.flash('error', err.message);
                   res.redirect('/settings');
@@ -1050,11 +1056,36 @@ function postTabUpdate(req, res) {
           tab.image = tab.image;
           tab.category = req.body.category;
           tab.check = req.body.check ? true : false;
+          tab.prefer = tab.prefer ? tab.prefer : 0;
           tab.whoCreated = tab.whoCreated;
           tab.whoUpdated = req.user.username;
           tab.whenCreated = tab.whenCreated;
           tab.whenUpdated = new Date().toISOString();
           tab.__v = tab.__v + 1;
+
+          if(!req.body.check && req.body.category) {
+            query = new Object({ name: req.body.category });
+            mongoose.model('category').findOne(query, function(err, cat) {
+              if(err) throw new Error(err);
+              if(!cat) {
+                req.flash('error', 'Data was not found: %s', cat);
+                res.redirect('/settings');
+                throw new Error('Data was not found.', cat);
+              }
+
+              var data = methods.attach(tab, cat);
+
+              if(data) {
+                data.save(function(err, doc) {
+                  if(err) {
+                    req.flash('error', err.message);
+                    res.redirect('/settings');
+                    throw new Error(err);
+                  }
+                });
+              }
+            });
+          }
 
           try {
             tab.save(function(err, doc) {
@@ -1065,13 +1096,13 @@ function postTabUpdate(req, res) {
               }
               if(!doc) {
                 req.flash('error', 'Data was not found: %s', doc);
-                res.redirect('update');
+                res.redirect('/settings');
                 throw new Error('Data was not found.', doc);
               }
 
               log.verbose(JSON.stringify(doc._doc));
 
-              if(renderUrlTmp == req.body.renderUrl) {
+              methods.renderPage({ url: urlparse(req.body.renderUrl).normalize().toString(), filename: doc.image }, function() {
                 log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
                 req.flash('success', 'Tab has been updated successfully.');
                 if(req.body.check) {
@@ -1079,17 +1110,7 @@ function postTabUpdate(req, res) {
                 } else {
                   res.redirect('/');
                 }
-              } else {
-                methods.renderPage({ url: urlparse(req.body.renderUrl).normalize().toString(), filename: doc.image }, function() {
-                  log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
-                  req.flash('success', 'Tab has been updated successfully.');
-                  if(req.body.check) {
-                    res.redirect('/accounts/'+ req.user.username);
-                  } else {
-                    res.redirect('/');
-                  }
-                });
-              }
+              });
             });
           } catch(e) {
             log.error(e.stack);
@@ -1099,7 +1120,7 @@ function postTabUpdate(req, res) {
     } else {
       log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('update');
+      res.redirect('/settings');
     }
   } else {
     log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);

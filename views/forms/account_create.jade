@@ -22,6 +22,15 @@ block content
             .form-group
               label(for='confirm')| *Confirm Password:
               input#confirm.form-control(type='password' name='confirm' data-toggle='tooltip' data-placement='top' data-original-title='Confirm Password' required='required' placeholder='Confirm Password')
+            .form-group
+              label(for='role')| *Role:
+              .input-group
+                label.radio-inline
+                  input(type='radio', name='role' data-toggle='tooltip' data-placement='top' data-original-title='Admin' required='required' value= 0)
+                  | Admin
+                label.radio-inline
+                  input(type='radio', name='role' data-toggle='tooltip' data-placement='top' data-original-title='User' required='required' value= 1 checked= true)
+                  | User
 
             button#submit.btn.btn-primary.pull-right(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Submit')
               i.fa.fa-upload
