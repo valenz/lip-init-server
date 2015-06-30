@@ -21,11 +21,13 @@ module.exports.index = index;
 module.exports.accounts = accounts;
 module.exports.settings = settings;
 module.exports.logging = logging;
-module.exports.help = help;
 module.exports.accountCreate = accountCreate;
 module.exports.categoryCreate = categoryCreate;
 module.exports.tabCreate = tabCreate;
+module.exports.survey = survey;
+module.exports.search = search;
 
+module.exports.postSurvey = postSurvey;
 module.exports.postPrefer = postPrefer;
 module.exports.postLogin = postLogin;
 module.exports.postAccountCreate = postAccountCreate;
@@ -43,12 +45,30 @@ module.exports.postTabUpdate = postTabUpdate;
 module.exports.postTabEdit = postTabEdit;
 module.exports.postTabDetails = postTabDetails;
 module.exports.postTabDelete = postTabDelete;
-module.exports.postConfirm = postConfirm;
 module.exports.ensureAuthenticated = ensureAuthenticated;
 
 /**
  ******************************* GET METHODS *******************************
  */
+
+/**
+ * Renders a view and sends the rendered HTML string to the client.
+ * @param {Object} req
+ * @param {Object} res
+ */
+function survey(req, res) {
+  res.render('forms/survey/' + req.params.name, {surveyname: req.params.name});
+}
+
+/**
+ * Writes the requested data to a file and redirects to a other website.
+ * @param {Object} req
+ * @param {Object} res
+ */
+function postSurvey(req, res) {
+  methods.writeFile('logs/survey.log', '\n' + req.params.name + '\n' + JSON.stringify(req.body) + '\n');
+  res.redirect('https://lipsupport.mpib-berlin.mpg.de/workshop');
+}
 
 /**
  * Pass a local variable to the login form page.
@@ -80,8 +100,8 @@ function logout(req, res) {
 }
 
 /**
- * Selects all documents in collection tab, sorted by the field whenCreated
- * in descending order and pass a local variable to the user page.
+ * Selects all documents in collection tab, sorted by the field prefer and
+ * whenCreated in descending order and pass a local variable to the user page.
  * Get an array of flash messages by passing the keys to req.flash().
  * @param {Object} req
  * @param {Object} res
@@ -89,9 +109,9 @@ function logout(req, res) {
  */
 function index(req, res) {
   mongoose.model('tab').find({}, null, { sort: { prefer: -1, whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
-    if(err) throw new Error(err);
+    if (err) throw new Error(err);
     mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
-      if(err) throw new Error(err);
+      if (err) throw new Error(err);
       var ro = new RenderObject();
       ro.set({
         title: 'Index',
@@ -110,8 +130,8 @@ function index(req, res) {
 }
 
 /**
- * Selects all documents in collection tab, sorted by the field whenCreated
- * in descending order and pass a local variable to the user page.
+ * Selects all documents in collection tab, sorted by the field prefer and
+ * whenCreated in descending order and pass a local variable to the user page.
  * Get an array of flash messages by passing the keys to req.flash().
  * @param {Object} req
  * @param {Object} res
@@ -119,9 +139,9 @@ function index(req, res) {
  */
 function accounts(req, res) {
   mongoose.model('tab').find({}, null, { sort: { prefer: -1, whenCreated: -1 }, skip: 0, limit: 0 }, function(err, tab) {
-    if(err) throw new Error(err);
+    if (err) throw new Error(err);
     mongoose.model('category').find({}, null, { sort: { name: -1 }, skip: 0, limit: 0 }, function(err, category) {
-      if(err) throw new Error(err);
+      if (err) throw new Error(err);
       var ro = new RenderObject();
       ro.set({
         title: req.user.username,
@@ -140,20 +160,21 @@ function accounts(req, res) {
 }
 
 /**
- * Selects all documents in collection tab and account, sorted by the field name
- * in ascending order and pass a local variable to the settings page.
- * Get an array of flash messages by passing the keys to req.flash().
+ * Selects all documents in collection tab and account, sorted by the field
+ * check, category and name in ascending order and pass a local variable to
+ * the settings page. Get an array of flash messages by passing the keys to
+ * req.flash().
  * @param {Object} req
  * @param {Object} res
  * @return {String} err
  */
 function settings(req, res) {
   mongoose.model('tab').find({}, null, { sort: { check: 1, category: 1, name: 1 }, skip: 0, limit: 0 }, function(err, tab) {
-    if(err) throw new Error(err);
+    if (err) throw new Error(err);
     mongoose.model('account').find({}, null, { sort: { name: 1 }, skip: 0, limit: 0 }, function(err, account) {
-      if(err) throw new Error(err);
+      if (err) throw new Error(err);
       mongoose.model('category').find({}, null, { sort: { normalized: 1, name: -1 }, skip: 0, limit: 0 }, function(err, category) {
-        if(err) throw new Error(err);
+        if (err) throw new Error(err);
         var ro = new RenderObject();
         ro.set({
           title: 'Settings',
@@ -169,24 +190,6 @@ function settings(req, res) {
       });
     });
   });
-}
-
-/**
- * Pass a local variable to the help page.
- * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req
- * @param {Object} res
- */
-function help(req, res) {
-  var ro = new RenderObject();
-  ro.set({
-    title: 'Help',
-    user: req.user,
-    info: req.flash('info'),
-    error: req.flash('error'),
-    success: req.flash('success')
-  });
-  res.render('sites/help', ro.get());
 }
 
 /**
@@ -249,7 +252,8 @@ function categoryCreate(req, res) {
 }
 
 /**
- * Selects all documents in collection category and pass a local variable to
+ * Selects all documents in collection category, sorted by the field normalized
+ * in ascending and name in descending order and pass a local variable to
  * the tab_create page. Get an array of flash messages by passing the keys to
  * req.flash().
  * @param {Object} req
@@ -257,7 +261,7 @@ function categoryCreate(req, res) {
  */
 function tabCreate(req, res) {
   mongoose.model('category').find({}, null, { sort: { normalized: 1, name: -1 }, skip: 0, limit: 0 }, function(err, category) {
-    if(err) throw new Error(err);
+    if (err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
       title: 'Create Tab',
@@ -276,22 +280,116 @@ function tabCreate(req, res) {
  */
 
 /**
+ * Selects all documents in collection tab, sorted by the field name
+ * in ascending order and pass a local variable to the search page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ * @return {String} err
+ */
+function search(req, res) {
+  var searchQueue = req.query.q.trim();
+  if (searchQueue) {
+
+    // Models into which sought
+    var models = config.custom.searchModels.sort();
+
+    var container = [];
+    var query = [];
+    searchQueue = searchQueue.replace(/\t+|\s+|\n\r/gm, ' ');
+    var list = searchQueue.replace(/ /g, ')|(');
+    var params = searchQueue.split(/ /g);
+    var regex = { $regex: new RegExp('(' + list + ')', 'i') };
+
+    // Prepare params for count matching
+    for (var p in params) {
+      tmp = {};
+      tmp[params[p]] = [];
+      container.push(tmp);
+    }
+
+    // Provides regular expression capabilities for pattern matching strings
+    // in queries. Case insensitivity to match upper and lower cases.
+    for (var m in models) {
+      tmp = {};
+      tmp[models[m]] = regex;
+
+      // Prevent output for admin tabs
+      if (!req.user) {
+        tmp.check = false;
+      }
+
+      query.push(tmp);
+
+      // Count matches
+      for (p in params) {
+        methods.count(mongoose.model('tab'), models[m], params[p], container[p]);
+      }
+    }
+
+    mongoose.model('tab').find({})
+    .or(query)
+    .sort({name: 1})
+    .limit(0)
+    .skip(0)
+    .exec(function(err, tab) {
+      if (err) throw new Error(err);
+      var ro = new RenderObject();
+      ro.set({
+        title: 'Search',
+        grid: tab,
+        searchQueue: searchQueue,
+        container: container,
+        models: models,
+        params: params,
+        user: req.user,
+        info: req.flash('info'),
+        error: req.flash('error'),
+        success: req.flash('success')
+      });
+      log.info('There were started a search for "%s" and %d matches found.', searchQueue, tab.length);
+      log.debug(JSON.stringify(tab));
+      res.render('sites/search', ro.get());
+    });
+  } else {
+    index(req, res);
+  }
+}
+
+/**
  * Increases the value of the preference of a Tab.
  * @param {Object} req
  */
 function postPrefer(req) {
   var query = new Object({ _id: req.body.id });
   mongoose.model('tab').findOne(query, function(err, tab) {
-    if(err) throw new Error(err);
-    if(!tab) throw new Error('Data was not found.', tab);
+    if (err) throw new Error(err);
+    if (!tab) throw new Error('Data was not found.', tab);
 
     tab.prefer = tab.prefer ? tab.prefer + 1 : 1;
 
+    if (tab.category) {
+      query = new Object({ name: tab.category });
+      mongoose.model('category').findOne(query, function(err, cat) {
+        if (err) throw new Error(err);
+        if (!cat) throw new Error('Data was not found.', cat);
+
+        var data = methods.detach(tab._id, cat);
+        data = methods.attach(tab, data);
+
+        if (data) {
+          data.save(function(err, doc) {
+            if (err) throw new Error(err);
+          });
+        }
+      });
+    }
+
     try {
       tab.save(function(err) {
-        if(err) throw new Error(err);
+        if (err) throw new Error(err);
       });
-    } catch(e) {
+    } catch (e) {
       log.error(e.stack);
     }
   });
@@ -306,7 +404,7 @@ function postPrefer(req) {
 function postLogin(req, res) {
   log.info('%s %s %d - Logged in %s - %s', req.method, req.path, res.statusCode, req.user.username, req.headers['user-agent']);
   req.flash('success', 'You are logged in.');
-  res.redirect('/accounts/'+ req.user.username);
+  res.redirect('/accounts/' + req.user.username);
 }
 
 /**
@@ -318,7 +416,7 @@ function postLogin(req, res) {
 function postAccountEdit(req, res) {
   var query = new Object({ _id: req.body.id });
   mongoose.model('account').findOne(query, function(err, acc) {
-    if(err) throw new Error(err);
+    if (err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
       title: 'Update Account',
@@ -341,7 +439,7 @@ function postAccountEdit(req, res) {
 function postAccountDetails(req, res) {
   var query = new Object({ _id: req.body.id });
   mongoose.model('account').findOne(query, function(err, acc) {
-    if(err) throw new Error(err);
+    if (err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
       title: 'Account Details',
@@ -364,7 +462,7 @@ function postAccountDetails(req, res) {
 function postCategoryEdit(req, res) {
   var query = new Object({ _id: req.body.id });
   mongoose.model('category').findOne(query, function(err, cat) {
-    if(err) throw new Error(err);
+    if (err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
       title: 'Update Category',
@@ -387,7 +485,7 @@ function postCategoryEdit(req, res) {
 function postCategoryDetails(req, res) {
   var query = new Object({ _id: req.body.id });
   mongoose.model('category').findOne(query, function(err, cat) {
-    if(err) throw new Error(err);
+    if (err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
       title: 'Category Details',
@@ -410,9 +508,9 @@ function postCategoryDetails(req, res) {
 function postTabEdit(req, res) {
   var query = new Object({ _id: req.body.id });
   mongoose.model('tab').findOne(query, function(err, tab) {
-    if(err) throw new Error(err);
+    if (err) throw new Error(err);
     mongoose.model('category').find({}, null, { sort: { normalized: 1, name: -1 }, skip: 0, limit: 0 }, function(err, category) {
-      if(err) throw new Error(err);
+      if (err) throw new Error(err);
       var ro = new RenderObject();
       ro.set({
         title: 'Update Tab',
@@ -437,7 +535,7 @@ function postTabEdit(req, res) {
 function postTabDetails(req, res) {
   var query = new Object({ _id: req.body.id });
   mongoose.model('tab').findOne(query, function(err, tab) {
-    if(err) throw new Error(err);
+    if (err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
       title: 'Tab Details',
@@ -459,7 +557,7 @@ function postTabDetails(req, res) {
  * @return {String} err
  */
 function postAccountCreate(req, res) {
-  if(req.body.username && req.body.password && req.body.confirm && req.body.role) {
+  if (req.body.username && req.body.password && req.body.confirm && req.body.role) {
     log.verbose(JSON.stringify(req.body.username));
     var ro = new RenderObject();
     ro.set({
@@ -473,16 +571,17 @@ function postAccountCreate(req, res) {
 
     var Account = mongoose.model('account');
 
-    if(req.body.password === req.body.confirm) {
+    if (req.body.password === req.body.confirm) {
       try {
         // The passport-local-mongoose package automatically takes care of salting and hashing the password.
         Account.register(new Account(ro.get()), req.body.password, function(err, doc) {
-          if(err) {
+          if (err) {
             req.flash('error', err.message);
             res.redirect('/settings');
             throw new Error(err);
           }
-          if(!doc) {
+
+          if (!doc) {
             req.flash('error', 'Data was not found: %s', doc);
             res.redirect('create');
             throw new Error('Data was not found.', doc);
@@ -494,7 +593,7 @@ function postAccountCreate(req, res) {
           req.flash('success', 'Account has been created successfully.');
           res.redirect('/settings');
         });
-      } catch(e) {
+      } catch (e) {
         log.error(e.stack);
       }
     } else {
@@ -503,7 +602,7 @@ function postAccountCreate(req, res) {
       res.redirect('create');
     }
   } else {
-      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
+    log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
     req.flash('error', 'Request error. Please fill the required fields.');
     res.redirect('create');
   }
@@ -517,22 +616,22 @@ function postAccountCreate(req, res) {
  * @return {String} err
  */
 function postAccountUpdate(req, res) {
-  if(req.user) {
-    if(req.body.newPassword && req.body.confirm && req.body.role) {
+  if (req.user) {
+    if (req.body.newPassword && req.body.confirm && req.body.role) {
       log.verbose(JSON.stringify(req.user._doc));
       var query = new Object({ _id: req.user._id });
-      if(req.body.newPassword === req.body.confirm) {
+      if (req.body.newPassword === req.body.confirm) {
         mongoose.model('account').findOne(query, function(err, acc) {
-          if(err) throw new Error(err);
-          if(!acc) {
+          if (err) throw new Error(err);
+          if (!acc) {
             req.flash('error', 'Data was not found: %s', acc);
             res.redirect('/settings');
             throw new Error('Data was not found.', acc);
           }
 
           acc.setPassword(req.body.newPassword, function(err, doc) {
-            if(err) throw new Error(err);
-            if(!doc) {
+            if (err) throw new Error(err);
+            if (!doc) {
               req.flash('error', 'Data was not found: %s', doc);
               res.redirect('/settings');
               throw new Error('Data was not found.', doc);
@@ -545,12 +644,13 @@ function postAccountUpdate(req, res) {
 
             try {
               doc.save(function(err, doc) {
-                if(err) {
+                if (err) {
                   req.flash('error', err.message);
                   res.redirect('/settings');
                   throw new Error(err);
                 }
-                if(!doc) {
+
+                if (!doc) {
                   req.flash('error', 'Data was not found: %s', doc);
                   res.redirect('/settings');
                   throw new Error('Data was not found.', doc);
@@ -562,7 +662,7 @@ function postAccountUpdate(req, res) {
                 req.flash('success', 'Password has been set successfully.');
                 res.redirect('/settings');
               });
-            } catch(e) {
+            } catch (e) {
               log.error(e.stack);
             }
           });
@@ -595,35 +695,36 @@ function postAccountUpdate(req, res) {
  * @return {String} err
  */
 function postAccountDelete(req, res) {
-  if(req.user) {
-    if(req.body.id) {
+  if (req.user) {
+    if (req.body.id) {
       log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
       mongoose.model('account').find(function(err, allAcc) {
-        if(err) throw new Error(err);
-        if(!allAcc) {
+        if (err) throw new Error(err);
+        if (!allAcc) {
           req.flash('error', 'Data was not found: %s', allAcc);
           res.redirect('/settings');
           throw new Error('Data was not found.', allAcc);
         }
 
         mongoose.model('account').findOne(query, function(err, acc) {
-          if(err) throw new Error(err);
-          if(!acc) {
+          if (err) throw new Error(err);
+          if (!acc) {
             req.flash('error', 'Data was not found: %s', acc);
             res.redirect('/settings');
             throw new Error('Data was not found.', acc);
           }
 
-          if(allAcc.length > 1) {
+          if (allAcc.length > 1) {
             try {
               acc.remove(function(err, doc) {
-                if(err) {
+                if (err) {
                   req.flash('error', err.message);
                   res.redirect('/settings');
                   throw new Error(err);
                 }
-                if(!doc) {
+
+                if (!doc) {
                   req.flash('error', 'Data was not found: %s', doc);
                   res.redirect('/settings');
                   throw new Error('Data was not found.', doc);
@@ -637,7 +738,7 @@ function postAccountDelete(req, res) {
                 req.flash('success', 'Account has been deleted successfully.');
                 res.redirect('/');
               });
-            } catch(e) {
+            } catch (e) {
               log.error(e.stack);
             }
           } else {
@@ -667,8 +768,8 @@ function postAccountDelete(req, res) {
  * @return {String} err
  */
 function postCategoryCreate(req, res) {
-  if(req.user) {
-    if(req.body.categoryname) {
+  if (req.user) {
+    if (req.body.categoryname) {
       log.verbose(JSON.stringify(req.body));
       var category = req.body.categoryname;
       var Category = mongoose.model('category');
@@ -686,12 +787,13 @@ function postCategoryCreate(req, res) {
 
       try {
         data.save(function(err, doc) {
-          if(err) {
+          if (err) {
             req.flash('error', 'Category already exists with name "%s".', category);
             res.redirect('create');
             throw new Error(err);
           }
-          if(!doc) {
+
+          if (!doc) {
             req.flash('error', 'Data was not found: %s', doc);
             res.redirect('create');
             throw new Error('Data was not found.', doc);
@@ -703,7 +805,7 @@ function postCategoryCreate(req, res) {
           req.flash('success', 'Category "%s" has been created successfully.', doc.name);
           res.redirect('create');
         });
-      } catch(e) {
+      } catch (e) {
         log.error(e.stack);
       }
     } else {
@@ -728,13 +830,13 @@ function postCategoryCreate(req, res) {
  * @return {String} err
  */
 function postCategoryUpdate(req, res) {
-  if(req.user) {
-    if(req.body.id) {
+  if (req.user) {
+    if (req.body.id) {
       log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
       mongoose.model('category').findOne(query, function(err, cat) {
-        if(err) throw new Error(err);
-        if(!cat) {
+        if (err) throw new Error(err);
+        if (!cat) {
           req.flash('error', 'Data was not found: %s', cat);
           res.redirect('/settings');
           throw new Error('Data was not found.', cat);
@@ -743,7 +845,7 @@ function postCategoryUpdate(req, res) {
         var catNew = req.body.categoryname;
         var catOld = cat.name;
 
-        if(catNew && cat.name !== catNew) {
+        if (catNew && cat.name !== catNew) {
           cat.name = catNew;
           cat.normalized = catNew.toLowerCase();
           cat.whoCreated = cat.whoCreated;
@@ -753,12 +855,13 @@ function postCategoryUpdate(req, res) {
 
           try {
             cat.save(function(err, doc) {
-              if(err) {
+              if (err) {
                 req.flash('error', 'Category already exists with name %s.', req.body.categoryname);
                 res.redirect('/settings');
                 throw new Error(err);
               }
-              if(!doc) {
+
+              if (!doc) {
                 req.flash('error', 'Data was not found: %s', doc);
                 res.redirect('/settings');
                 throw new Error('Data was not found.', doc);
@@ -770,15 +873,15 @@ function postCategoryUpdate(req, res) {
               req.flash('success', 'Category "%s" has been updated successfully to "%s".', catOld, catNew);
               res.redirect('/settings');
             });
-          } catch(e) {
+          } catch (e) {
             log.error(e.stack);
           }
 
-          for(var i = 0; i < cat.list.length; i++) {
+          for (var i = 0; i < cat.list.length; i++) {
             query = new Object({ _id: cat.list[i]._id });
             mongoose.model('tab').findOne(query, function(err, tab) {
-              if(err) throw new Error(err);
-              if(!tab) {
+              if (err) throw new Error(err);
+              if (!tab) {
                 req.flash('error', 'Data was not found: %s', tab);
                 throw new Error('Data was not found.', tab);
               }
@@ -787,13 +890,13 @@ function postCategoryUpdate(req, res) {
 
               try {
                 tab.save(function(err, doc) {
-                  if(err) {
+                  if (err) {
                     req.flash('error', err.message);
                     res.redirect('/settings');
                     throw new Error(err);
                   }
                 });
-              } catch(e) {
+              } catch (e) {
                 log.error(e.stack);
               }
             });
@@ -825,23 +928,23 @@ function postCategoryUpdate(req, res) {
  * @return {String} err
  */
 function postCategoryDelete(req, res) {
-  if(req.user) {
-    if(req.body.id) {
+  if (req.user) {
+    if (req.body.id) {
       log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
       mongoose.model('category').findOne(query, function(err, cat) {
-        if(err) throw new Error(err);
-        if(!cat) {
+        if (err) throw new Error(err);
+        if (!cat) {
           req.flash('error', 'Data was not found: %s', cat);
           res.redirect('/settings');
           throw new Error('Data was not found.', cat);
         }
 
-        for(var i = 0; i < cat.list.length; i++) {
+        for (var i = 0; i < cat.list.length; i++) {
           query = new Object({ _id: cat.list[i]._id });
           mongoose.model('tab').findOne(query, function(err, tab) {
-            if(err) throw new Error(err);
-            if(!tab) {
+            if (err) throw new Error(err);
+            if (!tab) {
               req.flash('error', 'Data was not found: %s', tab);
               throw new Error('Data was not found.', tab);
             }
@@ -850,13 +953,13 @@ function postCategoryDelete(req, res) {
 
             try {
               tab.save(function(err, doc) {
-                if(err) {
+                if (err) {
                   req.flash('error', err.message);
                   res.redirect('/settings');
                   throw new Error(err);
                 }
               });
-            } catch(e) {
+            } catch (e) {
               log.error(e.stack);
             }
           });
@@ -864,12 +967,13 @@ function postCategoryDelete(req, res) {
 
         try {
           cat.remove(function(err, doc) {
-            if(err) {
+            if (err) {
               req.flash('error', err.message);
               res.redirect('/settings');
               throw new Error(err);
             }
-            if(!doc) {
+
+            if (!doc) {
               req.flash('error', 'Data was not found: %s', doc);
               res.redirect('/settings');
               throw new Error('Data was not found.', doc);
@@ -881,7 +985,7 @@ function postCategoryDelete(req, res) {
             req.flash('success', 'Category "%s" has been deleted successfully.', doc.name);
             res.redirect('/settings');
           });
-        } catch(e) {
+        } catch (e) {
           log.error(e.stack);
         }
       });
@@ -907,8 +1011,8 @@ function postCategoryDelete(req, res) {
  * @return {String} err
  */
 function postTabCreate(req, res) {
-  if(req.user) {
-    if(req.body.renderUrl) {
+  if (req.user) {
+    if (req.body.renderUrl) {
       log.verbose(JSON.stringify(req.body));
       var url = req.body.address ? urlparse(req.body.address).normalize().toString() : urlparse(req.body.renderUrl).normalize().toString();
 
@@ -936,22 +1040,23 @@ function postTabCreate(req, res) {
 
         try {
           data.save(function(err, doc) {
-            if(err) {
+            if (err) {
               req.flash('error', err.message);
               res.redirect('/settings');
               throw new Error(err);
             }
-            if(!doc) {
+
+            if (!doc) {
               req.flash('error', 'Data was not found: %s', doc);
               res.redirect('create');
               throw new Error('Data was not found.', doc);
             }
 
-            if(req.body.category) {
+            if (req.body.category) {
               var query = new Object({ name: req.body.category });
               mongoose.model('category').findOne(query, function(err, cat) {
-                if(err) throw new Error(err);
-                if(!cat) {
+                if (err) throw new Error(err);
+                if (!cat) {
                   req.flash('error', 'Data was not found: %s', cat);
                   res.redirect('create');
                   throw new Error('Data was not found.', cat);
@@ -959,9 +1064,9 @@ function postTabCreate(req, res) {
 
                 var data = methods.attach(doc, cat);
 
-                if(data) {
+                if (data) {
                   data.save(function(err, doc) {
-                    if(err) {
+                    if (err) {
                       req.flash('error', err.message);
                       res.redirect('/settings');
                       throw new Error(err);
@@ -979,7 +1084,7 @@ function postTabCreate(req, res) {
               res.redirect('create');
             });
           });
-        } catch(e) {
+        } catch (e) {
           log.error(e.stack);
         }
       });
@@ -1006,23 +1111,23 @@ function postTabCreate(req, res) {
  * @return {String} err
  */
 function postTabUpdate(req, res) {
-  if(req.user) {
-    if(req.body.renderUrl) {
+  if (req.user) {
+    if (req.body.renderUrl) {
       log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
       mongoose.model('tab').findOne(query, function(err, tab) {
-        if(err) throw new Error(err);
-        if(!tab) {
+        if (err) throw new Error(err);
+        if (!tab) {
           req.flash('error', 'Data was not found: %s', tab);
           res.redirect('/settings');
           throw new Error('Data was not found.', tab);
         }
 
-        if(tab.category) {
+        if (tab.category) {
           query = new Object({ name: tab.category });
           mongoose.model('category').findOne(query, function(err, cat) {
-            if(err) throw new Error(err);
-            if(!cat) {
+            if (err) throw new Error(err);
+            if (!cat) {
               req.flash('error', 'Data was not found: %s', cat);
               res.redirect('/settings');
               throw new Error('Data was not found.', cat);
@@ -1030,9 +1135,9 @@ function postTabUpdate(req, res) {
 
             var data = methods.detach(tab._id, cat);
 
-            if(data) {
+            if (data) {
               data.save(function(err, tab) {
-                if(err) {
+                if (err) {
                   req.flash('error', err.message);
                   res.redirect('/settings');
                   throw new Error(err);
@@ -1063,11 +1168,11 @@ function postTabUpdate(req, res) {
           tab.whenUpdated = new Date().toISOString();
           tab.__v = tab.__v + 1;
 
-          if(!req.body.check && req.body.category) {
+          if (!req.body.check && req.body.category) {
             query = new Object({ name: req.body.category });
             mongoose.model('category').findOne(query, function(err, cat) {
-              if(err) throw new Error(err);
-              if(!cat) {
+              if (err) throw new Error(err);
+              if (!cat) {
                 req.flash('error', 'Data was not found: %s', cat);
                 res.redirect('/settings');
                 throw new Error('Data was not found.', cat);
@@ -1075,9 +1180,9 @@ function postTabUpdate(req, res) {
 
               var data = methods.attach(tab, cat);
 
-              if(data) {
+              if (data) {
                 data.save(function(err, doc) {
-                  if(err) {
+                  if (err) {
                     req.flash('error', err.message);
                     res.redirect('/settings');
                     throw new Error(err);
@@ -1089,12 +1194,13 @@ function postTabUpdate(req, res) {
 
           try {
             tab.save(function(err, doc) {
-              if(err) {
+              if (err) {
                 req.flash('error', err.message);
                 res.redirect('/settings');
                 throw new Error(err);
               }
-              if(!doc) {
+
+              if (!doc) {
                 req.flash('error', 'Data was not found: %s', doc);
                 res.redirect('/settings');
                 throw new Error('Data was not found.', doc);
@@ -1105,14 +1211,14 @@ function postTabUpdate(req, res) {
               methods.renderPage({ url: urlparse(req.body.renderUrl).normalize().toString(), filename: doc.image }, function() {
                 log.info('%s %s %d - "Updated %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
                 req.flash('success', 'Tab has been updated successfully.');
-                if(req.body.check) {
-                  res.redirect('/accounts/'+ req.user.username);
+                if (req.body.check) {
+                  res.redirect('/accounts/' + req.user.username);
                 } else {
                   res.redirect('/');
                 }
               });
             });
-          } catch(e) {
+          } catch (e) {
             log.error(e.stack);
           }
         });
@@ -1139,23 +1245,23 @@ function postTabUpdate(req, res) {
  * @return {String} err
  */
 function postTabDelete(req, res) {
-  if(req.user) {
-    if(req.body.id) {
+  if (req.user) {
+    if (req.body.id) {
       log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
       mongoose.model('tab').findOne(query, function(err, tab) {
-        if(err) throw new Error(err);
-        if(!tab) {
+        if (err) throw new Error(err);
+        if (!tab) {
           req.flash('error', 'Data was not found: %s', tab);
           res.redirect('/');
           throw new Error('Data was not found.', tab);
         }
 
-        if(tab.category) {
+        if (tab.category) {
           query = new Object({ name: tab.category });
           mongoose.model('category').findOne(query, function(err, cat) {
-            if(err) throw new Error(err);
-            if(!cat) {
+            if (err) throw new Error(err);
+            if (!cat) {
               req.flash('error', 'Data was not found: %s', cat);
               throw new Error('Data was not found.', cat);
             }
@@ -1163,16 +1269,16 @@ function postTabDelete(req, res) {
             try {
               var data = methods.detach(tab._id, cat);
 
-              if(data) {
+              if (data) {
                 data.save(function(err, doc) {
-                  if(err) {
+                  if (err) {
                     req.flash('error', err.message);
                     res.redirect('/settings');
                     throw new Error(err);
                   }
                 });
               }
-            } catch(e) {
+            } catch (e) {
               log.error(e.stack);
             }
           });
@@ -1180,12 +1286,13 @@ function postTabDelete(req, res) {
 
         try {
           tab.remove(function(err, doc) {
-            if(err) {
+            if (err) {
               req.flash('error', err.message);
               res.redirect('/settings');
               throw new Error(err);
             }
-            if(!doc) {
+
+            if (!doc) {
               req.flash('error', 'Data was not found: %s', doc);
               res.redirect('/');
               throw new Error('Data was not found.', doc);
@@ -1196,13 +1303,13 @@ function postTabDelete(req, res) {
 
             log.info('%s %s %d - "Deleted %s (%s)" - %s', req.method, req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
             req.flash('success', 'Tab has been deleted successfully.');
-            if(doc.check) {
-              res.redirect('/accounts/'+ req.user.username);
+            if (doc.check) {
+              res.redirect('/accounts/' + req.user.username);
             } else {
               res.redirect('/');
             }
           });
-        } catch(e) {
+        } catch (e) {
           log.error(e.stack);
         }
       });
@@ -1210,39 +1317,6 @@ function postTabDelete(req, res) {
       log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('/');
-    }
-  } else {
-    log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
-    req.flash('info', 'Session expired. Please log in.');
-    res.redirect('/');
-  }
-}
-
-/**
- * Pass a local variable to the confirm page.
- * Get an array of flash messages by passing the keys to req.flash().
- * @param {Object} req
- * @param {Object} res
- */
-function postConfirm(req, res) {
-  if(req.user) {
-    if(req.body.id) {
-      log.verbose(JSON.stringify(req.body));
-      var ro = new RenderObject();
-      ro.set({
-        title: 'Confirm',
-        action: urlparse(req.path).directory,
-        confirm: req.body,
-        user: req.user,
-        info: req.flash('info'),
-        error: req.flash('error'),
-        success: req.flash('success')
-      });
-      res.render('sites/confirm', ro.get());
-    } else {
-      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
-      req.flash('error', 'Request error. Please fill the required fields.');
-      res.redirect('confirm');
     }
   } else {
     log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);

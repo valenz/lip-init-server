@@ -1,4 +1,4 @@
-nav.navbar.navbar-inverse.navbar-fixed-top(style='opacity: 0.9;')
+nav.navbar.navbar-inverse.navbar-fixed-top
   .container-fluid
     .navbar-header
       button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#navbar-collapse')
@@ -6,67 +6,93 @@ nav.navbar.navbar-inverse.navbar-fixed-top(style='opacity: 0.9;')
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      
-      a.navbar-brand(data-toggle='tooltip' data-placement='bottom' data-original-title='Home' href='/')
-        | Tabgrid
-    
+      a.navbar-brand.hidden-sm(href='/')
+        | LIP-IT/Technik-Support
+      a.navbar-brand.visible-sm-block(data-toggle='tooltip', data-placement='bottom', data-original-title='Home', href='/')
+        span.sr-only Home
+        i.fa.fa-home
+
     #navbar-collapse.collapse.navbar-collapse
-      ul.nav.navbar-nav
+      ul.nav.navbar-nav.hidden-sm.navbar-left
         li
-          a(data-toggle='tooltip' data-placement='bottom' data-original-title='Link 1' href='#')
-            | Link
-        
+          a(href='http://intra.mpib-berlin.mpg.de')
+            | Intranet
         li
-          a(data-toggle='tooltip' data-placement='bottom' data-original-title='Link 2' href='#')
-            | Link
+          a(href='http://www.mpib-berlin.mpg.de')
+            | MPIB-Berlin
+
+      ul.nav.navbar-nav.visible-sm-block.navbar-left
+        li.dropdown
+          a.dropdown-toggle(data-toggle='dropdown', href='/')
+            |  Links
+            span.caret
+          ul.dropdown-menu
+            li
+              a(href='http://intra.mpib-berlin.mpg.de')
+                | Intranet
+            li
+              a(href='http://www.mpib-berlin.mpg.de')
+                | MPIB-Berlin
 
       ul.nav.navbar-nav.navbar-right
+        li.hidden-sm
+          .container-fluid
+            form.navbar-form(role='form', action='/s', method='get', enctype='multipart/form-data')
+              .input-group
+                input#hsearch.form-control(type='search', name='q', placeholder='Search', value= searchQueue)
+                i.sclear.fa.fa-times
+                span.input-group-btn
+                  button.btn.btn-default(type='submit')
+                    i.fa.fa-search
+        li.dropdown.visible-sm-block
+          a.dropdown-toggle(data-toggle='dropdown', href='/')
+            i.fa.fa-search
+          .dropdown-menu
+            form.navbar-form(role='form', action='/s', method='get', enctype='multipart/form-data')
+              .input-group
+                input#vsearch.form-control(type='search', name='q', placeholder='Search', value= searchQueue, style='width: auto;')
+                i.sclear.fa.fa-times
+                span.input-group-btn
+                  button.btn.btn-default(type='submit')
+                    i.fa.fa-search
+
         if user
           li(class= title == 'Create Tab' ? 'active' : '')
-            a(data-toggle='tooltip' data-placement='bottom' data-original-title='Create Tab' href='/settings/tab/create')
-              i.fa.fa-plus-circle
-        
+            a(data-toggle='tooltip', data-placement='bottom', data-original-title='Create Tab', href='/settings/tab/create')
+              i.fa.fa-plus
+
         li(class= title == 'Settings' ? 'active' : '')
-          a(data-toggle='tooltip' data-placement='bottom' data-original-title='Settings' href='/settings')
+          a(data-toggle='tooltip', data-placement='bottom', data-original-title='Settings', href='/settings')
             i.fa.fa-cog
-        
-        li
-          a.email(data-toggle='tooltip' data-placement='bottom' data-original-title='Email' data-user='user', data-domain='domain')
-            i.fa.fa-envelope
-        
-        if user
-          li(class= title == 'Help' ? 'active' : '')
-            a(data-toggle='tooltip' data-placement='bottom' data-original-title='Informations' href='/help')
-              i.fa.fa-info-circle
-        
+
+        if !user
+          li
+            a.email(data-toggle='tooltip', data-placement='bottom', data-original-title='Email', data-user='lipsupport', data-domain='mpib-berlin.mpg.de')
+              i.fa.fa-envelope
+
         if user
           - var a = user.username.substr(0, 1).toUpperCase()
           - var b = user.username.substr(1, user.username.length)
           li.dropdown(class= title == user.username || title == 'Logging' ? 'active' : '')
-            a.dropdown-toggle(data-toggle='dropdown' href='/accounts/'+ user.username)
+            a.dropdown-toggle(data-toggle='dropdown', href='/')
               |  #{a+b}
               span.caret
-              
-              ul.dropdown-menu
-                li
-                  a(data-toggle='tooltip' data-placement='left' data-original-title= a+b+"'s Grid" href='/accounts/'+ user.username)
-                    i.fa.fa-user
-                    |  #{a+b}'s Grid
-                
-                li
-                  a(data-toggle='tooltip' data-placement='left' data-original-title='Log' href='/settings/logging#tail')
-                    i.fa.fa-book
-                    |  Log
-                
-                li.divider
-                
-                li
-                  a(data-toggle='tooltip' data-placement='left' data-original-title='Logout '+user.username href='/logout')
-                    i.fa.fa-sign-out
-                    |  Logout
-        
+            ul.dropdown-menu
+              li
+                a(data-toggle='tooltip', data-placement='left', data-original-title= a+b+"'s Grid", href='/accounts/'+ user.username)
+                  i.fa.fa-user
+                  |  #{a+b}'s Grid
+              li
+                a(data-toggle='tooltip', data-placement='left', data-original-title='Log', href='/settings/logging#tail')
+                  i.fa.fa-book
+                  |  Log
+              li.divider
+              li
+                a(data-toggle='tooltip', data-placement='left', data-original-title='Logout '+user.username, href='/logout')
+                  i.fa.fa-sign-out
+                  |  Logout
         else
           li(class= title == 'Login' ? 'active' : '')
-            a(data-toggle='tooltip' data-placement='bottom' data-original-title='Login' href='/login')
+            a(data-toggle='tooltip', data-placement='bottom', data-original-title='Login', href='/login')
               i.fa.fa-sign-in
               |  Login

@@ -23,9 +23,27 @@ body {
  */
 .navbar-inverse {
   background-color: #12282f;
+  opacity: 0.9;
 }
 .navbar-brand {
   font-family: 'Audiowide', 'libsansbold', Arial, Helvetica, sans-serif;
+}
+
+[id$=search] {
+  padding-right: 18px;
+}
+
+.sclear {
+  position: absolute;
+  right: 46px;
+  top: 0;
+  bottom: 0;
+  height: 14px;
+  margin: auto;
+  font-size: 14px;
+  cursor: pointer;
+  color: #bbb;
+  z-index: 2;
 }
 
 /**

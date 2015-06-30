@@ -38,6 +38,7 @@ app.use(multer());
 morgan.token('locale', function(req, res) {
   return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
 });
+
 morgan.token('status', function(req, res) {
   var color = 32; // green
   var status = res.statusCode;
@@ -46,8 +47,9 @@ morgan.token('status', function(req, res) {
   else if (status >= 400) color = 33; // yellow
   else if (status >= 300) color = 36; // cyan
 
-  return '\x1b['+color+'m'+status;
+  return '\x1b[' + color + 'm' + status;
 });
+
 app.use(morgan(config.app.set.morgan));
 
 app.use(expressSession(config.app.cookie.options));
@@ -83,16 +85,18 @@ var routes = require('./routes/routes');
 
 // Configure routes
 app.get('/', routes.index);
-app.get('/help', routes.help);
 app.get('/login', routes.login);
 app.get('/logout', routes.ensureAuthenticated, routes.logout);
 app.get('/settings', routes.settings);
 app.get('/settings/logging', routes.ensureAuthenticated, routes.logging);
 app.get('/accounts/:username', routes.ensureAuthenticated, routes.accounts);
-app.get('/settings/account/create', /*routes.ensureAuthenticated,*/ routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
+app.get('/settings/account/create', routes.ensureAuthenticated, routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/category/create', routes.ensureAuthenticated, routes.categoryCreate);
 app.get('/settings/tab/create', routes.ensureAuthenticated, routes.tabCreate);
+app.get('/survey/:name', routes.survey);
+app.get('/s?', routes.search);
 
+app.post('/survey/:name', routes.postSurvey);
 app.post('/prefer', routes.postPrefer);
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: 'Invalid username or password.' }), routes.postLogin);
 app.post('/settings/account/create', routes.postAccountCreate);
@@ -110,13 +114,12 @@ app.post('/settings/tab/update', routes.postTabUpdate);
 app.post('/settings/tab/edit', routes.ensureAuthenticated, routes.postTabEdit);
 app.post('/settings/tab/details', routes.ensureAuthenticated, routes.postTabDetails);
 app.post('/settings/tab/delete', routes.postTabDelete);
-app.post('/settings/:type(account|category|tab)/delete/confirm', routes.postConfirm);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  if(req.user) {
+  if (req.user) {
     var err = new Error();
-    err.message = 'Failed to load resource "'+ req.url +'". The server responded with a status of 404 (Not Found).';
+    err.message = 'Failed to load resource "' + req.url + '". The server responded with a status of 404 (Not Found).';
     err.status = 404;
     err.method = req.method;
     err.header = req.headers;
@@ -128,7 +131,7 @@ app.use(function(req, res, next) {
 });
 
 // Handles uncaught exceptions.
-process.on('uncaughtException', function (e) {
+process.on('uncaughtException', function(e) {
   log.debug('Caught exception: ', e.stack);
   log.error('Caught exception: ', e.message);
   return;
@@ -173,6 +176,9 @@ if (app.get('env') === 'production') {
 // Fires the server.
 var server = http.createServer(app);
 server.listen(app.get('port'), app.get('address'), function() {
-  log.info('%s (%s) is running. Process id is %d.', process.title, process.version, process.pid);
-  log.info('%s listening on %s:%d in %s mode.', pkg.name, server.address().address, server.address().port, app.settings.env);
+  log.info('%s (%s) is running.', process.title, process.version);
+  log.info('process id is %d.', process.pid)
+  log.info('\x1b[32m%s is running in %s mode.\x1b[0m', pkg.name, app.settings.env);
+  log.info('listening on %s:%d.', server.address().address, server.address().port);
+  log.info('\x1b[37mctrl+c to shut down.\x1b[0m');
 });

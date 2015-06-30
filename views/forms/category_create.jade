@@ -12,13 +12,13 @@ block content
               i.fa.fa-link
 
         .container-fluid
-          form.form(action='/settings/category/create' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+          form.form(action='/settings/category/create', method='post', enctype='multipart/form-data', onsubmit='document.getElementById("submit").disabled=true;')
             .form-group
               label(for='category')| *Category Name:
               .input-group
-                input#category.form-control(type='text' name='categoryname' data-toggle='tooltip' data-placement='top' data-original-title='Category Name' required='required' placeholder='Category Name' autofocus)
+                input#category.form-control(type='text', name='categoryname', data-toggle='tooltip', data-placement='top', data-original-title='Category Name', required='required', placeholder='Category Name', autofocus)
                 span.input-group-btn
-                  button#submit.btn.btn-primary.pull-right(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Submit')
+                  button#submit.btn.btn-primary.pull-right(type='submit', data-toggle='tooltip', data-placement='top', data-original-title='Submit')
                     i.fa.fa-upload
                     |  Create
 

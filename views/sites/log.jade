@@ -26,7 +26,7 @@ block content
       td
         if i+1 == file.length
           p
-            a(name='tail' style='text-decoration: none; color: #333;')= i+1
+            a(name='tail', style='text-decoration: none; color: #333;')= i+1
         else
           p= i+1
       td
@@ -45,4 +45,4 @@ block content
         else
           p.log-level= level
       td
-        pre.breakall(style='border: 0px; background: transparent; padding: 0px;')= message
+        pre.breakall.pre-scrollable(style='border: 0px; background: transparent; padding: 0px;')= message

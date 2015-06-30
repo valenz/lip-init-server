@@ -8,6 +8,7 @@ var log = winston.loggers.get('log');
  ********************************* EXPORTS *********************************
  */
 
+module.exports.writeFile = writeFile;
 module.exports.getUserTabs = getUserTabs;
 module.exports.getAssignedTabs = getAssignedTabs;
 module.exports.shorter = shorter;
@@ -16,6 +17,7 @@ module.exports.detach = detach;
 module.exports.clear = clear;
 module.exports.mkdirSync = mkdirSync;
 module.exports.getLog = getLog;
+module.exports.count = count;
 module.exports.random = random;
 module.exports.getPageInfo = getPageInfo;
 module.exports.renderPage = renderPage;
@@ -25,14 +27,27 @@ module.exports.renderPage = renderPage;
  */
 
 /**
+ * Asynchronously append data to a file, creating the file if it not yet exists.
+ * @param {file} String
+ * @param {data} String
+ */
+function writeFile(file, data) {
+  fs.appendFile(file, data, function(err) {
+    if (err) return log.error(err);
+    log.info('Survey was saved in \'%s\'.', file);
+    log.debug(data);
+  });
+}
+
+/**
  * Returns the number of tabs which are assigned to user view.
  * @param {obj} Object
  * @return {n} Number
  */
 function getUserTabs(obj) {
-  if(!obj) return 0;
+  if (!obj) return 0;
   var n = 0;
-  for(var i in obj) if(obj[i].check) n++;
+  for (var i in obj) if (obj[i].check) n++;
   return n;
 }
 
@@ -42,9 +57,9 @@ function getUserTabs(obj) {
  * @return {n} Number
  */
 function getAssignedTabs(obj) {
-  if(!obj) return 0;
+  if (!obj) return 0;
   var n = 0;
-  for(var i in obj) n += obj[i].list.length;
+  for (var i in obj) n += obj[i].list.length;
   return n;
 }
 
@@ -56,7 +71,7 @@ function getAssignedTabs(obj) {
  * @return {str} String
  */
 function shorter(str) {
-  if(!str) return false;
+  if (!str) return false;
   var n = config.custom.shorter.maxLength;
   n = n >= 10 ? n : 42;
   return str.length > n ? str.substring(0, n) + config.custom.shorter.endChars : str;
@@ -69,7 +84,7 @@ function shorter(str) {
  * @return {data} Object
  */
 function attach(tab, cat) {
-  if(!cat) return false;
+  if (!cat) return false;
   var data = cat;
   var list = cat.list;
   list.push(tab);
@@ -84,12 +99,13 @@ function attach(tab, cat) {
  * @return {data} Object
  */
 function detach(id, cat) {
-  if(!cat) return false;
+  if (!cat) return false;
   var data = cat;
   var list = cat.list;
   list = list.filter(function(e) {
     return e._id != id.toString();
   });
+
   data.list = list;
   return data;
 }
@@ -103,13 +119,13 @@ function clear(filename) {
   var path = config.custom.upload;
 
   fs.exists(path + filename, function(exists) {
-    if(exists) {
+    if (exists) {
       try {
         fs.unlink(path + filename, function(err) {
-          if(err) return log.error(err);
+          if (err) return log.error(err);
           log.info('Deleted file "%s".', filename);
         });
-      } catch(e) {
+      } catch (e) {
         log.error(e.stack);
       }
     } else {
@@ -124,15 +140,15 @@ function clear(filename) {
  */
 function mkdirSync(str) {
   var filepath = str.split('/');
-  if(filepath.length > 1) {
+  if (filepath.length > 1) {
     var path = '';
 
-    for(var i = 0; i < filepath.length-1; i++) {
-      path = path.concat(filepath[i]+'/');
+    for (var i = 0; i < filepath.length - 1; i++) {
+      path = path.concat(filepath[i] + '/');
     }
 
     fs.exists(path, function(exists) {
-      if(!exists) {
+      if (!exists) {
         mkdirp.sync(path, 0755);
         log.verbose('The path for the logfile has been created.');
       } else {
@@ -162,12 +178,29 @@ function getLog(cb) {
 }
 
 /**
+ * Counts the number of documents in a collection.
+ * @param {Object} mongoose
+ * @param {String} model
+ * @param {String} param
+ * @param {Object} container
+ * @param {Function} cb
+ */
+function count(mongoose, model, param, container, cb) {
+  var tmp = {};
+  tmp[model] = { $regex: new RegExp('(' + param + ')', 'i') };
+  mongoose.count(tmp, function(err, count) {
+    if (err) return log.error(err);
+    container[param].push({model: model, count: count});
+  });
+}
+
+/**
  * Returns random string depending on given length.
  * @param {Number} len
  * @return {String} str
  */
 function random(len) {
-  var c = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  var c = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   var l = len >= 10 ? len : 24;
   var str = '';
 
@@ -192,11 +225,11 @@ function getPageInfo(url, cb) {
     // Makes new PhantomJS WebPage objects
     return ph.createPage(function(page) {
       log.info('PhantomJS was started for evaluation. The process ID is %s.', ph.process.pid);
-      if(!url) return ph.exit();
+      if (!url) return ph.exit();
 
       // Opens the url and loads it to the page
       return page.open(url, function(status) {
-        if(status === 'success') {
+        if (status === 'success') {
           log.info('Status after opening page "%s": %s', url, status);
         } else {
           log.warn('Status after opening page "%s": %s', url, status);
@@ -204,25 +237,27 @@ function getPageInfo(url, cb) {
 
         return setTimeout(function() {
           // Evaluates the given function in the context
-	        // of the web page. Execution is sandboxed.
+          // of the web page. Execution is sandboxed.
           return page.evaluate(function() {
 
             var info = {};
             info.title = document.title;
             var links = document.getElementsByTagName('link');
 
-            for(var link in links) {
+            for (var link in links) {
               try {
-                if(links[link].rel.toLowerCase().indexOf('icon') > -1) {
+                if (links[link].rel.toLowerCase().indexOf('icon') > -1) {
                   info.favicon = links[link].href;
                   return info;
                 }
-              } catch(e) {
-                info.favicon = 'https://plus.google.com/_/favicon?domain_url='+ window.location.origin;
+              } catch (e) {
+                info.favicon = 'https://plus.google.com/_/favicon?domain_url=' + window.location.origin;
                 return info;
               }
             }
-          }, function(info) {
+          },
+
+          function(info) {
             cb(info);
             ph.exit();
             log.info('PhantomJS process %s was completed and terminated.', ph.process.pid);
@@ -241,35 +276,45 @@ function getPageInfo(url, cb) {
 function renderPage(obj, cb) {
   var phantom = require('phantom');
 
-  phantom.create(config.ph.settings.clo, function (ph) {
-    return ph.createPage(function (page) {
+  phantom.create(config.ph.settings.clo, function(ph) {
+    return ph.createPage(function(page) {
       log.info('PhantomJS was started for capturing. The process ID is %s.', ph.process.pid);
-      if(!obj.url) return ph.exit();
+      if (!obj.url) return ph.exit();
 
       // Sets the size of the viewport for the layout process
       page.set('viewportSize', config.ph.render.viewport);
+
       // Defines the rectangular area of the web page to be
       // rasterized when page.render is invoked
       page.set('clipRect', config.ph.render.clip);
+
       // Specifies the scaling factor
       page.set('zoomFactor', config.ph.render.zoom);
 
       // Defines whether to execute the script in the page or not
       page.set('settings.javascriptEnabled', config.ph.settings.javascriptEnabled);
+
       // Defines whether to load the inlined images or not
       page.set('settings.loadImages', config.ph.settings.loadImages);
+
       // Defines whether local resource (e.g. from file) can access remote URLs or not
       page.set('settings.localToRemoteUrlAccessEnabled', config.ph.settings.localToRemoteUrlAccessEnabled);
+
       // Defines the user agent sent to server when the web page requests resources
       page.set('settings.userAgent', config.ph.settings.userAgent);
+
       // Sets the user name used for HTTP authentication
       page.set('settings.userName', config.ph.settings.userName);
+
       // Sets the password used for HTTP authentication
       page.set('settings.password', config.ph.settings.password);
+
       // Defines whether load requests should be monitored for cross-site scripting attempts
       page.set('settings.XSSAuditingEnabled', config.ph.settings.XSSAuditingEnabled);
+
       // Defines whether web security should be enabled or not
       page.set('settings.webSecurityEnabled', config.ph.settings.webSecurityEnabled);
+
       // Defines the timeout after which any resource requested will stop trying
       // and proceed with other parts of the page
       page.set('settings.resourceTimeout', config.ph.settings.resourceTimeout);
@@ -285,6 +330,7 @@ function renderPage(obj, cb) {
       // confirm on the web page.
       page.set('onConfirm', function(msg) {
         log.info('JavaScript confirm says: ', msg);
+
         // true === pressing the OK button
         // false === pressing the Cancel button
         return false;
@@ -296,8 +342,8 @@ function renderPage(obj, cb) {
         log.warn('Resource Timeout: Response (ID: #%s)', request.id, request);
       });
 
-      return page.open(obj.url, function (status) {
-        if(status === 'success') {
+      return page.open(obj.url, function(status) {
+        if (status === 'success') {
           log.info('Status after opening page "%s": %s', obj.url, status);
         } else {
           log.warn('Status after opening page "%s": %s', obj.url, status);
@@ -308,12 +354,14 @@ function renderPage(obj, cb) {
             try {
               // Sets background color
               document.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' : color.value ? color.value : '#FFFFFF';
-            } catch(e) {
+            } catch (e) {
               return;
             }
-          }, function() {
+          },
+
+          function() {
             // Renders the web page to an image buffer
-	          // and saves it as the specified filename.
+            // and saves it as the specified filename.
             page.render(config.custom.upload + obj.filename, config.ph.render.options, function() {
               cb();
               ph.exit();

@@ -4,7 +4,7 @@ var config = require('./config.global');
 
 config.env = 'test';
 config.app.set.port = 3000;
-config.db.name = '/tabgrid_test';
+config.db.name = '/liptest';
 config.loggers.log.console.level = 'silly';
 config.loggers.log.console.label = 'TEST';
 

@@ -17,11 +17,11 @@ block content
                   | )
                 if user
                   .pull-right
-                    form(role='form' action='/settings/category/edit' method='post' enctype='multipart/form-data')
-                      input(type='hidden' name='id' value= list[i]._id)
-                      button.btn.btn-xs.btn-default(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Update Category' style='margin-top: -2px;')
+                    form(role='form', action='/settings/category/edit', method='post', enctype='multipart/form-data')
+                      input(type='hidden', name='id', value= list[i]._id)
+                      button.btn.btn-xs.btn-default(type='submit', data-toggle='tooltip', data-placement='top', data-original-title='Update Category', style='margin-top: -2px;')
                         i.fa.fa-pencil
-            ul.list-unstyled.panel-body.container-fluid.grid(name= list[i] ? list[i].name : 'unassigned' data-length= list[i] ? list[i].list.length : grid.length-assigned-usertabs)
+            ul.list-unstyled.panel-body.container-fluid.grid(name= list[i] ? list[i].name : 'unassigned', data-length= list[i] ? list[i].list.length : grid.length-assigned-usertabs)
               each item, j in grid
                 if list[i] && list[i].name == item.category
                   +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, item.whoCreated, j)
@@ -37,7 +37,7 @@ block content
                 span|  (
                   = grid.length-assigned-usertabs
                   | )
-            ul.list-unstyled.panel-body.container-fluid.grid(name= list[i] ? list[i].name : 'unassigned' data-length= list[i] ? list[i].list.length : grid.length-assigned-usertabs)
+            ul.list-unstyled.panel-body.container-fluid.grid(name= list[i] ? list[i].name : 'unassigned', data-length= list[i] ? list[i].list.length : grid.length-assigned-usertabs)
               each item, j in grid
                 if list[i] && list[i].name == item.category
                   +tabs(item._id, item.renderUrl, item.url, item.title, item.icon, item.image, item.name, item.category, item.check, item.whoCreated, j)
@@ -47,19 +47,19 @@ block content
 
   mixin tabs(id, renderUrl, url, title, icon, image, name, category, check, whoCreated, j)
     if !check
-      li.tabs(id= id data-item= j)
+      li.tabs(id= id, data-item= j)
         if user
           .mng-fa
-            form.form(role='form' action='/settings/tab/edit' method='post' enctype='multipart/form-data')
-              input(type='hidden' name='id' value= id)
-              button.btn-link.btn-edit(data-toggle='tooltip' data-placement='top' data-original-title='Update' type='submit')
+            form.form(role='form', action='/settings/tab/edit', method='post', enctype='multipart/form-data')
+              input(type='hidden', name='id', value= id)
+              button.btn-link.btn-edit(data-toggle='tooltip', data-placement='top', data-original-title='Update', type='submit')
                 i.fa.fa-pencil
-            form(role='form' action='/settings/tab/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-              input(type='hidden' name='id' value= id)
-              button.btn-link.btn-delete(data-toggle='tooltip' data-placement='top' data-original-title='Delete' type='submit')
+            form(role='form', action='/settings/tab/delete', method='post', enctype='multipart/form-data', onsubmit='return confirm("Are you sure you want to submit?")')
+              input(type='hidden', name='id', value= id)
+              button.btn-link.btn-delete(data-toggle='tooltip', data-placement='top', data-original-title='Delete', type='submit')
                 i.fa.fa-times
         a(href= url ? url : renderUrl)
-          img.img-thumbnail(data-toggle='tooltip' data-placement='top' data-original-title= title ? title.substr(0, 90) : name src='uploads/'+ image)
+          img.img-thumbnail(data-toggle='tooltip', data-placement='top', data-original-title= title ? title.substr(0, 90) : name, src='uploads/'+ image)
           .mng-vis
-            img.img-rounded.center-block(src= icon width='13px')
+            img.img-rounded.center-block(src= icon, width='13px')
             p.text-center.name.break= name

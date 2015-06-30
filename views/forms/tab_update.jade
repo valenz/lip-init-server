@@ -12,38 +12,38 @@ block content
               i.fa.fa-link
 
         .container-fluid
-          form.form(action='/settings/tab/update' method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
-            input(type='hidden' name='id' value= tab._id)
+          form.form(action='/settings/tab/update', method='post', enctype='multipart/form-data', onsubmit='document.getElementById("submit").disabled=true;')
+            input(type='hidden', name='id', value= tab._id)
             .form-group
               label(for='renderAddress')| *Render Address:
               .input-group
-                input#renderAddress.form-control(type='url' name='renderUrl' data-toggle='tooltip' data-placement='top' data-original-title='Render Address' value= tab.renderUrl required='required' placeholder='Render Address' autofocus)
+                input#renderAddress.form-control(type='url', name='renderUrl', data-toggle='tooltip', data-placement='top', data-original-title='Render Address', value= tab.renderUrl, required='required', placeholder='Render Address', autofocus)
                 span.input-group-addon(style='background-color: inherit; padding: 3px 10px 0 10px;')
-                  input(type='checkbox' name='check' checked= tab.check ? true : false data-toggle='tooltip' data-placement='top' data-original-title='Access only for Admins' stylstyle='width: 15px; height: 15px;')
+                  input(type='checkbox', name='check', checked= tab.check ? true : false, data-toggle='tooltip', data-placement='top', data-original-title='Access only for Admins', stylstyle='width: 15px; height: 15px;')
             .form-group
               label(for='webAddress')| Web Address:
-              input#webAddress.form-control(type='url' name='address' data-toggle='tooltip' data-placement='top' data-original-title='Web Address' value= tab.url placeholder='Web Address')
+              input#webAddress.form-control(type='url', name='address', data-toggle='tooltip', data-placement='top', data-original-title='Web Address', value= tab.url, placeholder='Web Address')
             .form-group
               label(for='name')| Name:
-              input#name.form-control(type='text' name='name' data-toggle='tooltip' data-placement='top' data-original-title='Name' value= tab.name placeholder='Name')
+              input#name.form-control(type='text', name='name', data-toggle='tooltip', data-placement='top', data-original-title='Name', value= tab.name, placeholder='Name')
             .form-group
               label(for='category')| Category:
               .input-group
-                select#category.form-control.selectpicker.show-tick.dropup(name='category' data-live-search='true')
+                select#category.form-control.selectpicker.show-tick.dropup(name='category', data-live-search='true')
                   if(cats.length > 0)
-                    option(selected disabled)| Choose a category
+                    option(selected, disabled)| Choose a category
                     each category in cats
                       if category.name == tab.category
-                        option(value= category.name selected)= category.name
+                        option(value= category.name, selected)= category.name
                       else
                         option(value= category.name)= category.name
                   else
                     option(selected disabled)| No category created yet
                 span.input-group-btn
-                  a.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Create Category' href='/settings/category/create')
+                  a.btn.btn-default(data-toggle='tooltip', data-placement='top', data-original-title='Create Category', href='/settings/category/create')
                     i.fa.fa-plus-circle
             
-            button#submit.btn.btn-primary.pull-right(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Submit')
+            button#submit.btn.btn-primary.pull-right(type='submit', data-toggle='tooltip', data-placement='top', data-original-title='Submit')
               i.fa.fa-upload
               |  Update
 
@@ -51,9 +51,8 @@ block content
           p.help-block.small.text-justify
             i.fa.fa-info-circle
             |  Depending on web page, the capturing may take a few seconds.
-            | This page will reload when the process is complete.
-            = ' Check '
+            | This page will reload when the process is complete. Check 
             a(href='/settings/logging#tail')| Log
-            = ' for details.'
+            |  for details.
 
       .col-xs-2.col-sm-2.col-md-3.col-lg-3

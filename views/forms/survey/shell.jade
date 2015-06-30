@@ -1,0 +1,241 @@
+doctype html
+html(lang='en')
+  head
+    title Shell Workshop | Feedback
+
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
+
+    link(rel='stylesheet', type='text/css', href='//fonts.googleapis.com/css?family=Audiowide')
+    link(rel='stylesheet', type='text/css', href='//netdna.bootstrapcdn.com/font-awesome/latest/css/font-awesome.css')
+    link(rel='stylesheet', type='text/css', href='//maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css')
+    link(rel='stylesheet', type='text/css', href='/stylesheets/bootstrap-select.css')
+      
+    block scripts
+      script(type='text/javascript', src='//code.jquery.com/jquery-latest.min.js')
+      script(type='text/javascript', src='//maxcdn.bootstrapcdn.com/bootstrap/latest/js/bootstrap.min.js')
+      script(type='text/javascript', src='/javascripts/bootstrap-select.js')
+
+  body#back-to-top
+
+    //- Header
+    .jumbotron(style='background-color: #663399; color: white;')
+      .container
+        h1.text-uppercase Shell Workshop Feedback
+        p(style='color: #DDD;').
+          LIP-Support Survey
+
+    form.form(role='form', action='/survey/#{surveyname}', method='post', enctype='multipart/form-data', onsubmit='document.getElementById("submit").disabled=true;')
+      .container
+        .container-fluid
+
+          //- Question 1 - radio
+          .panel.panel-default
+            .panel-body(style='background-color: #EEE;')
+              h3.panel-title 
+                strong(style='color: #663399;') Did you like the workshop?
+          .container-fluid
+            .form-group
+              label.radio-inline
+                input(name='question1', type='radio', required, value='1')
+                | Not at all.
+              label.radio-inline
+                input(name='question1', type='radio', required, value='2')
+                | I guess not.
+              label.radio-inline
+                input(name='question1', type='radio', required, value='3')
+                | I don't know.
+              label.radio-inline
+                input(name='question1', type='radio', required, value='4')
+                | Sort of.
+              label.radio-inline
+                input(name='question1', type='radio', required, value='5')
+                | Yes, absolutely.
+
+          hr
+          //- Question 2 - radio
+          .panel.panel-default
+            .panel-body(style='background-color: #EEE;')
+              h3.panel-title 
+                strong(style='color: #663399;') Did it take too long?
+          .container-fluid
+            .form-group
+              label.radio-inline
+                input(name='question2', type='radio', required, value='1')
+                | Not at all.
+              label.radio-inline
+                input(name='question2', type='radio', required, value='2')
+                | I guess not.
+              label.radio-inline
+                input(name='question2', type='radio', required, value='3')
+                | I don't know.
+              label.radio-inline
+                input(name='question2', type='radio', required, value='4')
+                | Sort of.
+              label.radio-inline
+                input(name='question2', type='radio', required, value='5')
+                | Yes, absolutely.
+
+          hr
+          //- Question 3 - radio
+          .panel.panel-default
+            .panel-body(style='background-color: #EEE;')
+              h3.panel-title 
+                strong(style='color: #663399;') Do you think it would be a good idea to split the workshop into multiple 1h blocks?
+          .container-fluid
+            .form-group
+              label.radio-inline
+                input(name='question3', type='radio', required, value='1')
+                | Not at all.
+              label.radio-inline
+                input(name='question3', type='radio', required, value='2')
+                | I guess not.
+              label.radio-inline
+                input(name='question3', type='radio', required, value='3')
+                | I don't know.
+              label.radio-inline
+                input(name='question3', type='radio', required, value='4')
+                | Sort of.
+              label.radio-inline
+                input(name='question3', type='radio', required, value='5')
+                | Yes, absolutely.
+
+          hr
+          //- Question 4 - radio
+          .panel.panel-default
+            .panel-body(style='background-color: #EEE;')
+              h3.panel-title 
+                strong(style='color: #663399;') Did you always understand what a task was all about?
+          .container-fluid
+            .form-group
+              label.radio-inline
+                input(name='question4', type='radio', required, value='1')
+                | Not at all.
+              label.radio-inline
+                input(name='question4', type='radio', required, value='2')
+                | I guess not.
+              label.radio-inline
+                input(name='question4', type='radio', required, value='3')
+                | I don't know.
+              label.radio-inline
+                input(name='question4', type='radio', required, value='4')
+                | Sort of.
+              label.radio-inline
+                input(name='question4', type='radio', required, value='5')
+                | Yes, absolutely.
+
+          hr
+          //- Question 5 - radio
+          .panel.panel-default
+            .panel-body(style='background-color: #EEE;')
+              h3.panel-title 
+                strong(style='color: #663399;') Did we give you enough time to solve all of the tasks?
+          .container-fluid
+            .form-group
+              label.radio-inline
+                input(name='question5', type='radio', required, value='1')
+                | Not at all.
+              label.radio-inline
+                input(name='question5', type='radio', required, value='2')
+                | I guess not.
+              label.radio-inline
+                input(name='question5', type='radio', required, value='3')
+                | I don't know.
+              label.radio-inline
+                input(name='question5', type='radio', required, value='4')
+                | Sort of.
+              label.radio-inline
+                input(name='question5', type='radio', required, value='5')
+                | Yes, absolutely.
+
+          hr
+          //- Question 6 - radio
+          .panel.panel-default
+            .panel-body(style='background-color: #EEE;')
+              h3.panel-title 
+                strong(style='color: #663399;') Was the overall learning curve too steep for you?
+          .container-fluid
+            .form-group
+              label.radio-inline
+                input(name='question6', type='radio', required, value='1')
+                | Not at all.
+              label.radio-inline
+                input(name='question6', type='radio', required, value='2')
+                | I guess not.
+              label.radio-inline
+                input(name='question6', type='radio', required, value='3')
+                | I don't know.
+              label.radio-inline
+                input(name='question6', type='radio', required, value='4')
+                | Sort of.
+              label.radio-inline
+                input(name='question6', type='radio', required, value='5')
+                | Yes, absolutely.
+
+          hr
+          //- Question 7 - radio
+          .panel.panel-default
+            .panel-body(style='background-color: #EEE;')
+              h3.panel-title 
+                strong(style='color: #663399;') Would you mind more participants (up to 25) ?
+          .container-fluid
+            .form-group
+              label.radio-inline
+                input(name='question7', type='radio', required, value='1')
+                | Not at all.
+              label.radio-inline
+                input(name='question7', type='radio', required, value='2')
+                | I guess not.
+              label.radio-inline
+                input(name='question7', type='radio', required, value='3')
+                | I don't know.
+              label.radio-inline
+                input(name='question7', type='radio', required, value='4')
+                | Sort of.
+              label.radio-inline
+                input(name='question7', type='radio', required, value='5')
+                | Yes, absolutely.
+
+          hr
+          //- Question 8 - radio
+          .panel.panel-default
+            .panel-body(style='background-color: #EEE;')
+              h3.panel-title 
+                strong(style='color: #663399;') Do you have a personal remark for us?
+          .container-fluid
+            .form-group
+              textarea.form-control(name='question8', rows='5', placeholder='Type your answer', style='font-size: 18px;', required)
+
+          hr
+
+          //- Submit
+          .container-fluid
+            .row
+              .col-lg-9.col-md-9.col-sm-7
+                .help-block.text-justify
+                  p(style='color: #BBB;').
+                    Note: The survey is completely anonymous and voluntary. The collected data are used only for statistical purposes.
+              .col-lg-3.col-md-3.col-sm-5
+                .form-group
+                  .btn-group.btn-group-justified
+                    .btn-group
+                      button#submit.btn.btn-lg.btn-success(type='submit') Send Feedback
+
+      //- Footer
+      .jumbotron(style='background-color: #663399; color: white;')
+        .container
+          h5
+            i.fa.fa-phone
+            |  506
+          h5
+            i.fa.fa-home
+            |  98/99  
+          
+          h5
+            i.fa.fa-globe
+            = ' '
+            a(href='https://lipsupport.mpib-berlin.mpg.de', style='color: white;') https://lipsupport.mpib-berlin.mpg.de
+          h5
+            i.fa.fa-envelope
+            = ' '
+            a(href='mailto://lipsupport@mpib-berlin.mpg.de', style='color: white;') lipsupport@mpib-berlin.mpg.de

@@ -13,7 +13,7 @@ You need default MongoDB service up and running, PhantomJS and the NodeJS engine
 
 ## Installation
 ### Quick installation
-    $ git clone git@github.com:valenz/tabgrid.git
+    $ git clone https://git.mpib-berlin.mpg.de/lip-support/tabgrid.git
 
     $ cd tabgrid
 

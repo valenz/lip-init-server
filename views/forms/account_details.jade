@@ -11,20 +11,20 @@ block content
             span.anchorjs-icon
               i.fa.fa-link
           .small.pull-right
-            a.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Create Account' href='/settings/account/create' style='margin: 0 5px 0 5px;')
+            a.btn.btn-default(data-toggle='tooltip', data-placement='top', data-original-title='Create Account', href='/settings/account/create', style='margin: 0 5px 0 5px;')
               i.fa.fa-plus
               |  Add
             if user && user.id == acc._id || user.role == 0
               .btn-group
-                form(role='form' action='/settings/account/edit' method='post' enctype='multipart/form-data')
-                  input(type='hidden' name='id' value= acc._id)
-                  button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Update Account' type='submit' style='margin: 0 5px 0 5px;')
+                form(role='form', action='/settings/account/edit', method='post', enctype='multipart/form-data')
+                  input(type='hidden', name='id', value= acc._id)
+                  button.btn.btn-default(data-toggle='tooltip', data-placement='top', data-original-title='Update Account', type='submit', style='margin: 0 5px 0 5px;')
                     i.fa.fa-pencil
                     |  Edit
               .btn-group
-                form(role='form' action='/settings/account/delete' method='post' enctype='multipart/form-data' onsubmit='return confirm("Are you sure you want to submit?")')
-                  input(type='hidden' name='id' value= acc._id)
-                  button.btn.btn-default(data-toggle='tooltip' data-placement='top' data-original-title='Delete Account' type='submit' style='margin: 0 5px 0 5px;')
+                form(role='form', action='/settings/account/delete', method='post', enctype='multipart/form-data', onsubmit='return confirm("Are you sure you want to submit?")')
+                  input(type='hidden', name='id', value= acc._id)
+                  button.btn.btn-default(data-toggle='tooltip', data-placement='top', data-original-title='Delete Account', type='submit', style='margin: 0 5px 0 5px;')
                     i.fa.fa-trash-o
                     |  Delete
 

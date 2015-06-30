@@ -9,19 +9,18 @@ $(document).ready(function() {
   //localStorage.setItem('grid', JSON.stringify(init()));
   var orig = init();
 
-
-
-  if(localStorage.getItem('modified') == 'true') {
+  if (localStorage.getItem('modified') == 'true') {
     // TODO
     // Update each tab individually
 
     /** Get local storage */
-    var self = JSON.parse(localStorage.getItem('self')),
-        //orig = JSON.parse(localStorage.getItem('grid')),
-        str = '';
+    var self = JSON.parse(localStorage.getItem('self'));
+
+    //orig = JSON.parse(localStorage.getItem('grid'));
+    var str = '';
     update(orig, self);
-    for(var sort1 in self) {
-      for(var tab1 in self[sort1]) {
+    for (var sort1 in self) {
+      for (var tab1 in self[sort1]) {
         str += self[sort1][tab1];
       }
     }
@@ -29,40 +28,38 @@ $(document).ready(function() {
     $('.grid').html(str);
   }
 
-
-
   function update(x, y) {
-    var grid = new Object();
-    var a = new Array();
-    var b = new Array();
+    var grid = {};
+    var a = {};
+    var b = {};
     var xProps = Object.getOwnPropertyNames(x);
     var yProps = Object.getOwnPropertyNames(y);
     console.log(x);
     console.log(y);
 
-    for(var i = 0; i < yProps.length; i++) {
+    for (var i = 0; i < yProps.length; i++) {
       var propName = yProps[i];
 
       console.log(y[propName]);
 
-      for(var key in y[propName]) {
+      for (var key in y[propName]) {
         b.push(key);
       }
 
-      for(var key in x[propName]) {
+      for (key in x[propName]) {
         a.push(key);
       }
 
-      for(var j in b) {
-        for(var k in a) {
-          if(b[j] == a[k]) {
+      for (var j in b) {
+        for (var k in a) {
+          if (b[j] == a[k]) {
             console.log(k);
           }
         }
       }
 
-      if(y[propName] !== x[propName]) {
-        //console.log(false);
+      if (y[propName] !== x[propName]) {
+        console.log(false);
       }
     }
 
@@ -99,6 +96,7 @@ $(document).ready(function() {
       tab[$(this).attr('data-item')] = value.outerHTML;
       grid[key] = tab;
     });
+
     return grid;
   }
 });
