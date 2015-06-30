@@ -8,14 +8,14 @@ block content
       .col-xs-8.col-sm-8.col-md-6.col-lg-6
         h1.page-header= title
 
-        form.form(action= action method='post' enctype='multipart/form-data' onsubmit='document.getElementById("submit").disabled=true;')
+        form.form(action= action, method='post', enctype='multipart/form-data', onsubmit='document.getElementById("submit").disabled=true;')
           .row
             .col-md-6
               p| Are you sure you want to submit?
-              input.form-control(type='hidden' name='id' value= confirm.id)
+              input.form-control(type='hidden', name='id', value= confirm.id)
             .col-md-6
               .pull-right
-                button#submit.btn.btn-danger(type='submit' data-toggle='tooltip' data-placement='top' data-original-title='Submit')
+                button#submit.btn.btn-danger(type='submit', data-toggle='tooltip', data-placement='top', data-original-title='Submit')
                   i.fa.fa-trash-o
                   |  Delete
 

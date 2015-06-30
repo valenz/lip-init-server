@@ -21,6 +21,7 @@ module.exports.index = index;
 module.exports.accounts = accounts;
 module.exports.settings = settings;
 module.exports.logging = logging;
+module.exports.help = help;
 module.exports.accountCreate = accountCreate;
 module.exports.categoryCreate = categoryCreate;
 module.exports.tabCreate = tabCreate;
@@ -45,6 +46,7 @@ module.exports.postTabUpdate = postTabUpdate;
 module.exports.postTabEdit = postTabEdit;
 module.exports.postTabDetails = postTabDetails;
 module.exports.postTabDelete = postTabDelete;
+module.exports.postConfirm = postConfirm;
 module.exports.ensureAuthenticated = ensureAuthenticated;
 
 /**
@@ -193,6 +195,24 @@ function settings(req, res) {
 }
 
 /**
+ * Pass a local variable to the help page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+function help(req, res) {
+  var ro = new RenderObject();
+  ro.set({
+    title: 'Help',
+    user: req.user,
+    info: req.flash('info'),
+    error: req.flash('error'),
+    success: req.flash('success')
+  });
+  res.render('sites/help', ro.get());
+}
+
+/**
  * Pass a local variable to the log page.
  * Get an array of flash messages by passing the keys to req.flash().
  * @param {Object} req
@@ -204,7 +224,6 @@ function logging(req, res) {
     ro.set({
       title: 'Logging',
       level: config.loggers.log.file.level,
-      env: config.env,
       file: log,
       user: req.user,
       info: req.flash('info'),
@@ -1317,6 +1336,39 @@ function postTabDelete(req, res) {
       log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
       req.flash('error', 'Request error. Please fill the required fields.');
       res.redirect('/');
+    }
+  } else {
+    log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);
+    req.flash('info', 'Session expired. Please log in.');
+    res.redirect('/');
+  }
+}
+
+/**
+ * Pass a local variable to the confirm page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ */
+function postConfirm(req, res) {
+  if (req.user) {
+    if (req.body.id) {
+      log.verbose(JSON.stringify(req.body));
+      var ro = new RenderObject();
+      ro.set({
+        title: 'Confirm',
+        action: urlparse(req.path).directory,
+        confirm: req.body,
+        user: req.user,
+        info: req.flash('info'),
+        error: req.flash('error'),
+        success: req.flash('success')
+      });
+      res.render('sites/confirm', ro.get());
+    } else {
+      log.error('%s %s %d - "Request error %j" - %s', req.method, req.path, res.statusCode, req.body, req.headers['user-agent']);
+      req.flash('error', 'Request error. Please fill the required fields.');
+      res.redirect('confirm');
     }
   } else {
     log.error('%s %s %d - "Session expired" - %s', req.method, req.path, res.statusCode, req.headers['user-agent']);

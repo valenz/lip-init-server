@@ -56,6 +56,11 @@ nav.navbar.navbar-inverse.navbar-fixed-top
                   button.btn.btn-default(type='submit')
                     i.fa.fa-search
 
+        if !user
+          li
+            a.email(data-toggle='tooltip', data-placement='bottom', data-original-title='Email', data-user='lipsupport', data-domain='mpib-berlin.mpg.de')
+              i.fa.fa-envelope
+
         if user
           li(class= title == 'Create Tab' ? 'active' : '')
             a(data-toggle='tooltip', data-placement='bottom', data-original-title='Create Tab', href='/settings/tab/create')
@@ -65,10 +70,9 @@ nav.navbar.navbar-inverse.navbar-fixed-top
           a(data-toggle='tooltip', data-placement='bottom', data-original-title='Settings', href='/settings')
             i.fa.fa-cog
 
-        if !user
-          li
-            a.email(data-toggle='tooltip', data-placement='bottom', data-original-title='Email', data-user='lipsupport', data-domain='mpib-berlin.mpg.de')
-              i.fa.fa-envelope
+        li(class= title == 'Help' ? 'active' : '')
+          a(data-toggle='tooltip', data-placement='bottom', data-original-title='Help', href= user ? '/blog/ghost' : '/blog')
+            i.fa.fa-question
 
         if user
           - var a = user.username.substr(0, 1).toUpperCase()

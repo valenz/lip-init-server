@@ -52,7 +52,11 @@ $(document).ready(function() {
   });
 
   // activate sidebar
-  $('.sidenav').affix();
+  $('.sidebar').affix({
+    offset: {
+      top: 160
+    }
+  });
 
   // activate scrollspy menu
   var $body   = $(document.body);

@@ -217,3 +217,77 @@ body {
   font-size: 60%;
   vertical-align: 0.1em;
 }
+
+/**
+ * HELP
+*/
+.affix {
+  position: fixed;
+  top: 20px;
+}
+
+.img-modal {
+   width: 100%;
+}
+
+.collapse-config {
+  cursor: pointer;
+}
+
+/* sidebar */
+.sidebar {
+  margin-left: -10px;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+/* all links */
+.sidebar .nav>li>a {
+  color: #999;
+  border-left: 2px solid transparent;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+/* nested links */
+.sidebar .nav .nav>li>a {
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 20px;
+  font-size: 12px;
+}
+
+/* active & hover links */
+.sidebar .nav>.active>a,
+.sidebar .nav>li>a:hover,
+.sidebar .nav>li>a:focus {
+  color: #101010;
+  text-decoration: none;
+  background-color: transparent;
+}
+.sidebar .nav>.active>a,
+.sidebar .nav>li>a:focus {
+  border-left-color: #101010;
+}
+/* all active links */
+.sidebar .nav>.active>a,
+.sidebar .nav>.active:hover>a,
+.sidebar .nav>.active:focus>a {
+  font-weight: 700;
+}
+/* nested active links */
+.sidebar .nav .nav>.active>a,
+.sidebar .nav .nav>.active:hover>a,
+.sidebar .nav .nav>.active:focus>a {
+  font-weight: 500;
+}
+
+/* hide inactive nested list */
+.sidebar .nav ul.nav {
+  display: none;
+}
+/* show active nested list */
+.sidebar .nav>.active>ul.nav {
+  display: block;
+}

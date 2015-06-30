@@ -18,8 +18,7 @@ block content
             +lines(line.timestamp, line.level, line.message, i)
 
     p.help-block.small
-      | *) The current log level is #{level} and runs in #{env} environment mode.
-      | You can make changes in the relevant config file.
+      | *) The current log level is #{level}. You can make changes in the relevant config file.
 
   mixin lines(timestamp, level, message, i)
     tr

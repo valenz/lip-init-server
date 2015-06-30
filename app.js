@@ -1,3 +1,4 @@
+var server = require('ghost');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -23,16 +24,11 @@ log.exitOnError = false;
 
 // Configure Express
 var app = express();
-app.set('port', process.env.PORT || config.app.set.port);
-app.set('address', process.env.ADDRESS || config.app.set.address);
-app.set('env', process.argv[2] || process.env.NODE_ENV || config.env);
-
 app.set('views', __dirname + config.app.set.views);
 app.set('view engine', config.app.set.engine);
 app.set('view options', config.app.set.options);
 
 app.use(favicon(__dirname + config.app.set.favicon));
-app.use(multer());
 
 // Request logger status codes
 morgan.token('locale', function(req, res) {
@@ -85,6 +81,7 @@ var routes = require('./routes/routes');
 
 // Configure routes
 app.get('/', routes.index);
+app.get('/info', routes.help);
 app.get('/login', routes.login);
 app.get('/logout', routes.ensureAuthenticated, routes.logout);
 app.get('/settings', routes.settings);
@@ -96,39 +93,25 @@ app.get('/settings/tab/create', routes.ensureAuthenticated, routes.tabCreate);
 app.get('/survey/:name', routes.survey);
 app.get('/s?', routes.search);
 
-app.post('/survey/:name', routes.postSurvey);
-app.post('/prefer', routes.postPrefer);
-app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: 'Invalid username or password.' }), routes.postLogin);
-app.post('/settings/account/create', routes.postAccountCreate);
-app.post('/settings/account/update', routes.postAccountUpdate);
-app.post('/settings/account/edit', routes.ensureAuthenticated, routes.postAccountEdit);
-app.post('/settings/account/details', routes.ensureAuthenticated, routes.postAccountDetails);
-app.post('/settings/account/delete', routes.postAccountDelete);
-app.post('/settings/category/create', routes.postCategoryCreate);
-app.post('/settings/category/update', routes.postCategoryUpdate);
-app.post('/settings/category/edit', routes.ensureAuthenticated, routes.postCategoryEdit);
-app.post('/settings/category/details', routes.ensureAuthenticated, routes.postCategoryDetails);
-app.post('/settings/category/delete', routes.postCategoryDelete);
-app.post('/settings/tab/create', routes.postTabCreate);
-app.post('/settings/tab/update', routes.postTabUpdate);
-app.post('/settings/tab/edit', routes.ensureAuthenticated, routes.postTabEdit);
-app.post('/settings/tab/details', routes.ensureAuthenticated, routes.postTabDetails);
-app.post('/settings/tab/delete', routes.postTabDelete);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  if (req.user) {
-    var err = new Error();
-    err.message = 'Failed to load resource "' + req.url + '". The server responded with a status of 404 (Not Found).';
-    err.status = 404;
-    err.method = req.method;
-    err.header = req.headers;
-    err.url = req.url;
-    next(err);
-  } else {
-    res.redirect('/');
-  }
-});
+app.post('/survey/:name', [multer(), routes.postSurvey]);
+app.post('/prefer', [multer(), routes.postPrefer]);
+app.post('/login', [multer(), passport.authenticate('local', { failureRedirect: '/login', failureFlash: 'Invalid username or password.' }), routes.postLogin]);
+app.post('/settings/account/create', [multer(), routes.postAccountCreate]);
+app.post('/settings/account/update', [multer(), routes.postAccountUpdate]);
+app.post('/settings/account/edit', [multer(), routes.ensureAuthenticated, routes.postAccountEdit]);
+app.post('/settings/account/details', [multer(), routes.ensureAuthenticated, routes.postAccountDetails]);
+app.post('/settings/account/delete', [multer(), routes.postAccountDelete]);
+app.post('/settings/category/create', [multer(), routes.postCategoryCreate]);
+app.post('/settings/category/update', [multer(), routes.postCategoryUpdate]);
+app.post('/settings/category/edit', [multer(), routes.ensureAuthenticated, routes.postCategoryEdit]);
+app.post('/settings/category/details', [multer(), routes.ensureAuthenticated, routes.postCategoryDetails]);
+app.post('/settings/category/delete', [multer(), routes.postCategoryDelete]);
+app.post('/settings/tab/create', [multer(), routes.postTabCreate]);
+app.post('/settings/tab/update', [multer(), routes.postTabUpdate]);
+app.post('/settings/tab/edit', [multer(), routes.ensureAuthenticated, routes.postTabEdit]);
+app.post('/settings/tab/details', [multer(), routes.ensureAuthenticated, routes.postTabDetails]);
+app.post('/settings/tab/delete', [multer(), routes.postTabDelete]);
+app.post('/settings/:type(account|category|tab)/delete/confirm', [multer(), routes.postConfirm]);
 
 // Handles uncaught exceptions.
 process.on('uncaughtException', function(e) {
@@ -174,11 +157,11 @@ if (app.get('env') === 'production') {
 }
 
 // Fires the server.
-var server = http.createServer(app);
-server.listen(app.get('port'), app.get('address'), function() {
-  log.info('%s (%s) is running.', process.title, process.version);
-  log.info('process id is %d.', process.pid)
-  log.info('\x1b[32m%s is running in %s mode.\x1b[0m', pkg.name, app.settings.env);
-  log.info('listening on %s:%d.', server.address().address, server.address().port);
-  log.info('\x1b[37mctrl+c to shut down.\x1b[0m');
+server({
+  config: path.join(__dirname, 'config.js')
+}).then(function(server) {
+  log.info('%s (%s) is running. Process id is %d.', process.title, process.version, process.pid);
+  app.use(server.config.paths.subdir, server.rootApp);
+  server.start(app);
+  log.info('%s listening on %s:%d in %s mode.', pkg.name, server.config.server.host, server.config.server.port, app.settings.env);
 });
