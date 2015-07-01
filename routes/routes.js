@@ -15,8 +15,7 @@ methods.mkdirSync(config.loggers.log.file.filename);
  ********************************* EXPORTS *********************************
  */
 
-module.exports.login = login;
-module.exports.logout = logout;
+module.exports.signin = signin;
 module.exports.index = index;
 module.exports.search = search;
 module.exports.accounts = accounts;
@@ -26,7 +25,8 @@ module.exports.accountCreate = accountCreate;
 module.exports.categoryCreate = categoryCreate;
 module.exports.tabCreate = tabCreate;
 
-module.exports.postLogin = postLogin;
+module.exports.postSignin = postSignin;
+module.exports.postSignout = postSignout;
 module.exports.postScore = postScore;
 module.exports.postAccountCreate = postAccountCreate;
 module.exports.postAccountUpdate = postAccountUpdate;
@@ -55,31 +55,20 @@ module.exports.ensureAuthenticated = ensureAuthenticated;
  * @param {Object} req
  * @param {Object} res
  */
-function login(req, res) {
+function signin(req, res) {
   if (!req.user) {
     var ro = new RenderObject();
     ro.set({
-      title: 'Login',
+      title: 'Sign in',
       user: req.user,
       info: req.flash('info'),
       error: req.flash('error'),
       success: req.flash('success')
     });
-    res.render('forms/login', ro.get());
+    res.render('forms/signin', ro.get());
   } else {
     res.redirect('/');
   }
-}
-
-/**
- * Calls the exported function logout in methods
- * and redirect to the given url.
- * @param {Object} req
- * @param {Object} res
- */
-function logout(req, res) {
-  closeSession(req, res);
-  res.redirect('/');
 }
 
 /**
@@ -345,10 +334,21 @@ function tabCreate(req, res) {
  * @param {Object} req
  * @param {Object} res
  */
-function postLogin(req, res) {
+function postSignin(req, res) {
   log.info('%s %s %d - Logged in %s - %s', req.method, req.path, res.statusCode, req.user.username, req.headers['user-agent']);
   req.flash('success', 'You are logged in.');
   res.redirect('/accounts/' + req.user.username);
+}
+
+/**
+ * Calls the exported function logout in methods
+ * and redirect to the given url.
+ * @param {Object} req
+ * @param {Object} res
+ */
+function postSignout(req, res) {
+  closeSession(req, res);
+  res.redirect('/');
 }
 
 /**
@@ -1321,7 +1321,7 @@ function postTabDelete(req, res) {
  */
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) return next();
-  res.redirect('/login');
+  res.redirect('/signin');
 }
 
 /**

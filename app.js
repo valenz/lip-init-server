@@ -96,8 +96,7 @@ var routes = require('./routes/routes');
 // Configure routes
 app.get('/', routes.index);
 app.get('/s?', routes.search);
-app.get('/login', routes.login);
-app.get('/logout', routes.ensureAuthenticated, routes.logout);
+app.get('/signin', routes.signin);
 app.get('/settings', routes.settings);
 app.get('/settings/logging', routes.ensureAuthenticated, routes.logging);
 app.get('/accounts/:username', routes.ensureAuthenticated, routes.accounts);
@@ -105,7 +104,8 @@ app.get('/settings/account/create', routes.ensureAuthenticated, routes.accountCr
 app.get('/settings/category/create', routes.ensureAuthenticated, routes.categoryCreate);
 app.get('/settings/tab/create', routes.ensureAuthenticated, routes.tabCreate);
 
-app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: 'Invalid username or password.' }), routes.postLogin);
+app.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: 'Invalid username or password.' }), routes.postSignin);
+app.post('/signout', routes.ensureAuthenticated, routes.postSignout);
 app.post('/score', routes.postScore);
 app.post('/settings/account/create', routes.postAccountCreate);
 app.post('/settings/account/update', routes.postAccountUpdate);

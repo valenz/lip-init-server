@@ -25,6 +25,7 @@ body {
   background-color: #12282f;
   opacity: 0.9;
 }
+
 .navbar-brand {
   font-family: 'Audiowide', 'libsansbold', Arial, Helvetica, sans-serif;
 }
@@ -44,6 +45,20 @@ body {
   cursor: pointer;
   color: #bbb;
   z-index: 2;
+}
+
+.navbar-inverse .signout {
+  color: #000;
+  margin: 0;
+  padding: 3px 20px;
+  width: 100%;
+  text-align: left;
+}
+
+.navbar-inverse .signout:hover {
+  text-decoration: none;
+  background-color: #F5F5F5;
+  color: #000;
 }
 
 /**

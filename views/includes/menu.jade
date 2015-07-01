@@ -82,12 +82,13 @@ nav.navbar.navbar-inverse.navbar-fixed-top
                   i.fa.fa-book
                   |  Log
               li.divider
-              li
-                a(data-toggle='tooltip', data-placement='left', title='Logout '+user.username, href='/logout')
-                  i.fa.fa-sign-out
-                  |  Logout
+              li(data-toggle='tooltip', data-placement='left', title='Sign out '+user.username)
+                form.form(role='form', action='/signout', method='post', enctype='multipart/form-data')
+                  button.btn.btn-link.navbar-btn.signout(type='submit')
+                    i.fa.fa-sign-out
+                    |  Sign out
         else
-          li(class= title == 'Login' ? 'active' : '')
-            a(data-toggle='tooltip', data-placement='bottom', title='Login', href='/login')
+          li(class= title == 'Sign in' ? 'active' : '')
+            a(data-toggle='tooltip', data-placement='bottom', title='Sign in', href='/signin')
               i.fa.fa-sign-in
-              |  Login
+              |  Sign in

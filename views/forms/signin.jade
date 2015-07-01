@@ -9,7 +9,7 @@ block content
         h1.page-header= title
 
         .container-fluid
-          form.form(action='/login', method='post', enctype='multipart/form-data', onsubmit='document.getElementById("submit").disabled=true;')
+          form.form(action='/signin', method='post', enctype='multipart/form-data', onsubmit='document.getElementById("submit").disabled=true;')
             .form-group
               label(for='username')| *Username:
               input#username.form-control(type='text', name='username', data-toggle='tooltip', data-placement='top', title='Username', required='required', placeholder='Username', autofocus)
@@ -17,8 +17,8 @@ block content
               label(for='password')| *Password:
               input#password.form-control(type='password', name='password', data-toggle='tooltip', data-placement='top', title='Password', required='required', placeholder='Password')
 
-            button#submit.btn.btn-primary.pull-right(type='submit', data-toggle='tooltip', data-placement='top', title='Submit')
+            button#submit.btn.btn-primary.pull-right(type='submit')
               i.fa.fa-sign-in
-              |  Login
+              |  Sign in
 
       .col-xs-2.col-sm-2.col-md-3.col-lg-4
