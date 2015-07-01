@@ -30,7 +30,7 @@ var config = module.exports = {
       favicon: '/public/images/favicon.ico',
 
       // Sets options for request logging
-      morgan: '\x1b[32m:locale \x1b[0m: :method :url :status \x1b[0m:response-time ms | :res[content-length] | :remote-addr :remote-user HTTP/:http-version | :user-agent'
+      morgan: ':locale - \x1b[32minfo\x1b[0m: [:package] :method :url :status \x1b[0m:response-time ms | :res[content-length] | :remote-addr :remote-user HTTP/:http-version | :user-agent'
     },
     cookie: {
       options: {
@@ -57,19 +57,20 @@ var config = module.exports = {
           // By default cookie.maxAge is null, meaning no "expires" parameter is set
           // so the cookie becomes a browser-session cookie. When the user closes the
           // browser the cookie (and session) will be removed.
-          maxAge: 60 * 60 * 1000
+          maxAge: 60 * 60 * 1000 // one hour
         },
 
         // Force a cookie to be set on every response. This resets the expiration date
         rolling: true
-      }
+      },
+      store: {}
     }
   },
 
   // Database
   db: {
     uri: 'localhost',
-    name: '/lipinit'
+    name: '/tabgrid'
   },
 
   // Log levels [silly|debug|verbose|info|warn|error]

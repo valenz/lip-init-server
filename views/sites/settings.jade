@@ -17,14 +17,14 @@ block content
                 span.caret
               ul.dropdown-menu(role='menu')
                 li
-                  a(data-toggle='tooltip', data-placement='left', data-original-title='Create Tab', href='/settings/tab/create')
+                  a(data-toggle='tooltip', data-placement='left', title='Create Tab', href='/settings/tab/create')
                     | Add Tab
                 li
-                  a(data-toggle='tooltip', data-placement='left', data-original-title='Create Category', href='/settings/category/create')
+                  a(data-toggle='tooltip', data-placement='left', title='Create Category', href='/settings/category/create')
                     | Add Category
                 li.divider
                 li
-                  a(data-toggle='tooltip', data-placement='left', data-original-title='Create Account', href='/settings/account/create')
+                  a(data-toggle='tooltip', data-placement='left', title='Create Account', href='/settings/account/create')
                     | Add Account
 
         .container-fluid.adj
@@ -35,7 +35,7 @@ block content
                   span.anchorjs-icon
                     i.fa.fa-link
                 .pull-right
-                  a#adjReset.btn.btn-xs.btn-default(type='button', data-toggle='tooltip', data-placement='top', data-original-title='Reset Adjustments', style='margin-top: -2px;')
+                  a#adjReset.btn.btn-xs.btn-default(type='button', data-toggle='tooltip', data-placement='top', title='Reset Adjustments', style='margin-top: -2px;')
                     i.fa.fa-eraser
             .panel-body.container-fluid
               h4= 'Range: '
@@ -68,18 +68,18 @@ block content
                     - unassigned += 1
                 if tabs.length
                   .progress
-                    .progress-bar.progress-bar-danger(role='progressbar', data-toggle='tooltip', data-placement='top', data-original-title= 'unassigned', style='width:'+unassigned/tabs.length*100+'%;')
+                    .progress-bar.progress-bar-danger(role='progressbar', data-toggle='tooltip', data-placement='top', title= 'unassigned', style='width:'+unassigned/tabs.length*100+'%;')
                       = unassigned
-                    .progress-bar(role='progressbar', data-toggle='tooltip', data-placement='top', data-original-title= 'Public', style='width:'+(tabs.length-usertabs-unassigned)/tabs.length*100+'%;')
+                    .progress-bar(role='progressbar', data-toggle='tooltip', data-placement='top', title= 'Public', style='width:'+(tabs.length-usertabs-unassigned)/tabs.length*100+'%;')
                       = tabs.length-usertabs-unassigned
-                    .progress-bar.progress-bar-warning(role='progressbar', data-toggle='tooltip', data-placement='top', data-original-title= a+b+"'s Grid" style='width:'+usertabs/tabs.length*100+'%;')
+                    .progress-bar.progress-bar-warning(role='progressbar', data-toggle='tooltip', data-placement='top', title= a+b+"'s Grid" style='width:'+usertabs/tabs.length*100+'%;')
                       = usertabs
                 .grid
                   each item, j in tabs
                     .btn-group(id= item._id, data-item= j, style='padding: 5px;')
                       form(role='form', action='/settings/tab/details', method='post', enctype='multipart/form-data')
                         input(type='hidden', name='id', value= item._id)
-                        button.btn(class= item.check ? 'btn-warning' : !item.category ? 'btn-danger' : 'btn-primary', type='submit', data-toggle='tooltip', data-placement='top', data-original-title= item.check ? a+b+"'s Grid" : !item.category ? 'unassigned' : item.category, style='min-width: 120px;')
+                        button.btn(class= item.check ? 'btn-warning' : !item.category ? 'btn-danger' : 'btn-primary', type='submit', data-toggle='tooltip', data-placement='top', title= item.check ? a+b+"'s Grid" : !item.category ? 'unassigned' : item.category, style='min-width: 120px;')
                           .breakall
                             if user && user.username == item.whoCreated
                               = item.name
@@ -97,19 +97,19 @@ block content
                 if tabs.length
                   .progress
                     - var odd = 0
-                    .progress-bar.progress-bar-danger(role='progressbar', data-toggle='tooltip', data-placement='top', data-original-title= 'unassigned', style='width:'+unassigned/tabs.length*100+'%;')
+                    .progress-bar.progress-bar-danger(role='progressbar', data-toggle='tooltip', data-placement='top', title= 'unassigned', style='width:'+unassigned/tabs.length*100+'%;')
                       = unassigned
                     each item, j in cats
                       - odd += item.list.length != 0 ? 1 : 0
                       - var progWidth = item.list.length/tabs.length*100
-                      .progress-bar(role='progressbar', data-toggle='tooltip', data-placement='top', data-original-title= item.name, style='width:'+progWidth+'%;', class= odd%2 == 0 ? 'progress-bar-info' : 'progress-bar-default')
+                      .progress-bar(role='progressbar', data-toggle='tooltip', data-placement='top', title= item.name, style='width:'+progWidth+'%;', class= odd%2 == 0 ? 'progress-bar-info' : 'progress-bar-default')
                         .text-nowrap= item.list.length
-                    .progress-bar.progress-bar-warning(role='progressbar', data-toggle='tooltip', data-placement='top', data-original-title= a+b+"'s Grid" style='width:'+usertabs/tabs.length*100+'%;')
+                    .progress-bar.progress-bar-warning(role='progressbar', data-toggle='tooltip', data-placement='top', title= a+b+"'s Grid" style='width:'+usertabs/tabs.length*100+'%;')
                       = usertabs
                 .grid
                   if unassigned
                     .btn-group(style='padding: 5px;')
-                      a.btn.btn-danger(href='/', data-toggle='tooltip', data-placement='top', data-original-title= unassigned+' / '+tabs.length, style='min-width: 120px;')
+                      a.btn.btn-danger(href='/', data-toggle='tooltip', data-placement='top', title= unassigned+' / '+tabs.length, style='min-width: 120px;')
                         | unassigned
                   - odd = 0
                   each item, j in cats
@@ -117,7 +117,7 @@ block content
                     .btn-group(id= item._id, data-item= j, style='padding: 5px;')
                       form(role='form', action='/settings/category/details', method='post', enctype='multipart/form-data')
                         input(type='hidden', name='id', value= item._id)
-                        button.btn(class= !item.list.length ? 'btn-default' : odd%2 == 0 ? 'btn-info' : 'btn-primary', type='submit', data-toggle='tooltip', data-placement='top', data-original-title= item.list.length+' / '+tabs.length, style='min-width: 120px;')
+                        button.btn(class= !item.list.length ? 'btn-default' : odd%2 == 0 ? 'btn-info' : 'btn-primary', type='submit', data-toggle='tooltip', data-placement='top', title= item.list.length+' / '+tabs.length, style='min-width: 120px;')
                           .breakall
                             if user && user.username == item.whoCreated
                               = item.name
@@ -125,7 +125,7 @@ block content
                               = item.name
                   if usertabs
                     .btn-group(style='padding: 5px;')
-                      a.btn.btn-warning(href='/accounts/'+user.username, data-toggle='tooltip', data-placement='top', data-original-title= usertabs+' / '+tabs.length, style='min-width: 120px;')
+                      a.btn.btn-warning(href='/accounts/'+user.username, data-toggle='tooltip', data-placement='top', title= usertabs+' / '+tabs.length, style='min-width: 120px;')
                         | #{a+b}'s Grid
 
             .panel.panel-settings
@@ -149,7 +149,7 @@ block content
                   .btn-group(id= item._id, data-item= j)
                     form(role='form', action='/settings/account/details', method='post', enctype='multipart/form-data')
                       input(type='hidden', name='id', value= item._id)
-                      button.btn(class= user && item._id == user.id ? 'btn-primary' : 'btn-default', type='submit', data-toggle='tooltip', data-placement='top', data-original-title= item.username, style='margin: 5px;')
+                      button.btn(class= user && item._id == user.id ? 'btn-primary' : 'btn-default', type='submit', data-toggle='tooltip', data-placement='top', title= item.username, style='margin: 5px;')
                         if user && item._id == user.id
                           u= user.username
                         else

@@ -17,15 +17,15 @@ block content
             .form-group
               label(for='renderAddress')| *Render Address:
               .input-group
-                input#renderAddress.form-control(type='url', name='renderUrl', data-toggle='tooltip', data-placement='top', data-original-title='Render Address', value= tab.renderUrl, required='required', placeholder='Render Address', autofocus)
+                input#renderAddress.form-control(type='url', name='renderUrl', data-toggle='tooltip', data-placement='top', title='Render Address', value= tab.renderUrl, required='required', placeholder='Render Address', autofocus)
                 span.input-group-addon(style='background-color: inherit; padding: 3px 10px 0 10px;')
-                  input(type='checkbox', name='check', checked= tab.check ? true : false, data-toggle='tooltip', data-placement='top', data-original-title='Access only for Admins', stylstyle='width: 15px; height: 15px;')
+                  input(type='checkbox', name='check', checked= tab.check ? true : false, data-toggle='tooltip', data-placement='top', title='Access only for Admins', stylstyle='width: 15px; height: 15px;')
             .form-group
               label(for='webAddress')| Web Address:
-              input#webAddress.form-control(type='url', name='address', data-toggle='tooltip', data-placement='top', data-original-title='Web Address', value= tab.url, placeholder='Web Address')
+              input#webAddress.form-control(type='url', name='address', data-toggle='tooltip', data-placement='top', title='Web Address', value= tab.url, placeholder='Web Address')
             .form-group
               label(for='name')| Name:
-              input#name.form-control(type='text', name='name', data-toggle='tooltip', data-placement='top', data-original-title='Name', value= tab.name, placeholder='Name')
+              input#name.form-control(type='text', name='name', data-toggle='tooltip', data-placement='top', title='Name', value= tab.name, placeholder='Name')
             .form-group
               label(for='category')| Category:
               .input-group
@@ -40,10 +40,10 @@ block content
                   else
                     option(selected disabled)| No category created yet
                 span.input-group-btn
-                  a.btn.btn-default(data-toggle='tooltip', data-placement='top', data-original-title='Create Category', href='/settings/category/create')
+                  a.btn.btn-default(data-toggle='tooltip', data-placement='top', title='Create Category', href='/settings/category/create')
                     i.fa.fa-plus-circle
             
-            button#submit.btn.btn-primary.pull-right(type='submit', data-toggle='tooltip', data-placement='top', data-original-title='Submit')
+            button#submit.btn.btn-primary.pull-right(type='submit', data-toggle='tooltip', data-placement='top', title='Submit')
               i.fa.fa-upload
               |  Update
 

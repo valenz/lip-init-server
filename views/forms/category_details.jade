@@ -11,20 +11,20 @@ block content
             span.anchorjs-icon
               i.fa.fa-link
           .small.pull-right
-            a.btn.btn-default(data-toggle='tooltip', data-placement='top', data-original-title='Create Category', href='/settings/category/create', style='margin: 0 5px 0 5px;')
+            a.btn.btn-default(data-toggle='tooltip', data-placement='top', title='Create Category', href='/settings/category/create', style='margin: 0 5px 0 5px;')
               i.fa.fa-plus
               |  Add
             if user && user.username == cat.whoCreated
               .btn-group
                 form(role='form', action='/settings/category/edit', method='post', enctype='multipart/form-data')
                   input(type='hidden', name='id', value= cat._id)
-                  button.btn.btn-default(data-toggle='tooltip', data-placement='top', data-original-title='Update Category', type='submit', style='margin: 0 5px 0 5px;')
+                  button.btn.btn-default(data-toggle='tooltip', data-placement='top', title='Update Category', type='submit', style='margin: 0 5px 0 5px;')
                     i.fa.fa-pencil
                     |  Edit
               .btn-group
                 form(role='form', action='/settings/category/delete', method='post', enctype='multipart/form-data', onsubmit='return confirm("Are you sure you want to submit?")')
                   input(type='hidden', name='id', value= cat._id)
-                  button.btn.btn-default(data-toggle='tooltip', data-placement='top', data-original-title='Delete Category', type='submit', style='margin: 0 5px 0 5px;')
+                  button.btn.btn-default(data-toggle='tooltip', data-placement='top', title='Delete Category', type='submit', style='margin: 0 5px 0 5px;')
                     i.fa.fa-trash-o
                     |  Delete
 
@@ -47,7 +47,7 @@ block content
                     div(id= item._id data-item= j)
                       form(role='form', action='/settings/tab/details', method='post', enctype='multipart/form-data')
                         input(type='hidden', name='id', value= item._id)
-                        button.btn-link.btn-default(data-toggle='tooltip', data-placement='top', data-original-title= item.title, type='submit')
+                        button.btn-link.btn-default(data-toggle='tooltip', data-placement='top', title= item.title, type='submit')
                           = item.name
                         = ' '
                         i.fa.fa-angle-right

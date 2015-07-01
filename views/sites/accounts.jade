@@ -24,14 +24,14 @@ block content
         .mng-fa
           form.form(role='form', action='/settings/tab/edit', method='post', enctype='multipart/form-data')
             input(type='hidden', name='id', value= id)
-            button.btn-link.btn-edit(data-toggle='tooltip', data-placement='top', data-original-title='Update', type='submit')
+            button.btn-link.btn-edit(data-toggle='tooltip', data-placement='top', title='Update', type='submit')
               i.fa.fa-pencil
           form(role='form', action='/settings/tab/delete', method='post', enctype='multipart/form-data', onsubmit='return confirm("Are you sure you want to submit?")')
             input(type='hidden', name='id', value= id)
-            button.btn-link.btn-delete(data-toggle='tooltip', data-placement='top', data-original-title='Delete', type='submit')
+            button.btn-link.btn-delete(data-toggle='tooltip', data-placement='top', title='Delete', type='submit')
               i.fa.fa-times
         a(href= url)
-          img.img-thumbnail(data-toggle='tooltip', data-placement='top', data-original-title= title ? title.substr(0, 90) : name, src='../uploads/'+ image)
+          img.img-thumbnail(data-toggle='tooltip', data-placement='top', title= title ? title.substr(0, 90) : name, src='../uploads/'+ image)
           .mng-vis
             img.img-rounded.center-block(src= icon, width='13px')
             p.text-center.name.break= name

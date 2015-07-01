@@ -12,12 +12,12 @@ block content
           form.form(action='/login', method='post', enctype='multipart/form-data', onsubmit='document.getElementById("submit").disabled=true;')
             .form-group
               label(for='username')| *Username:
-              input#username.form-control(type='text', name='username', data-toggle='tooltip', data-placement='top', data-original-title='Username', required='required', placeholder='Username', autofocus)
+              input#username.form-control(type='text', name='username', data-toggle='tooltip', data-placement='top', title='Username', required='required', placeholder='Username', autofocus)
             .form-group
               label(for='password')| *Password:
-              input#password.form-control(type='password', name='password', data-toggle='tooltip', data-placement='top', data-original-title='Password', required='required', placeholder='Password')
+              input#password.form-control(type='password', name='password', data-toggle='tooltip', data-placement='top', title='Password', required='required', placeholder='Password')
 
-            button#submit.btn.btn-primary.pull-right(type='submit', data-toggle='tooltip', data-placement='top', data-original-title='Submit')
+            button#submit.btn.btn-primary.pull-right(type='submit', data-toggle='tooltip', data-placement='top', title='Submit')
               i.fa.fa-sign-in
               |  Login
 

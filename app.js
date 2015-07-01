@@ -1,19 +1,19 @@
 var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var morgan = require('morgan');
-
-var pkg = require('./package');
-var config = require('./config');
-var winston = require('winston');
-var flash = require('connect-flash');
-var http = require('http');
-var expressSession = require('express-session');
-var multer = require('multer');
-
+var session = require('express-session');
 var mongoose = require('mongoose');
+var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+
+var favicon = require('serve-favicon');
+var flash = require('connect-flash');
+var winston = require('winston');
+var multer = require('multer');
+var morgan = require('morgan');
+var http = require('http');
+var path = require('path');
+
+var config = require('./config');
+var pkg = require('./package');
 
 // Logging
 winston.loggers.add('log', config.loggers.log);
@@ -50,9 +50,19 @@ morgan.token('status', function(req, res) {
   return '\x1b[' + color + 'm' + status;
 });
 
+morgan.token('package', function(req, res) {
+  return pkg.name;
+});
+
 app.use(morgan(config.app.set.morgan));
 
-app.use(expressSession(config.app.cookie.options));
+var mongostore = config.app.cookie.options;
+mongostore.store = new MongoStore({
+  mongooseConnection: mongoose.connection,
+  stringify: false
+});
+
+app.use(session(mongostore));
 
 app.use(flash());
 
@@ -66,7 +76,7 @@ app.use(passport.session());
 var Tab = require('./models/tab');
 var Account = require('./models/account');
 var Category = require('./models/category');
-passport.use(new LocalStrategy(Account.authenticate()));
+passport.use(Account.createStrategy());
 
 passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
@@ -85,6 +95,7 @@ var routes = require('./routes/routes');
 
 // Configure routes
 app.get('/', routes.index);
+app.get('/s?', routes.search);
 app.get('/login', routes.login);
 app.get('/logout', routes.ensureAuthenticated, routes.logout);
 app.get('/settings', routes.settings);
@@ -93,12 +104,9 @@ app.get('/accounts/:username', routes.ensureAuthenticated, routes.accounts);
 app.get('/settings/account/create', routes.ensureAuthenticated, routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/category/create', routes.ensureAuthenticated, routes.categoryCreate);
 app.get('/settings/tab/create', routes.ensureAuthenticated, routes.tabCreate);
-app.get('/survey/:name', routes.survey);
-app.get('/s?', routes.search);
 
-app.post('/survey/:name', routes.postSurvey);
-app.post('/prefer', routes.postPrefer);
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login', failureFlash: 'Invalid username or password.' }), routes.postLogin);
+app.post('/score', routes.postScore);
 app.post('/settings/account/create', routes.postAccountCreate);
 app.post('/settings/account/update', routes.postAccountUpdate);
 app.post('/settings/account/edit', routes.ensureAuthenticated, routes.postAccountEdit);
@@ -177,7 +185,7 @@ if (app.get('env') === 'production') {
 var server = http.createServer(app);
 server.listen(app.get('port'), app.get('address'), function() {
   log.info('%s (%s) is running.', process.title, process.version);
-  log.info('process id is %d.', process.pid)
+  log.info('process id is %d.', process.pid);
   log.info('\x1b[32m%s is running in %s mode.\x1b[0m', pkg.name, app.settings.env);
   log.info('listening on %s:%d.', server.address().address, server.address().port);
   log.info('\x1b[37mctrl+c to shut down.\x1b[0m');

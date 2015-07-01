@@ -18,18 +18,16 @@ methods.mkdirSync(config.loggers.log.file.filename);
 module.exports.login = login;
 module.exports.logout = logout;
 module.exports.index = index;
+module.exports.search = search;
 module.exports.accounts = accounts;
 module.exports.settings = settings;
 module.exports.logging = logging;
 module.exports.accountCreate = accountCreate;
 module.exports.categoryCreate = categoryCreate;
 module.exports.tabCreate = tabCreate;
-module.exports.survey = survey;
-module.exports.search = search;
 
-module.exports.postSurvey = postSurvey;
-module.exports.postPrefer = postPrefer;
 module.exports.postLogin = postLogin;
+module.exports.postScore = postScore;
 module.exports.postAccountCreate = postAccountCreate;
 module.exports.postAccountUpdate = postAccountUpdate;
 module.exports.postAccountEdit = postAccountEdit;
@@ -52,40 +50,25 @@ module.exports.ensureAuthenticated = ensureAuthenticated;
  */
 
 /**
- * Renders a view and sends the rendered HTML string to the client.
- * @param {Object} req
- * @param {Object} res
- */
-function survey(req, res) {
-  res.render('forms/survey/' + req.params.name, {surveyname: req.params.name});
-}
-
-/**
- * Writes the requested data to a file and redirects to a other website.
- * @param {Object} req
- * @param {Object} res
- */
-function postSurvey(req, res) {
-  methods.writeFile('logs/survey.log', '\n' + req.params.name + '\n' + JSON.stringify(req.body) + '\n');
-  res.redirect('https://lipsupport.mpib-berlin.mpg.de/workshop');
-}
-
-/**
  * Pass a local variable to the login form page.
  * Get an array of flash messages by passing the keys to req.flash().
  * @param {Object} req
  * @param {Object} res
  */
 function login(req, res) {
-  var ro = new RenderObject();
-  ro.set({
-    title: 'Login',
-    user: req.user,
-    info: req.flash('info'),
-    error: req.flash('error'),
-    success: req.flash('success')
-  });
-  res.render('forms/login', ro.get());
+  if (!req.user) {
+    var ro = new RenderObject();
+    ro.set({
+      title: 'Login',
+      user: req.user,
+      info: req.flash('info'),
+      error: req.flash('error'),
+      success: req.flash('success')
+    });
+    res.render('forms/login', ro.get());
+  } else {
+    res.redirect('/');
+  }
 }
 
 /**
@@ -127,6 +110,83 @@ function index(req, res) {
       res.render('index', ro.get());
     });
   });
+}
+
+/**
+ * Selects all documents in collection tab, sorted by the field name
+ * in ascending order and pass a local variable to the search page.
+ * Get an array of flash messages by passing the keys to req.flash().
+ * @param {Object} req
+ * @param {Object} res
+ * @return {String} err
+ */
+function search(req, res) {
+  var searchQueue = req.query.q.trim();
+  if (searchQueue) {
+
+    // Models into which sought
+    var models = config.custom.searchModels.sort();
+
+    var container = [];
+    var query = [];
+    searchQueue = searchQueue.replace(/\t+|\s+|\n\r/gm, ' ');
+    var list = searchQueue.replace(/ /g, ')|(');
+    var params = searchQueue.split(/ /g);
+    var regex = { $regex: new RegExp('(' + list + ')', 'i') };
+
+    // Prepare params for count matching
+    for (var p in params) {
+      tmp = {};
+      tmp[params[p]] = [];
+      container.push(tmp);
+    }
+
+    // Provides regular expression capabilities for pattern matching strings
+    // in queries. Case insensitivity to match upper and lower cases.
+    for (var m in models) {
+      tmp = {};
+      tmp[models[m]] = regex;
+
+      // Prevent output for admin tabs
+      if (!req.user) {
+        tmp.check = false;
+      }
+
+      query.push(tmp);
+
+      // Count matches
+      for (p in params) {
+        methods.count(mongoose.model('tab'), models[m], params[p], container[p]);
+      }
+    }
+
+    mongoose.model('tab').find({})
+    .or(query)
+    .sort({name: 1})
+    .limit(0)
+    .skip(0)
+    .exec(function(err, tab) {
+      if (err) throw new Error(err);
+      var ro = new RenderObject();
+      ro.set({
+        title: 'Search',
+        grid: tab,
+        searchQueue: searchQueue,
+        container: container,
+        models: models,
+        params: params,
+        user: req.user,
+        info: req.flash('info'),
+        error: req.flash('error'),
+        success: req.flash('success')
+      });
+      log.info('There were started a search for "%s" and %d matches found.', searchQueue, tab.length);
+      log.debug(JSON.stringify(tab));
+      res.render('sites/search', ro.get());
+    });
+  } else {
+    index(req, res);
+  }
 }
 
 /**
@@ -280,87 +340,22 @@ function tabCreate(req, res) {
  */
 
 /**
- * Selects all documents in collection tab, sorted by the field name
- * in ascending order and pass a local variable to the search page.
- * Get an array of flash messages by passing the keys to req.flash().
+ * Sets a flash message by passing the key, followed by the value, to req.flash()
+ * and redirect to the given url.
  * @param {Object} req
  * @param {Object} res
- * @return {String} err
  */
-function search(req, res) {
-  var searchQueue = req.query.q.trim();
-  if (searchQueue) {
-
-    // Models into which sought
-    var models = config.custom.searchModels.sort();
-
-    var container = [];
-    var query = [];
-    searchQueue = searchQueue.replace(/\t+|\s+|\n\r/gm, ' ');
-    var list = searchQueue.replace(/ /g, ')|(');
-    var params = searchQueue.split(/ /g);
-    var regex = { $regex: new RegExp('(' + list + ')', 'i') };
-
-    // Prepare params for count matching
-    for (var p in params) {
-      tmp = {};
-      tmp[params[p]] = [];
-      container.push(tmp);
-    }
-
-    // Provides regular expression capabilities for pattern matching strings
-    // in queries. Case insensitivity to match upper and lower cases.
-    for (var m in models) {
-      tmp = {};
-      tmp[models[m]] = regex;
-
-      // Prevent output for admin tabs
-      if (!req.user) {
-        tmp.check = false;
-      }
-
-      query.push(tmp);
-
-      // Count matches
-      for (p in params) {
-        methods.count(mongoose.model('tab'), models[m], params[p], container[p]);
-      }
-    }
-
-    mongoose.model('tab').find({})
-    .or(query)
-    .sort({name: 1})
-    .limit(0)
-    .skip(0)
-    .exec(function(err, tab) {
-      if (err) throw new Error(err);
-      var ro = new RenderObject();
-      ro.set({
-        title: 'Search',
-        grid: tab,
-        searchQueue: searchQueue,
-        container: container,
-        models: models,
-        params: params,
-        user: req.user,
-        info: req.flash('info'),
-        error: req.flash('error'),
-        success: req.flash('success')
-      });
-      log.info('There were started a search for "%s" and %d matches found.', searchQueue, tab.length);
-      log.debug(JSON.stringify(tab));
-      res.render('sites/search', ro.get());
-    });
-  } else {
-    index(req, res);
-  }
+function postLogin(req, res) {
+  log.info('%s %s %d - Logged in %s - %s', req.method, req.path, res.statusCode, req.user.username, req.headers['user-agent']);
+  req.flash('success', 'You are logged in.');
+  res.redirect('/accounts/' + req.user.username);
 }
 
 /**
  * Increases the value of the preference of a Tab.
  * @param {Object} req
  */
-function postPrefer(req) {
+function postScore(req) {
   var query = new Object({ _id: req.body.id });
   mongoose.model('tab').findOne(query, function(err, tab) {
     if (err) throw new Error(err);
@@ -393,18 +388,6 @@ function postPrefer(req) {
       log.error(e.stack);
     }
   });
-}
-
-/**
- * Sets a flash message by passing the key, followed by the value, to req.flash()
- * and redirect to the given url.
- * @param {Object} req
- * @param {Object} res
- */
-function postLogin(req, res) {
-  log.info('%s %s %d - Logged in %s - %s', req.method, req.path, res.statusCode, req.user.username, req.headers['user-agent']);
-  req.flash('success', 'You are logged in.');
-  res.redirect('/accounts/' + req.user.username);
 }
 
 /**

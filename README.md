@@ -6,14 +6,13 @@
 		          /____/ Save websites
 [![Build Status](https://travis-ci.org/valenz/tabgrid.svg?branch=master)](https://travis-ci.org/valenz/tabgrid)
 
-
 ## Requirements
 You need default MongoDB service up and running, PhantomJS and the NodeJS engine (greater or equal 0.10.x).
 
 
 ## Installation
 ### Quick installation
-    $ git clone https://git.mpib-berlin.mpg.de/lip-support/tabgrid.git
+    $ git clone git@github.com:valenz/tabgrid.git
 
     $ cd tabgrid
 

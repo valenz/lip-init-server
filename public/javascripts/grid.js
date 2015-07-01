@@ -63,7 +63,7 @@ $(document).ready(function() {
       fd.append('id', $(this).parent().attr('id'));
       $.ajax({
         type: 'POST',
-        url: '/prefer',
+        url: '/score',
         data: fd,
         processData: false,
         contentType: false

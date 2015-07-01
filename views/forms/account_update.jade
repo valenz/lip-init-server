@@ -15,21 +15,21 @@ block content
           form.form(action='/settings/account/update', method='post', enctype='multipart/form-data', onsubmit='document.getElementById("submit").disabled=true;')
             .form-group
               label(for='password')| *New Password:
-              input#password.form-control(type='password', name='newPassword', data-toggle='tooltip', data-placement='top', data-original-title='New Password', required='required', placeholder='New Password', autofocus)
+              input#password.form-control(type='password', name='newPassword', data-toggle='tooltip', data-placement='top', title='New Password', required='required', placeholder='New Password', autofocus)
             .form-group
               label(for='confirm')| *Confirm New Password:
-              input#confirm.form-control(type='password', name='confirm', data-toggle='tooltip', data-placement='top', data-original-title='Confirm New Password', required='required', placeholder='Confirm New Password')
+              input#confirm.form-control(type='password', name='confirm', data-toggle='tooltip', data-placement='top', title='Confirm New Password', required='required', placeholder='Confirm New Password')
             .form-group
               label(for='role')| *Role:
               .input-group
                 label.radio-inline
-                  input(type='radio', name='role', data-toggle='tooltip', data-placement='top', data-original-title='Admin', required='required', value= 0, checked= user && user.role == 0 ? true : false)
+                  input(type='radio', name='role', data-toggle='tooltip', data-placement='top', title='Admin', required='required', value= 0, checked= user && user.role == 0 ? true : false)
                   | Admin
                 label.radio-inline
-                  input(type='radio', name='role', data-toggle='tooltip', data-placement='top', data-original-title='User', required='required', value= 1, checked= user && user.role == 1 ? true : false)
+                  input(type='radio', name='role', data-toggle='tooltip', data-placement='top', title='User', required='required', value= 1, checked= user && user.role == 1 ? true : false)
                   | User
 
-            button#submit.btn.btn-primary.pull-right(type='submit', data-toggle='tooltip', data-placement='top', data-original-title='Submit')
+            button#submit.btn.btn-primary.pull-right(type='submit', data-toggle='tooltip', data-placement='top', title='Submit')
               i.fa.fa-refresh
               |  Update
 

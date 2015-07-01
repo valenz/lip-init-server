@@ -6,20 +6,17 @@ nav.navbar.navbar-inverse.navbar-fixed-top
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      a.navbar-brand.hidden-sm(href='/')
-        | LIP-IT/Technik-Support
-      a.navbar-brand.visible-sm-block(data-toggle='tooltip', data-placement='bottom', data-original-title='Home', href='/')
+      a.navbar-brand.hidden-sm(href='/') Tabgrid
+      a.navbar-brand.visible-sm-block(data-toggle='tooltip', data-placement='bottom', title='Home', href='/')
         span.sr-only Home
         i.fa.fa-home
 
     #navbar-collapse.collapse.navbar-collapse
       ul.nav.navbar-nav.hidden-sm.navbar-left
         li
-          a(href='http://intra.mpib-berlin.mpg.de')
-            | Intranet
+          a(href='#') Link 1
         li
-          a(href='http://www.mpib-berlin.mpg.de')
-            | MPIB-Berlin
+          a(href='#') Link 2
 
       ul.nav.navbar-nav.visible-sm-block.navbar-left
         li.dropdown
@@ -28,11 +25,9 @@ nav.navbar.navbar-inverse.navbar-fixed-top
             span.caret
           ul.dropdown-menu
             li
-              a(href='http://intra.mpib-berlin.mpg.de')
-                | Intranet
+              a(href='#') Link 1
             li
-              a(href='http://www.mpib-berlin.mpg.de')
-                | MPIB-Berlin
+              a(href='#') Link 2
 
       ul.nav.navbar-nav.navbar-right
         li.hidden-sm
@@ -58,16 +53,16 @@ nav.navbar.navbar-inverse.navbar-fixed-top
 
         if user
           li(class= title == 'Create Tab' ? 'active' : '')
-            a(data-toggle='tooltip', data-placement='bottom', data-original-title='Create Tab', href='/settings/tab/create')
+            a(data-toggle='tooltip', data-placement='bottom', title='Create Tab', href='/settings/tab/create')
               i.fa.fa-plus
 
         li(class= title == 'Settings' ? 'active' : '')
-          a(data-toggle='tooltip', data-placement='bottom', data-original-title='Settings', href='/settings')
+          a(data-toggle='tooltip', data-placement='bottom', title='Settings', href='/settings')
             i.fa.fa-cog
 
         if !user
           li
-            a.email(data-toggle='tooltip', data-placement='bottom', data-original-title='Email', data-user='lipsupport', data-domain='mpib-berlin.mpg.de')
+            a.email(data-toggle='tooltip', data-placement='bottom', title='Email', data-user='user', data-domain='domain')
               i.fa.fa-envelope
 
         if user
@@ -79,20 +74,20 @@ nav.navbar.navbar-inverse.navbar-fixed-top
               span.caret
             ul.dropdown-menu
               li
-                a(data-toggle='tooltip', data-placement='left', data-original-title= a+b+"'s Grid", href='/accounts/'+ user.username)
+                a(data-toggle='tooltip', data-placement='left', title= a+b+"'s Grid", href='/accounts/'+ user.username)
                   i.fa.fa-user
                   |  #{a+b}'s Grid
               li
-                a(data-toggle='tooltip', data-placement='left', data-original-title='Log', href='/settings/logging#tail')
+                a(data-toggle='tooltip', data-placement='left', title='Log', href='/settings/logging#tail')
                   i.fa.fa-book
                   |  Log
               li.divider
               li
-                a(data-toggle='tooltip', data-placement='left', data-original-title='Logout '+user.username, href='/logout')
+                a(data-toggle='tooltip', data-placement='left', title='Logout '+user.username, href='/logout')
                   i.fa.fa-sign-out
                   |  Logout
         else
           li(class= title == 'Login' ? 'active' : '')
-            a(data-toggle='tooltip', data-placement='bottom', data-original-title='Login', href='/login')
+            a(data-toggle='tooltip', data-placement='bottom', title='Login', href='/login')
               i.fa.fa-sign-in
               |  Login
