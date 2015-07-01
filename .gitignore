@@ -23,9 +23,8 @@ docs/
 # ghost
 *.db
 
-/content/data/*
-/content/apps/**/*
-/content/themes/**/*
-/content/images/**/*
-!/content/themes/casper/**
-!/README.md
+public/content/data/*
+public/content/apps/**/*
+public/content/themes/**/*
+public/content/images/**/*
+!public/content/themes/casper/**
