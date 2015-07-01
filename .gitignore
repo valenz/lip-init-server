@@ -1,5 +1,6 @@
 # test related
 public/uploads/
+data/
 
 # osx
 .DS_Store
