@@ -19,4 +19,13 @@ README.html
 *.log
 logs/
 docs/
-data/
+
+# ghost
+*.db
+
+/content/data/*
+/content/apps/**/*
+/content/themes/**/*
+/content/images/**/*
+!/content/themes/casper/**
+!/README.md
