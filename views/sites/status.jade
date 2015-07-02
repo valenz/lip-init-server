@@ -1,28 +1,102 @@
 doctype html
 html(lang='en')
   head
+    title #{status} | #{message}
+
     meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
 
-    title Tabgrid | #{title}
+    link(rel='stylesheet', type='text/css', href='//fonts.googleapis.com/css?family=Open+Sans:300,700')
+    link(rel='stylesheet', type='text/css', href='//maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css')
 
-    link(rel='stylesheet', type='text/css', href='//fonts.googleapis.com/css?family=Audiowide')
-    link(rel='stylesheet', type='text/css', href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css')
+    block styles
+      style(type='text/css').
+        body {
+          font-family: 'Open Sans', sans-serif;
+        }
+
+        .container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          overflow: hidden;
+        }
+
+        .error-container {
+          max-width: 530px;
+          margin: 0 auto;
+          padding: 0;
+          display: table;
+          height: 100%;
+        }
+
+        .error-details {
+          display: table-cell;
+          vertical-align: middle;
+        }
+
+        div .error-image {
+          margin: 10px 40px;
+        }
+
+        .error-image {
+          display: inline-block;
+          vertical-align: middle;
+          width: 96px;
+          height: 150px;
+        }
+
+        .error-content {
+          position: relative;
+          top: -5px;
+          display: inline-block;
+          vertical-align: middle;
+          margin-left: 10px;
+        }
+
+        .error-status {
+          margin: 0;
+          font-size: 7.8em;
+          line-height: 0.9;
+          letter-spacing: -2px;
+          font-weight: bold;
+          color: #979797;
+        }
+
+        .error-message {
+          margin: 0;
+          padding: 0;
+          font-size: 1.8em;
+          color: #979797;
+        }
+
+        .error-link {
+          line-height: 2.3;
+          color: #29AAE1;
+        }
+
+        .error-link:hover {
+          color: #337ab7;
+          text-decoration: none;
+        }
+
+        h1, h2 {
+          display: block;
+          text-rendering: optimizeLegibility;
+          -webkit-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
+          -moz-font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
+          font-feature-settings: 'dlig' 1, 'liga' 1, 'lnum' 1, 'kern' 1;
+        }
 
   body
-    div(style='margin: 0 auto; width: 750px; padding: 50px 5px 0 5px; text-align: left;')
-      div(style='color: #FBFBFB; text-shadow: 0 1px 1px #454578, 0 -1px 1px #FFFFFF;')
-        i.fa.fa-fire(style='font-size: 120px;')
-        br
-        span(style='font-family: Audiowide, cursive; font-size: 38px;')= fallover.status
-
-      div(style='font-size: 12px; color: #454578;')
-        pre= fallover
-
-        if header
-          div(style='width: auto; overflow: hidden; white-space: pre-wrap; word-break: break-all;')
-            for i, j in header
-              p(style='color: #A6A6A6;').
-                #{j} : #{i}
-
-        p
-          a(href='/')| Home
+    .container
+      .error-container
+        .error-details
+          .error-image
+            img(src='/images/404.png' width='100%' height='100%')
+          .error-content
+            h1.error-status= status
+            h2.error-message= message
+            a.error-link(href='/') Go to the front page &#8594;

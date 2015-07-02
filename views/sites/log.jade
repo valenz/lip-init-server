@@ -3,46 +3,43 @@ extends ../includes/header
 block content
 
   .container-fluid
-    h2.page-header= title
+    p.help-block.small.
+      The current log level is #{level} and runs in #{env} environment mode. You can make changes in the relevant config file.
 
-    .scrollable.thumbnail(style='height: 650px;')
+    .thumbnail
       table.table.table-condensed.table-hover.table-striped
         thead
           tr
             th| Line
             th| Timestamp
-            th| Level*
+            th| Level
             th| Message
         tbody
           each line, i in file
             +lines(line.timestamp, line.level, line.message, i)
 
-    p.help-block.small
-      | *) The current log level is #{level} and runs in #{env} environment mode.
-      | You can make changes in the relevant config file.
-
-  mixin lines(timestamp, level, message, i)
-    tr
-      td
-        if i+1 == file.length
-          p
-            a(name='tail', style='text-decoration: none; color: #333;')= i+1
-        else
-          p= i+1
-      td
-        p.text-nowrap= timestamp
-      td
-        if level == 'error'
-          p.level-error= level
-        else if level == 'warn'
-          p.level-warn= level
-        else if level == 'info'
-          p.level-info= level
-        else if level == 'verbose'
-          p.level-verbose= level
-        else if level == 'debug'
-          p.level-debug= level
-        else
-          p.log-level= level
-      td
-        pre.breakall.pre-scrollable(style='border: 0px; background: transparent; padding: 0px;')= message
+          mixin lines(timestamp, level, message, i)
+            tr
+              td
+                if i+1 == file.length
+                  p
+                    a(name='tail', style='text-decoration: none; color: #333;')= i+1
+                else
+                p= i+1
+              td
+                p.text-nowrap= timestamp
+              td
+                if level == 'error'
+                  p.level-error= level
+                else if level == 'warn'
+                  p.level-warn= level
+                else if level == 'info'
+                  p.level-info= level
+                else if level == 'verbose'
+                  p.level-verbose= level
+                else if level == 'debug'
+                  p.level-debug= level
+                else
+                  p.log-level= level
+              td
+                pre.breakall.pre-scrollable(style='border: 0px; background: transparent; padding: 0px;')= message

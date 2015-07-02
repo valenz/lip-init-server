@@ -125,24 +125,9 @@ app.post('/settings/tab/delete', routes.postTabDelete);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  if (req.user) {
-    var err = new Error();
-    err.message = 'Failed to load resource "' + req.url + '". The server responded with a status of 404 (Not Found).';
-    err.status = 404;
-    err.method = req.method;
-    err.header = req.headers;
-    err.url = req.url;
-    next(err);
-  } else {
-    res.redirect('/');
-  }
-});
-
-// Handles uncaught exceptions.
-process.on('uncaughtException', function(e) {
-  log.debug('Caught exception: ', e.stack);
-  log.error('Caught exception: ', e.message);
-  return;
+  var err = new Error('Page Not Found');
+  err.status = 404;
+  next(err);
 });
 
 // error handlers
@@ -153,7 +138,7 @@ if (app.get('env') === 'development') {
   app.enable('verbose errors');
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    log.error(err.message);
+    log.error('%s: %s', err.message, req.url);
     res.render('sites/status', {
       title: err.status,
       user: req.user,
@@ -170,23 +155,28 @@ if (app.get('env') === 'production') {
   app.disable('verbose errors');
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    log.error(err.message);
+    log.error('%s: %s', err.message, req.url);
     res.render('sites/status', {
-      title: err.status,
-      user: req.user,
-      fallover: err,
-      header: {},
-      message: err.message
+      status: err.status,
+      message: err.message,
+      error: err
     });
   });
 }
+
+// Handles uncaught exceptions.
+process.on('uncaughtException', function(e) {
+  log.debug('Caught exception: ', e.stack);
+  log.error('Caught exception: ', e.message);
+  return;
+});
 
 // Fires the server.
 var server = http.createServer(app);
 server.listen(app.get('port'), app.get('address'), function() {
   log.info('%s (%s) is running.', process.title, process.version);
   log.info('process id is %d.', process.pid);
-  log.info('\x1b[32m%s is running in %s mode.\x1b[0m', pkg.name, app.settings.env);
+  log.info('%s is running in %s mode.', pkg.name, app.settings.env);
   log.info('listening on %s:%d.', server.address().address, server.address().port);
-  log.info('\x1b[37mctrl+c to shut down.\x1b[0m');
+  log.info('ctrl+c to shut down.');
 });
