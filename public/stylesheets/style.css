@@ -55,7 +55,7 @@ body {
   text-align: left;
 }
 
-.navbar-inverse .signout:hover {
+.navbar-inverse .signout:hover, .navbar-inverse .signout:focus {
   text-decoration: none;
   background-color: #F5F5F5;
   color: #000;
