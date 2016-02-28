@@ -8,3 +8,5 @@ services:
 
 install:
         - npm install
+
+script: npm test

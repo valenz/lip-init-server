@@ -36,6 +36,6 @@
   },
   "scripts": {
     "start": "NODE_ENV=production node app",
-    "test": "NODE_ENV=test node app"
+    "test": "./node_modules/jshint/bin/jshint hello.js"
   }
 }
