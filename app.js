@@ -18,11 +18,12 @@ var pkg = require('./package');
 // Logging
 winston.loggers.add('log', config.loggers.log);
 var log = winston.loggers.get('log');
-log.transports.console.label = pkg.name;
+//log.transports.console.label = pkg.name;
 log.exitOnError = false;
 
 // Configure Express
 var app = express();
+var mltr = multer();
 app.set('port', process.env.PORT || config.app.set.port);
 app.set('address', process.env.ADDRESS || config.app.set.address);
 app.set('env', process.argv[2] || process.env.NODE_ENV || config.env);
@@ -32,7 +33,6 @@ app.set('view engine', config.app.set.engine);
 app.set('view options', config.app.set.options);
 
 app.use(favicon(__dirname + config.app.set.favicon));
-app.use(multer());
 
 // Request logger status codes
 morgan.token('locale', function(req, res) {
@@ -100,28 +100,28 @@ app.get('/signin', routes.signin);
 app.get('/settings', routes.settings);
 app.get('/settings/logging', routes.ensureAuthenticated, routes.logging);
 app.get('/accounts/:username', routes.ensureAuthenticated, routes.accounts);
-app.get('/settings/account/create', routes.ensureAuthenticated, routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
+app.get('/settings/account/create', /*routes.ensureAuthenticated,*/ routes.accountCreate); // Add 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/settings/category/create', routes.ensureAuthenticated, routes.categoryCreate);
 app.get('/settings/tab/create', routes.ensureAuthenticated, routes.tabCreate);
 
-app.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: 'Invalid username or password.' }), routes.postSignin);
-app.post('/signout', routes.ensureAuthenticated, routes.postSignout);
+app.post('/signin', mltr.array(), passport.authenticate('local', { failureRedirect: '/signin', failureFlash: 'Invalid username or password.' }), routes.postSignin);
+app.post('/signout', mltr.array(), routes.ensureAuthenticated, routes.postSignout);
 app.post('/score', routes.postScore);
-app.post('/settings/account/create', routes.postAccountCreate);
-app.post('/settings/account/update', routes.postAccountUpdate);
-app.post('/settings/account/edit', routes.ensureAuthenticated, routes.postAccountEdit);
-app.post('/settings/account/details', routes.ensureAuthenticated, routes.postAccountDetails);
-app.post('/settings/account/delete', routes.postAccountDelete);
-app.post('/settings/category/create', routes.postCategoryCreate);
-app.post('/settings/category/update', routes.postCategoryUpdate);
-app.post('/settings/category/edit', routes.ensureAuthenticated, routes.postCategoryEdit);
-app.post('/settings/category/details', routes.ensureAuthenticated, routes.postCategoryDetails);
-app.post('/settings/category/delete', routes.postCategoryDelete);
-app.post('/settings/tab/create', routes.postTabCreate);
-app.post('/settings/tab/update', routes.postTabUpdate);
-app.post('/settings/tab/edit', routes.ensureAuthenticated, routes.postTabEdit);
-app.post('/settings/tab/details', routes.ensureAuthenticated, routes.postTabDetails);
-app.post('/settings/tab/delete', routes.postTabDelete);
+app.post('/settings/account/create', mltr.array(), routes.postAccountCreate);
+app.post('/settings/account/update', mltr.array(), routes.postAccountUpdate);
+app.post('/settings/account/edit', mltr.array(), routes.ensureAuthenticated, routes.postAccountEdit);
+app.post('/settings/account/details', mltr.array(), routes.ensureAuthenticated, routes.postAccountDetails);
+app.post('/settings/account/delete', mltr.array(), routes.postAccountDelete);
+app.post('/settings/category/create', mltr.array(), routes.postCategoryCreate);
+app.post('/settings/category/update', mltr.array(), routes.postCategoryUpdate);
+app.post('/settings/category/edit', mltr.array(), routes.ensureAuthenticated, routes.postCategoryEdit);
+app.post('/settings/category/details', mltr.array(), routes.ensureAuthenticated, routes.postCategoryDetails);
+app.post('/settings/category/delete', mltr.array(), routes.postCategoryDelete);
+app.post('/settings/tab/create', mltr.array(), routes.postTabCreate);
+app.post('/settings/tab/update', mltr.array(), routes.postTabUpdate);
+app.post('/settings/tab/edit', mltr.array(), routes.ensureAuthenticated, routes.postTabEdit);
+app.post('/settings/tab/details', mltr.array(), routes.ensureAuthenticated, routes.postTabDetails);
+app.post('/settings/tab/delete', mltr.array(), routes.postTabDelete);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
