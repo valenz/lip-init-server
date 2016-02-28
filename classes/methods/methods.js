@@ -221,14 +221,14 @@ function getPageInfo(url, cb) {
   var phantom = require('phantom');
 
   // Creates PhantomJS process
-  phantom.create(function(ph) {
+  phantom.create().then(function(ph) {
     // Makes new PhantomJS WebPage objects
-    return ph.createPage(function(page) {
+    return ph.createPage().then(function(page) {
       log.info('PhantomJS was started for evaluation. The process ID is %s.', ph.process.pid);
       if (!url) return ph.exit();
 
       // Opens the url and loads it to the page
-      return page.open(url, function(status) {
+      return page.open(url).then(function(status) {
         if (status === 'success') {
           log.info('Status after opening page "%s": %s', url, status);
         } else {
@@ -255,12 +255,11 @@ function getPageInfo(url, cb) {
                 return info;
               }
             }
-          },
-
-          function(info) {
+          }).then(function(info) {
             cb(info);
+            page.close();
             ph.exit();
-            log.info('PhantomJS process %s was completed and terminated.', ph.process.pid);
+            log.info('PhantomJS process %s completed and has been terminated.', ph.process.pid);
           });
         }, config.ph.evaluate.delay);
       });
@@ -276,59 +275,59 @@ function getPageInfo(url, cb) {
 function renderPage(obj, cb) {
   var phantom = require('phantom');
 
-  phantom.create(config.ph.settings.clo, function(ph) {
-    return ph.createPage(function(page) {
+  phantom.create(config.ph.settings.clo).then(function(ph) {
+    return ph.createPage().then(function(page) {
       log.info('PhantomJS was started for capturing. The process ID is %s.', ph.process.pid);
       if (!obj.url) return ph.exit();
 
       // Sets the size of the viewport for the layout process
-      page.set('viewportSize', config.ph.render.viewport);
+      page.property('viewportSize', config.ph.render.viewport);
 
       // Defines the rectangular area of the web page to be
       // rasterized when page.render is invoked
-      page.set('clipRect', config.ph.render.clip);
+      page.property('clipRect', config.ph.render.clip);
 
       // Specifies the scaling factor
-      page.set('zoomFactor', config.ph.render.zoom);
+      page.property('zoomFactor', config.ph.render.zoom);
 
       // Defines whether to execute the script in the page or not
-      page.set('settings.javascriptEnabled', config.ph.settings.javascriptEnabled);
+      page.setting('settings.javascriptEnabled', config.ph.settings.javascriptEnabled);
 
       // Defines whether to load the inlined images or not
-      page.set('settings.loadImages', config.ph.settings.loadImages);
+      page.setting('settings.loadImages', config.ph.settings.loadImages);
 
       // Defines whether local resource (e.g. from file) can access remote URLs or not
-      page.set('settings.localToRemoteUrlAccessEnabled', config.ph.settings.localToRemoteUrlAccessEnabled);
+      page.setting('settings.localToRemoteUrlAccessEnabled', config.ph.settings.localToRemoteUrlAccessEnabled);
 
       // Defines the user agent sent to server when the web page requests resources
-      page.set('settings.userAgent', config.ph.settings.userAgent);
+      page.setting('settings.userAgent', config.ph.settings.userAgent);
 
       // Sets the user name used for HTTP authentication
-      page.set('settings.userName', config.ph.settings.userName);
+      page.setting('settings.userName', config.ph.settings.userName);
 
       // Sets the password used for HTTP authentication
-      page.set('settings.password', config.ph.settings.password);
+      page.setting('settings.password', config.ph.settings.password);
 
       // Defines whether load requests should be monitored for cross-site scripting attempts
-      page.set('settings.XSSAuditingEnabled', config.ph.settings.XSSAuditingEnabled);
+      page.setting('settings.XSSAuditingEnabled', config.ph.settings.XSSAuditingEnabled);
 
       // Defines whether web security should be enabled or not
-      page.set('settings.webSecurityEnabled', config.ph.settings.webSecurityEnabled);
+      page.setting('settings.webSecurityEnabled', config.ph.settings.webSecurityEnabled);
 
       // Defines the timeout after which any resource requested will stop trying
       // and proceed with other parts of the page
-      page.set('settings.resourceTimeout', config.ph.settings.resourceTimeout);
+      page.setting('settings.resourceTimeout', config.ph.settings.resourceTimeout);
 
       // This callback is invoked when a web page
       // was unable to load resource.
-      page.set('onResourceError', function(resourceError) {
+      page.property('onResourceError', function(resourceError) {
         log.error('Resource Error: Unable to load resource (id: #%s | url: %s)', resourceError.id, resourceError.url);
         log.error('Resource Error: Error code: %s | Description: %s', resourceError.errorCode, resourceError.errorString);
       });
 
       // This callback is invoked when there is a JavaScript
       // confirm on the web page.
-      page.set('onConfirm', function(msg) {
+      page.property('onConfirm', function(msg) {
         log.info('JavaScript confirm says: ', msg);
 
         // true === pressing the OK button
@@ -338,11 +337,11 @@ function renderPage(obj, cb) {
 
       // This callback is invoked when a resource requested
       // by the page timeout.
-      page.set('onResourceTimeout', function(request) {
+      page.property('onResourceTimeout', function(request) {
         log.warn('Resource Timeout: Response (ID: #%s)', request.id, request);
       });
 
-      return page.open(obj.url, function(status) {
+      return page.open(obj.url).then(function(status) {
         if (status === 'success') {
           log.info('Status after opening page "%s": %s', obj.url, status);
         } else {
@@ -357,12 +356,10 @@ function renderPage(obj, cb) {
             } catch (e) {
               return;
             }
-          },
-
-          function() {
+          }).then(function() {
             // Renders the web page to an image buffer
             // and saves it as the specified filename.
-            page.render(config.custom.upload + obj.filename, config.ph.render.options, function() {
+            page.render(config.custom.upload + obj.filename, config.ph.render.options).then(function() {
               cb();
               ph.exit();
               log.info('PhantomJS process %s was completed and terminated.', ph.process.pid);
