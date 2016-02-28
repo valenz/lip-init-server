@@ -9,4 +9,7 @@ services:
 install:
         - npm install
 
+env:
+        - NODE_ENV=test
+
 script: npm test
