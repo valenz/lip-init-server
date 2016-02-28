@@ -4,5 +4,6 @@ var config = require('./config.global');
 
 config.env = 'development';
 config.loggers.log.file.level = 'debug';
+config.loggers.log.console.label = 'DEV';
 
 module.exports = config;

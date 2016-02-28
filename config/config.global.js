@@ -122,7 +122,7 @@ var config = module.exports = {
         timestamp: function() {
           return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
         },
-
+        label: 'tabgrid',
         prettyPrint: true,
         formatter: true,
         json: false
@@ -176,21 +176,19 @@ var config = module.exports = {
       delay: 100
     },
     settings: {
-      clo: {
-        parameters: {
+      clo: [
           // Ignores SSL errors, such as expired or self-signed certificate errors
-          'ignore-ssl-errors': true,
+          '--ignore-ssl-errors=true',
 
           // Sets the SSL protocol for secure connections
-          'ssl-protocol': 'any',
+          '--ssl-protocol=any',
 
           // Sets the encoding used for terminal output
-          'output-encoding': 'utf8',
+          '--output-encoding=utf8',
 
           // Sets the encoding used for the starting script
-          'script-encoding': 'utf8'
-        }
-      },
+          '--script-encoding=utf8'
+      ],
 
       // Defines whether to execute the script in the page or not
       javascriptEnabled: true,
