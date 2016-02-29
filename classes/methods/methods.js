@@ -32,6 +32,7 @@ module.exports.renderPage = renderPage;
  * @param {data} String
  */
 function writeFile(file, data) {
+  'use strict';
   fs.appendFile(file, data, function (err) {
     if (err) return log.error(err);
     log.info('Survey was saved in \'%s\'.', file);
@@ -45,6 +46,7 @@ function writeFile(file, data) {
  * @return {n} Number
  */
 function getUserTabs(obj) {
+  'use strict';
   if (!obj) return 0;
   var n = 0;
   for (var i in obj) if (obj[i].check) n++;
@@ -57,6 +59,7 @@ function getUserTabs(obj) {
  * @return {n} Number
  */
 function getAssignedTabs(obj) {
+  'use strict';
   if (!obj) return 0;
   var n = 0;
   for (var i in obj) n += obj[i].list.length;
@@ -71,6 +74,7 @@ function getAssignedTabs(obj) {
  * @return {str} String
  */
 function shorter(str) {
+  'use strict';
   if (!str) return false;
   var n = config.custom.shorter.maxLength;
   n = n >= 10 ? n : 42;
@@ -84,6 +88,7 @@ function shorter(str) {
  * @return {data} Object
  */
 function attach(tab, cat) {
+  'use strict';
   if (!cat) return false;
   var data = cat;
   var list = cat.list;
@@ -99,11 +104,12 @@ function attach(tab, cat) {
  * @return {data} Object
  */
 function detach(id, cat) {
+  'use strict';
   if (!cat) return false;
   var data = cat;
   var list = cat.list;
   list = list.filter(function (e) {
-    return e._id != id.toString();
+    return e._id !== id.toString();
   });
 
   data.list = list;
@@ -116,6 +122,7 @@ function detach(id, cat) {
  * @param {String} id
  */
 function clear(filename) {
+  'use strict';
   var path = config.custom.upload;
 
   fs.exists(path + filename, function (exists) {
@@ -139,6 +146,7 @@ function clear(filename) {
  * @param {String} str
  */
 function mkdirSync(str) {
+  'use strict';
   var filepath = str.split('/');
   if (filepath.length > 1) {
     var path = '';
@@ -149,7 +157,7 @@ function mkdirSync(str) {
 
     fs.exists(path, function (exists) {
       if (!exists) {
-        mkdirp.sync(path, 0755);
+        mkdirp.sync(path, parseInt('0755', 8));
         log.verbose('The path for the logfile has been created.');
       } else {
         log.verbose('The path for the logfile already exists.');
@@ -165,6 +173,7 @@ function mkdirSync(str) {
  * @param {Function} cb
  */
 function getLog(cb) {
+  'use strict';
   var arr = [];
   require('readline').createInterface({
     input: fs.createReadStream(config.loggers.log.file.filename),
@@ -185,7 +194,8 @@ function getLog(cb) {
  * @param {Object} container
  * @param {Function} cb
  */
-function count(mongoose, model, param, container, cb) {
+function count(mongoose, model, param, container) {
+  'use strict';
   var tmp = {};
   tmp[model] = { $regex: new RegExp('(' + param + ')', 'i') };
   mongoose.count(tmp, function (err, count) {
@@ -200,6 +210,7 @@ function count(mongoose, model, param, container, cb) {
  * @return {String} str
  */
 function random(len) {
+  'use strict';
   var c = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   var l = len >= 10 ? len : 24;
   var str = '';
@@ -218,6 +229,8 @@ function random(len) {
  * @param {Function} cb
  */
 function getPageInfo(url, cb) {
+  /* jslint browser:true */
+  'use strict';
   var phantom = require('phantom');
 
   // Creates PhantomJS process
@@ -274,6 +287,7 @@ function getPageInfo(url, cb) {
  * @param {Function} cb
  */
 function renderPage(obj, cb) {
+  'use strict';
   var phantom = require('phantom');
 
   phantom.create(config.ph.settings.clo).then(function (ph) {
@@ -356,7 +370,8 @@ function renderPage(obj, cb) {
           return page.evaluate(function (color) {
             try {
               // Sets background color
-              document.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' :
+              var doc = document;
+              doc.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' :
                color.value ? color.value : '#FFFFFF';
             } catch (e) {
               return;

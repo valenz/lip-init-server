@@ -11,6 +11,10 @@ var config = require('../config');
 var entities = new Entities();
 methods.mkdirSync(config.loggers.log.file.filename);
 
+var Tab = require('../models/tab');
+var Account = require('../models/account');
+var Category = require('../models/category');
+
 /**
  ********************************* EXPORTS *********************************
  */
@@ -56,6 +60,7 @@ module.exports.ensureAuthenticated = ensureAuthenticated;
  * @param {Object} res
  */
 function signin(req, res) {
+  'use strict';
   if (!req.user) {
     var ro = new RenderObject();
     ro.set({
@@ -80,7 +85,8 @@ function signin(req, res) {
  * @return {String} err
  */
 function index(req, res) {
-  mongoose.model('tab').find({}, null, {
+  'use strict';
+  Tab.find({}, null, {
     sort: {
       prefer: -1,
       whenCreated: -1,
@@ -89,7 +95,7 @@ function index(req, res) {
     limit: 0,
   }, function (err, tab) {
     if (err) throw new Error(err);
-    mongoose.model('category').find({}, null, {
+    Category.find({}, null, {
       sort: {
         name: -1,
       },
@@ -123,6 +129,7 @@ function index(req, res) {
  * @return {String} err
  */
 function search(req, res) {
+  'use strict';
   var searchQueue = req.query.q.trim();
   if (searchQueue) {
 
@@ -138,31 +145,31 @@ function search(req, res) {
 
     // Prepare params for count matching
     for (var p in params) {
-      tmp = {};
-      tmp[params[p]] = [];
-      container.push(tmp);
+      var tmpP = {};
+      tmpP[params[p]] = [];
+      container.push(tmpP);
     }
 
     // Provides regular expression capabilities for pattern matching strings
     // in queries. Case insensitivity to match upper and lower cases.
     for (var m in models) {
-      tmp = {};
-      tmp[models[m]] = regex;
+      var tmpM = {};
+      tmpM[models[m]] = regex;
 
       // Prevent output for admin tabs
       if (!req.user) {
-        tmp.check = false;
+        tmpM.check = false;
       }
 
-      query.push(tmp);
+      query.push(tmpM);
 
       // Count matches
       for (p in params) {
-        methods.count(mongoose.model('tab'), models[m], params[p], container[p]);
+        methods.count(Tab, models[m], params[p], container[p]);
       }
     }
 
-    mongoose.model('tab').find({})
+    Tab.find({})
     .or(query)
     .sort({ name: 1 })
     .limit(0)
@@ -201,7 +208,8 @@ function search(req, res) {
  * @return {String} err
  */
 function accounts(req, res) {
-  mongoose.model('tab').find({}, null, {
+  'use strict';
+  Tab.find({}, null, {
     sort: {
       prefer: -1,
       whenCreated: -1,
@@ -210,7 +218,7 @@ function accounts(req, res) {
     limit: 0,
   }, function (err, tab) {
     if (err) throw new Error(err);
-    mongoose.model('category').find({}, null, {
+    Category.find({}, null, {
       sort: {
         name: -1,
       },
@@ -245,7 +253,8 @@ function accounts(req, res) {
  * @return {String} err
  */
 function settings(req, res) {
-  mongoose.model('tab').find({}, null, {
+  'use strict';
+  Tab.find({}, null, {
     sort: {
       check: 1,
       category: 1,
@@ -255,7 +264,7 @@ function settings(req, res) {
     limit: 0,
   }, function (err, tab) {
     if (err) throw new Error(err);
-    mongoose.model('account').find({}, null, {
+    Account.find({}, null, {
       sort: {
         name: 1,
       },
@@ -263,7 +272,7 @@ function settings(req, res) {
       limit: 0,
     }, function (err, account) {
       if (err) throw new Error(err);
-      mongoose.model('category').find({}, null, {
+      Category.find({}, null, {
         sort: {
           normalized: 1,
           name: -1,
@@ -296,6 +305,7 @@ function settings(req, res) {
  * @param {Object} res
  */
 function logging(req, res) {
+  'use strict';
   var ro = new RenderObject();
   methods.getLog(function (log) {
     ro.set({
@@ -319,6 +329,7 @@ function logging(req, res) {
  * @param {Object} res
  */
 function accountCreate(req, res) {
+  'use strict';
   var ro = new RenderObject();
   ro.set({
     title: 'Create Account',
@@ -337,6 +348,7 @@ function accountCreate(req, res) {
  * @param {Object} res
  */
 function categoryCreate(req, res) {
+  'use strict';
   var ro = new RenderObject();
   ro.set({
     title: 'Create Category',
@@ -357,7 +369,8 @@ function categoryCreate(req, res) {
  * @param {Object} res
  */
 function tabCreate(req, res) {
-  mongoose.model('category').find({}, null, {
+  'use strict';
+  Category.find({}, null, {
     sort: {
       normalized: 1,
       name: -1,
@@ -390,6 +403,7 @@ function tabCreate(req, res) {
  * @param {Object} res
  */
 function postSignin(req, res) {
+  'use strict';
   log.info('%s %s %d - Logged in %s - %s', req.method, req.path, res.statusCode,
    req.user.username, req.headers['user-agent']);
   req.flash('success', 'You are logged in.');
@@ -403,6 +417,7 @@ function postSignin(req, res) {
  * @param {Object} res
  */
 function postSignout(req, res) {
+  'use strict';
   closeSession(req, res);
   res.redirect('/');
 }
@@ -412,8 +427,9 @@ function postSignout(req, res) {
  * @param {Object} req
  */
 function postScore(req) {
+  'use strict';
   var query = new Object({ _id: req.body.id });
-  mongoose.model('tab').findOne(query, function (err, tab) {
+  Tab.findOne(query, function (err, tab) {
     if (err) throw new Error(err);
     if (!tab) throw new Error('Data was not found.', tab);
 
@@ -421,7 +437,7 @@ function postScore(req) {
 
     if (tab.category) {
       query = new Object({ name: tab.category });
-      mongoose.model('category').findOne(query, function (err, cat) {
+      Category.findOne(query, function (err, cat) {
         if (err) throw new Error(err);
         if (!cat) throw new Error('Data was not found.', cat);
 
@@ -429,7 +445,7 @@ function postScore(req) {
         data = methods.attach(tab, data);
 
         if (data) {
-          data.save(function (err, doc) {
+          data.save(function (err) {
             if (err) throw new Error(err);
           });
         }
@@ -453,8 +469,9 @@ function postScore(req) {
  * @param {Object} res
  */
 function postAccountEdit(req, res) {
+  'use strict';
   var query = new Object({ _id: req.body.id });
-  mongoose.model('account').findOne(query, function (err, acc) {
+  Account.findOne(query, function (err, acc) {
     if (err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
@@ -476,8 +493,9 @@ function postAccountEdit(req, res) {
  * @param {Object} res
  */
 function postAccountDetails(req, res) {
+  'use strict';
   var query = new Object({ _id: req.body.id });
-  mongoose.model('account').findOne(query, function (err, acc) {
+  Account.findOne(query, function (err, acc) {
     if (err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
@@ -499,8 +517,9 @@ function postAccountDetails(req, res) {
  * @param {Object} res
  */
 function postCategoryEdit(req, res) {
+  'use strict';
   var query = new Object({ _id: req.body.id });
-  mongoose.model('category').findOne(query, function (err, cat) {
+  Category.findOne(query, function (err, cat) {
     if (err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
@@ -522,8 +541,9 @@ function postCategoryEdit(req, res) {
  * @param {Object} res
  */
 function postCategoryDetails(req, res) {
+  'use strict';
   var query = new Object({ _id: req.body.id });
-  mongoose.model('category').findOne(query, function (err, cat) {
+  Category.findOne(query, function (err, cat) {
     if (err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
@@ -545,10 +565,11 @@ function postCategoryDetails(req, res) {
  * @param {Object} res
  */
 function postTabEdit(req, res) {
+  'use strict';
   var query = new Object({ _id: req.body.id });
-  mongoose.model('tab').findOne(query, function (err, tab) {
+  Tab.findOne(query, function (err, tab) {
     if (err) throw new Error(err);
-    mongoose.model('category').find({}, null, {
+    Category.find({}, null, {
       sort: {
         normalized: 1,
         name: -1,
@@ -579,8 +600,9 @@ function postTabEdit(req, res) {
  * @param {Object} res
  */
 function postTabDetails(req, res) {
+  'use strict';
   var query = new Object({ _id: req.body.id });
-  mongoose.model('tab').findOne(query, function (err, tab) {
+  Tab.findOne(query, function (err, tab) {
     if (err) throw new Error(err);
     var ro = new RenderObject();
     ro.set({
@@ -603,6 +625,7 @@ function postTabDetails(req, res) {
  * @return {String} err
  */
 function postAccountCreate(req, res) {
+  'use strict';
   if (req.body.username && req.body.password && req.body.confirm && req.body.role) {
     log.verbose(JSON.stringify(req.body.username));
     var ro = new RenderObject();
@@ -666,12 +689,13 @@ function postAccountCreate(req, res) {
  * @return {String} err
  */
 function postAccountUpdate(req, res) {
+  'use strict';
   if (req.user) {
     if (req.body.newPassword && req.body.confirm && req.body.role) {
       log.verbose(JSON.stringify(req.user._doc));
       var query = new Object({ _id: req.user._id });
       if (req.body.newPassword === req.body.confirm) {
-        mongoose.model('account').findOne(query, function (err, acc) {
+        Account.findOne(query, function (err, acc) {
           if (err) throw new Error(err);
           if (!acc) {
             req.flash('error', 'Data was not found: %s', acc);
@@ -749,11 +773,12 @@ function postAccountUpdate(req, res) {
  * @return {String} err
  */
 function postAccountDelete(req, res) {
+  'use strict';
   if (req.user) {
     if (req.body.id) {
       log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
-      mongoose.model('account').find(function (err, allAcc) {
+      Account.find(function (err, allAcc) {
         if (err) throw new Error(err);
         if (!allAcc) {
           req.flash('error', 'Data was not found: %s', allAcc);
@@ -761,7 +786,7 @@ function postAccountDelete(req, res) {
           throw new Error('Data was not found.', allAcc);
         }
 
-        mongoose.model('account').findOne(query, function (err, acc) {
+        Account.findOne(query, function (err, acc) {
           if (err) throw new Error(err);
           if (!acc) {
             req.flash('error', 'Data was not found: %s', acc);
@@ -826,6 +851,7 @@ function postAccountDelete(req, res) {
  * @return {String} err
  */
 function postCategoryCreate(req, res) {
+  'use strict';
   if (req.user) {
     if (req.body.categoryname) {
       log.verbose(JSON.stringify(req.body));
@@ -889,7 +915,8 @@ function postCategoryCreate(req, res) {
  * @return {String} res
  */
 function assignNewCategory(query, category, req, res) {
-  mongoose.model('tab').findOne(query, function (err, tab) {
+  'use strict';
+  Tab.findOne(query, function (err, tab) {
     if (err) throw new Error(err);
     if (!tab) {
       req.flash('error', 'Data was not found: %s', tab);
@@ -899,7 +926,7 @@ function assignNewCategory(query, category, req, res) {
     tab.category = category;
 
     try {
-      tab.save(function (err, doc) {
+      tab.save(function (err) {
         if (err) {
           req.flash('error', err.message);
           res.redirect('/settings');
@@ -922,11 +949,12 @@ function assignNewCategory(query, category, req, res) {
  * @return {String} err
  */
 function postCategoryUpdate(req, res) {
+  'use strict';
   if (req.user) {
     if (req.body.id) {
       log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
-      mongoose.model('category').findOne(query, function (err, cat) {
+      Category.findOne(query, function (err, cat) {
         if (err) throw new Error(err);
         if (!cat) {
           req.flash('error', 'Data was not found: %s', cat);
@@ -1005,11 +1033,12 @@ function postCategoryUpdate(req, res) {
  * @return {String} err
  */
 function postCategoryDelete(req, res) {
+  'use strict';
   if (req.user) {
     if (req.body.id) {
       log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
-      mongoose.model('category').findOne(query, function (err, cat) {
+      Category.findOne(query, function (err, cat) {
         if (err) throw new Error(err);
         if (!cat) {
           req.flash('error', 'Data was not found: %s', cat);
@@ -1071,6 +1100,7 @@ function postCategoryDelete(req, res) {
  * @return {String} err
  */
 function postTabCreate(req, res) {
+  'use strict';
   if (req.user) {
     if (req.body.renderUrl) {
       log.verbose(JSON.stringify(req.body));
@@ -1115,7 +1145,7 @@ function postTabCreate(req, res) {
 
             if (req.body.category) {
               var query = new Object({ name: req.body.category });
-              mongoose.model('category').findOne(query, function (err, cat) {
+              Category.findOne(query, function (err, cat) {
                 if (err) throw new Error(err);
                 if (!cat) {
                   req.flash('error', 'Data was not found: %s', cat);
@@ -1126,7 +1156,7 @@ function postTabCreate(req, res) {
                 var data = methods.attach(doc, cat);
 
                 if (data) {
-                  data.save(function (err, doc) {
+                  data.save(function (err) {
                     if (err) {
                       req.flash('error', err.message);
                       res.redirect('/settings');
@@ -1177,11 +1207,12 @@ function postTabCreate(req, res) {
  * @return {String} err
  */
 function postTabUpdate(req, res) {
+  'use strict';
   if (req.user) {
     if (req.body.renderUrl) {
       log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
-      mongoose.model('tab').findOne(query, function (err, tab) {
+      Tab.findOne(query, function (err, tab) {
         if (err) throw new Error(err);
         if (!tab) {
           req.flash('error', 'Data was not found: %s', tab);
@@ -1191,7 +1222,7 @@ function postTabUpdate(req, res) {
 
         if (tab.category) {
           query = new Object({ name: tab.category });
-          mongoose.model('category').findOne(query, function (err, cat) {
+          Category.findOne(query, function (err, cat) {
             if (err) throw new Error(err);
             if (!cat) {
               req.flash('error', 'Data was not found: %s', cat);
@@ -1202,7 +1233,7 @@ function postTabUpdate(req, res) {
             var data = methods.detach(tab._id, cat);
 
             if (data) {
-              data.save(function (err, tab) {
+              data.save(function (err) {
                 if (err) {
                   req.flash('error', err.message);
                   res.redirect('/settings');
@@ -1213,7 +1244,6 @@ function postTabUpdate(req, res) {
           });
         }
 
-        var renderUrlTmp = tab.renderUrl;
         var url = req.body.address ? urlparse(req.body.address).normalize().toString() :
          urlparse(req.body.renderUrl).normalize().toString();
 
@@ -1238,7 +1268,7 @@ function postTabUpdate(req, res) {
 
           if (!req.body.check && req.body.category) {
             query = new Object({ name: req.body.category });
-            mongoose.model('category').findOne(query, function (err, cat) {
+            Category.findOne(query, function (err, cat) {
               if (err) throw new Error(err);
               if (!cat) {
                 req.flash('error', 'Data was not found: %s', cat);
@@ -1249,7 +1279,7 @@ function postTabUpdate(req, res) {
               var data = methods.attach(tab, cat);
 
               if (data) {
-                data.save(function (err, doc) {
+                data.save(function (err) {
                   if (err) {
                     req.flash('error', err.message);
                     res.redirect('/settings');
@@ -1318,11 +1348,12 @@ function postTabUpdate(req, res) {
  * @return {String} err
  */
 function postTabDelete(req, res) {
+  'use strict';
   if (req.user) {
     if (req.body.id) {
       log.verbose(JSON.stringify(req.body));
       var query = new Object({ _id: req.body.id });
-      mongoose.model('tab').findOne(query, function (err, tab) {
+      Tab.findOne(query, function (err, tab) {
         if (err) throw new Error(err);
         if (!tab) {
           req.flash('error', 'Data was not found: %s', tab);
@@ -1332,7 +1363,7 @@ function postTabDelete(req, res) {
 
         if (tab.category) {
           query = new Object({ name: tab.category });
-          mongoose.model('category').findOne(query, function (err, cat) {
+          Category.findOne(query, function (err, cat) {
             if (err) throw new Error(err);
             if (!cat) {
               req.flash('error', 'Data was not found: %s', cat);
@@ -1343,7 +1374,7 @@ function postTabDelete(req, res) {
               var data = methods.detach(tab._id, cat);
 
               if (data) {
-                data.save(function (err, doc) {
+                data.save(function (err) {
                   if (err) {
                     req.flash('error', err.message);
                     res.redirect('/settings');
@@ -1413,6 +1444,7 @@ function postTabDelete(req, res) {
  * @return {return} next
  */
 function ensureAuthenticated(req, res, next) {
+  'use strict';
   if (req.isAuthenticated()) return next();
   res.redirect('/signin');
 }
@@ -1424,6 +1456,7 @@ function ensureAuthenticated(req, res, next) {
  * @param {Object} res
  */
 function closeSession(req, res) {
+  'use strict';
   log.info('%s %s %d - "Logged out %s" - %s', req.method, req.path,
    res.statusCode, req.user.username, req.headers['user-agent']);
   req.flash('success', 'You are logged out.');

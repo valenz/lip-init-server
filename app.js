@@ -34,11 +34,13 @@ app.set('view options', config.app.set.options);
 app.use(favicon(__dirname + config.app.set.favicon));
 
 // Request logger status codes
-morgan.token('locale', function (req, res) {
+morgan.token('locale', function () {
+  'use strict';
   return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
 });
 
 morgan.token('status', function (req, res) {
+  'use strict';
   var color = 32; // green
   var status = res.statusCode;
 
@@ -49,7 +51,8 @@ morgan.token('status', function (req, res) {
   return '\x1b[' + color + 'm' + status;
 });
 
-morgan.token('package', function (req, res) {
+morgan.token('package', function () {
+  'use strict';
   return pkg.name;
 });
 
@@ -72,9 +75,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Configure passport-local to use account model for authentication
-var Tab = require('./models/tab');
 var Account = require('./models/account');
-var Category = require('./models/category');
 passport.use(Account.createStrategy());
 
 passport.serializeUser(Account.serializeUser());
@@ -83,6 +84,7 @@ passport.deserializeUser(Account.deserializeUser());
 // Connect mongoose
 var uri = process.env.DB_URI || config.db.uri;
 mongoose.connect(uri + config.db.name, function (err) {
+  'use strict';
   if (err) {
     log.error('Could not connect to mongodb on %s.', uri);
     log.warn('Ensure that you have mongodb running on %s and mongodb accepts ' +
@@ -132,6 +134,7 @@ app.post('/settings/tab/delete', mltr.array(), routes.postTabDelete);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
+  'use strict';
   var err = new Error('Page Not Found');
   err.status = 404;
   next(err);
@@ -143,7 +146,8 @@ app.use(function (req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.enable('verbose errors');
-  app.use(function (err, req, res, next) {
+  app.use(function (err, req, res) {
+    'use strict';
     res.status(err.status || 500);
     log.error('%s: %s', err.message, req.url);
     res.render('sites/status', {
@@ -160,7 +164,8 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 if (app.get('env') === 'production') {
   app.disable('verbose errors');
-  app.use(function (err, req, res, next) {
+  app.use(function (err, req, res) {
+    'use strict';
     res.status(err.status || 500);
     log.error('%s: %s', err.message, req.url);
     res.render('sites/status', {
@@ -173,6 +178,7 @@ if (app.get('env') === 'production') {
 
 // Handles uncaught exceptions.
 process.on('uncaughtException', function (e) {
+  'use strict';
   log.debug('Caught exception: ', e.stack);
   log.error('Caught exception: ', e.message);
   return;
@@ -181,6 +187,7 @@ process.on('uncaughtException', function (e) {
 // Fires the server.
 var server = http.createServer(app);
 server.listen(app.get('port'), app.get('address'), function () {
+  'use strict';
   log.info('%s (%s) is running.', process.title, process.version);
   log.info('process id is %d.', process.pid);
   log.info('%s is running in %s mode.', pkg.name, app.settings.env);

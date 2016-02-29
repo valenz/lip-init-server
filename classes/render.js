@@ -1,5 +1,3 @@
-var o = {};
-
 /**
  * Constructor
  */
@@ -10,6 +8,7 @@ function Render() {}
  * @return {Object} o
  */
 Render.prototype.get = function () {
+  'use strict';
   return this.o;
 };
 
@@ -18,6 +17,7 @@ Render.prototype.get = function () {
  * @param {Object} o
  */
 Render.prototype.set = function (o) {
+  'use strict';
   this.o = o;
 };
 

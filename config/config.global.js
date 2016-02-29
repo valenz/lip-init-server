@@ -1,5 +1,5 @@
 // Global default settings (run Node without set NODE_ENV)
-var config = module.exports = {
+var config = {
   // Environment
   env: 'development',
 
@@ -97,6 +97,7 @@ var config = module.exports = {
         // Boolean flag indicating if we should prepend output with timestamps
         // If function is specified, its return value will be used instead of timestamps
         timestamp: function () {
+          'use strict';
           return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
         },
 
@@ -131,6 +132,7 @@ var config = module.exports = {
         handleExceptions: true,
         colorize: true,
         timestamp: function () {
+          'use strict';
           return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
         },
 
@@ -243,3 +245,5 @@ var config = module.exports = {
     },
   },
 };
+
+module.exports = config;
