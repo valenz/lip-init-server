@@ -6,17 +6,17 @@ var Account = new Schema({
   username: {
     type: String,
     unique: true,
-    trim: true
+    trim: true,
   },
   password: {
     type: String,
-    trim: true
+    trim: true,
   },
   role: Number,
   whoCreated: String,
   whoUpdated: String,
   whenCreated: Date,
-  whenUpdated: Date
+  whenUpdated: Date,
 });
 
 Account.plugin(passportLocalMongoose, {
@@ -31,7 +31,7 @@ Account.plugin(passportLocalMongoose, {
   //attemptsField: 'attempts',
   //lastLoginField: 'last',
   //selectFields: 'undefined',
-  usernameLowerCase: true
+  usernameLowerCase: true,
 
   //populateFields: 'undefined',
   //encoding: 'hex',

@@ -1,9 +1,9 @@
-$(document).ready(function() {
+$(document).ready(function () {
   /** Make tabs sortable */
   $('.grid').sortable({
     containment: $('.grid'),
     start: handleDragStart,
-    stop: handleDragStop
+    stop: handleDragStop,
   });
 
   //localStorage.setItem('grid', JSON.stringify(init()));
@@ -91,7 +91,7 @@ $(document).ready(function() {
   /** Initialize default grid */
   function init() {
     var grid = {};
-    $('.tabs').each(function(key, value) {
+    $('.tabs').each(function (key, value) {
       var tab = {};
       tab[$(this).attr('data-item')] = value.outerHTML;
       grid[key] = tab;

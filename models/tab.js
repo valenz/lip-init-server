@@ -4,27 +4,27 @@ var Schema = mongoose.Schema;
 var Tab = new Schema({
   name: {
     type: String,
-    trim: true
+    trim: true,
   },
   title: {
     type: String,
-    trim: true
+    trim: true,
   },
   renderUrl: {
     type: String,
-    trim: true
+    trim: true,
   },
   url: {
     type: String,
-    trim: true
+    trim: true,
   },
   icon: {
     type: String,
-    trim: true
+    trim: true,
   },
   image: {
     type: String,
-    trim: true
+    trim: true,
   },
   check: Boolean,
   category: String,
@@ -32,7 +32,7 @@ var Tab = new Schema({
   whoCreated: String,
   whoUpdated: String,
   whenCreated: Date,
-  whenUpdated: Date
+  whenUpdated: Date,
 });
 
 module.exports = mongoose.model('tab', Tab);

@@ -20,7 +20,7 @@ var config = module.exports = {
 
       // Sets view options
       options: {
-        layout: false
+        layout: false,
       },
 
       // Sets location of static client side content
@@ -30,7 +30,18 @@ var config = module.exports = {
       favicon: '/public/images/favicon.ico',
 
       // Sets options for request logging
-      morgan: ':locale - \x1b[32minfo\x1b[0m: [:package] :method :url :status \x1b[0m:response-time ms | :res[content-length] | :remote-addr :remote-user HTTP/:http-version | :user-agent'
+      morgan: ':locale - ' +
+        '\x1b[32minfo\x1b[0m: ' +
+        '[:package] ' +
+        ':method ' +
+        ':url ' +
+        ':status ' +
+        '\x1b[0m:response-time ms | ' +
+        ':res[content-length] | ' +
+        ':remote-addr ' +
+        ':remote-user ' +
+        'HTTP/:http-version | ' +
+        ':user-agent',
     },
     cookie: {
       options: {
@@ -57,20 +68,20 @@ var config = module.exports = {
           // By default cookie.maxAge is null, meaning no "expires" parameter is set
           // so the cookie becomes a browser-session cookie. When the user closes the
           // browser the cookie (and session) will be removed.
-          maxAge: 60 * 60 * 1000 // one hour
+          maxAge: 60 * 60 * 1000, // one hour
         },
 
         // Force a cookie to be set on every response. This resets the expiration date
-        rolling: true
+        rolling: true,
       },
-      store: {}
-    }
+      store: {},
+    },
   },
 
   // Database
   db: {
     uri: 'localhost',
-    name: '/tabgrid'
+    name: '/tabgrid',
   },
 
   // Log levels [silly|debug|verbose|info|warn|error]
@@ -85,7 +96,7 @@ var config = module.exports = {
 
         // Boolean flag indicating if we should prepend output with timestamps
         // If function is specified, its return value will be used instead of timestamps
-        timestamp: function() {
+        timestamp: function () {
           return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
         },
 
@@ -113,21 +124,22 @@ var config = module.exports = {
         // If true, log files will be rolled based on maxsize and maxfiles, but in ascending order
         // The filename will always have the most recent log lines
         // The larger the appended number, the older the log file
-        tailable: true
+        tailable: true,
       },
       console: {
         level: 'info',
         handleExceptions: true,
         colorize: true,
-        timestamp: function() {
+        timestamp: function () {
           return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
         },
+
         label: 'tabgrid',
         prettyPrint: true,
         formatter: true,
-        json: false
-      }
-    }
+        json: false,
+      },
+    },
   },
 
   // PhantomJS settings
@@ -142,7 +154,7 @@ var config = module.exports = {
         format: 'png',
 
         // JPEG compression quality. A higher number will look better, but creates a larger file
-        quality: '100'
+        quality: '100',
       },
 
       // Number of milliseconds to wait after a page loads before taking the screenshot
@@ -151,7 +163,7 @@ var config = module.exports = {
       // When taking the screenshot, adds a white background otherwise adds color.value
       color: {
         defaultWhiteBackground: false,
-        value: '#F6F6F6'
+        value: '#F6F6F6',
       },
 
       // Specifies the scaling factor
@@ -162,21 +174,22 @@ var config = module.exports = {
         top: 0,
         left: 0,
         width: 640,
-        height: 360
+        height: 360,
       },
 
       // Sets the size of the viewport for the layout process
       viewport: {
         width: 640,
-        height: 360
-      }
+        height: 360,
+      },
     },
     evaluate: {
       // Number of milliseconds to wait after a page evaluates before returns sandboxed content
-      delay: 100
+      delay: 100,
     },
     settings: {
       clo: [
+
           // Ignores SSL errors, such as expired or self-signed certificate errors
           '--ignore-ssl-errors=true',
 
@@ -187,7 +200,7 @@ var config = module.exports = {
           '--output-encoding=utf8',
 
           // Sets the encoding used for the starting script
-          '--script-encoding=utf8'
+          '--script-encoding=utf8',
       ],
 
       // Defines whether to execute the script in the page or not
@@ -216,8 +229,8 @@ var config = module.exports = {
 
       // Defines the timeout after which any resource requested will stop trying
       // and proceed with other parts of the page
-      resourceTimeout: 30 * 1000
-    }
+      resourceTimeout: 30 * 1000,
+    },
   },
 
   // Custom
@@ -226,7 +239,7 @@ var config = module.exports = {
     upload: 'public/uploads/',
     shorter: {
       maxLength: 48,
-      endChars: '...'
-    }
-  }
+      endChars: '...',
+    },
+  },
 };

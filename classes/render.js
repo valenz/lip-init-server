@@ -9,7 +9,7 @@ function Render() {}
  * Class method getter
  * @return {Object} o
  */
-Render.prototype.get = function() {
+Render.prototype.get = function () {
   return this.o;
 };
 
@@ -17,7 +17,7 @@ Render.prototype.get = function() {
  * Class method setter
  * @param {Object} o
  */
-Render.prototype.set = function(o) {
+Render.prototype.set = function (o) {
   this.o = o;
 };
 

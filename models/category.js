@@ -6,18 +6,18 @@ var Category = new Schema({
     type: String,
     unique: true,
     required: true,
-    trim: true
+    trim: true,
   },
   normalized: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   list: Array,
   whoCreated: String,
   whoUpdated: String,
   whenCreated: Date,
-  whenUpdated: Date
+  whenUpdated: Date,
 });
 
 module.exports = mongoose.model('category', Category);

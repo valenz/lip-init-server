@@ -32,7 +32,7 @@ module.exports.renderPage = renderPage;
  * @param {data} String
  */
 function writeFile(file, data) {
-  fs.appendFile(file, data, function(err) {
+  fs.appendFile(file, data, function (err) {
     if (err) return log.error(err);
     log.info('Survey was saved in \'%s\'.', file);
     log.debug(data);
@@ -102,7 +102,7 @@ function detach(id, cat) {
   if (!cat) return false;
   var data = cat;
   var list = cat.list;
-  list = list.filter(function(e) {
+  list = list.filter(function (e) {
     return e._id != id.toString();
   });
 
@@ -118,10 +118,10 @@ function detach(id, cat) {
 function clear(filename) {
   var path = config.custom.upload;
 
-  fs.exists(path + filename, function(exists) {
+  fs.exists(path + filename, function (exists) {
     if (exists) {
       try {
-        fs.unlink(path + filename, function(err) {
+        fs.unlink(path + filename, function (err) {
           if (err) return log.error(err);
           log.info('Deleted file "%s".', filename);
         });
@@ -147,7 +147,7 @@ function mkdirSync(str) {
       path = path.concat(filepath[i] + '/');
     }
 
-    fs.exists(path, function(exists) {
+    fs.exists(path, function (exists) {
       if (!exists) {
         mkdirp.sync(path, 0755);
         log.verbose('The path for the logfile has been created.');
@@ -169,10 +169,10 @@ function getLog(cb) {
   require('readline').createInterface({
     input: fs.createReadStream(config.loggers.log.file.filename),
     output: process.stdout,
-    terminal: false
-  }).on('line', function(line) {
+    terminal: false,
+  }).on('line', function (line) {
     arr.push(JSON.parse(line));
-  }).on('close', function() {
+  }).on('close', function () {
     cb(arr);
   });
 }
@@ -188,9 +188,9 @@ function getLog(cb) {
 function count(mongoose, model, param, container, cb) {
   var tmp = {};
   tmp[model] = { $regex: new RegExp('(' + param + ')', 'i') };
-  mongoose.count(tmp, function(err, count) {
+  mongoose.count(tmp, function (err, count) {
     if (err) return log.error(err);
-    container[param].push({model: model, count: count});
+    container[param].push({ model: model, count: count });
   });
 }
 
@@ -221,24 +221,24 @@ function getPageInfo(url, cb) {
   var phantom = require('phantom');
 
   // Creates PhantomJS process
-  phantom.create().then(function(ph) {
+  phantom.create().then(function (ph) {
     // Makes new PhantomJS WebPage objects
-    return ph.createPage().then(function(page) {
+    return ph.createPage().then(function (page) {
       log.info('PhantomJS was started for evaluation. The process ID is %s.', ph.process.pid);
       if (!url) return ph.exit();
 
       // Opens the url and loads it to the page
-      return page.open(url).then(function(status) {
+      return page.open(url).then(function (status) {
         if (status === 'success') {
           log.info('Status after opening page "%s": %s', url, status);
         } else {
           log.warn('Status after opening page "%s": %s', url, status);
         }
 
-        return setTimeout(function() {
+        return setTimeout(function () {
           // Evaluates the given function in the context
           // of the web page. Execution is sandboxed.
-          return page.evaluate(function() {
+          return page.evaluate(function () {
 
             var info = {};
             info.title = document.title;
@@ -251,11 +251,12 @@ function getPageInfo(url, cb) {
                   return info;
                 }
               } catch (e) {
-                info.favicon = 'https://plus.google.com/_/favicon?domain_url=' + window.location.origin;
+                info.favicon = 'https://plus.google.com/_/favicon?domain_url=' +
+                 window.location.origin;
                 return info;
               }
             }
-          }).then(function(info) {
+          }).then(function (info) {
             cb(info);
             page.close();
             ph.exit();
@@ -275,8 +276,8 @@ function getPageInfo(url, cb) {
 function renderPage(obj, cb) {
   var phantom = require('phantom');
 
-  phantom.create(config.ph.settings.clo).then(function(ph) {
-    return ph.createPage().then(function(page) {
+  phantom.create(config.ph.settings.clo).then(function (ph) {
+    return ph.createPage().then(function (page) {
       log.info('PhantomJS was started for capturing. The process ID is %s.', ph.process.pid);
       if (!obj.url) return ph.exit();
 
@@ -297,7 +298,8 @@ function renderPage(obj, cb) {
       page.setting('settings.loadImages', config.ph.settings.loadImages);
 
       // Defines whether local resource (e.g. from file) can access remote URLs or not
-      page.setting('settings.localToRemoteUrlAccessEnabled', config.ph.settings.localToRemoteUrlAccessEnabled);
+      page.setting('settings.localToRemoteUrlAccessEnabled',
+       config.ph.settings.localToRemoteUrlAccessEnabled);
 
       // Defines the user agent sent to server when the web page requests resources
       page.setting('settings.userAgent', config.ph.settings.userAgent);
@@ -320,14 +322,16 @@ function renderPage(obj, cb) {
 
       // This callback is invoked when a web page
       // was unable to load resource.
-      page.property('onResourceError', function(resourceError) {
-        log.error('Resource Error: Unable to load resource (id: #%s | url: %s)', resourceError.id, resourceError.url);
-        log.error('Resource Error: Error code: %s | Description: %s', resourceError.errorCode, resourceError.errorString);
+      page.property('onResourceError', function (resourceError) {
+        log.error('Resource Error: Unable to load resource (id: #%s | url: %s)',
+         resourceError.id, resourceError.url);
+        log.error('Resource Error: Error code: %s | Description: %s',
+         resourceError.errorCode, resourceError.errorString);
       });
 
       // This callback is invoked when there is a JavaScript
       // confirm on the web page.
-      page.property('onConfirm', function(msg) {
+      page.property('onConfirm', function (msg) {
         log.info('JavaScript confirm says: ', msg);
 
         // true === pressing the OK button
@@ -337,29 +341,31 @@ function renderPage(obj, cb) {
 
       // This callback is invoked when a resource requested
       // by the page timeout.
-      page.property('onResourceTimeout', function(request) {
+      page.property('onResourceTimeout', function (request) {
         log.warn('Resource Timeout: Response (ID: #%s)', request.id, request);
       });
 
-      return page.open(obj.url).then(function(status) {
+      return page.open(obj.url).then(function (status) {
         if (status === 'success') {
           log.info('Status after opening page "%s": %s', obj.url, status);
         } else {
           log.warn('Status after opening page "%s": %s', obj.url, status);
         }
 
-        return setTimeout(function() {
-          return page.evaluate(function(color) {
+        return setTimeout(function () {
+          return page.evaluate(function (color) {
             try {
               // Sets background color
-              document.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' : color.value ? color.value : '#FFFFFF';
+              document.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' :
+               color.value ? color.value : '#FFFFFF';
             } catch (e) {
               return;
             }
-          }).then(function() {
+          }).then(function () {
             // Renders the web page to an image buffer
             // and saves it as the specified filename.
-            page.render(config.custom.upload + obj.filename, config.ph.render.options).then(function() {
+            page.render(config.custom.upload + obj.filename,
+             config.ph.render.options).then(function () {
               cb();
               ph.exit();
               log.info('PhantomJS process %s was completed and terminated.', ph.process.pid);
