@@ -1,19 +1,17 @@
 {
   "name": "tabgrid",
   "description": "Jump page with NodeJS",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/valenz/tabgrid.git"
   },
   "author": "Stephan Wegner <stephan.wegner@mail.de>",
   "keywords": [
-    "grid"
+    "grid", "tabs"
   ],
   "engines": {
-    "node": "5.6",
-    "node": "0.12.7",
-    "node": "0.10.39"
+    "node": ">=4.1"
   },
   "dependencies": {
     "connect-flash": "^0.1.1",
