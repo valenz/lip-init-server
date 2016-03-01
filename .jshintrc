@@ -3,11 +3,20 @@
   "node": true,
   "jquery": true,
   "phantom": true,
+  "eqnull": true,
   "eqeqeq": true,
   "strict": true,
-  "newcap": false,
   "undef": true,
   "unused": true,
-  "onecase": true,
-  "lastsemic": true
+  "lastsemic": true,
+  "globals": {
+    "localStorage": false,
+    "Highcharts": false,
+    "FormData": false,
+    "document": false,
+    "location": false,
+    "confirm": false,
+    "window": false,
+    "Object": false
+  }
 }

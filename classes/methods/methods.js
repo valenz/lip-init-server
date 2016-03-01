@@ -229,7 +229,6 @@ function random(len) {
  * @param {Function} cb
  */
 function getPageInfo(url, cb) {
-  /* jslint browser:true */
   'use strict';
   var phantom = require('phantom');
 
@@ -370,8 +369,7 @@ function renderPage(obj, cb) {
           return page.evaluate(function (color) {
             try {
               // Sets background color
-              var doc = document;
-              doc.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' :
+              document.body.bgColor = color.defaultWhiteBackground ? '#FFFFFF' :
                color.value ? color.value : '#FFFFFF';
             } catch (e) {
               return;

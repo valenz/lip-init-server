@@ -1,9 +1,12 @@
 $(function () {
+  'use strict';
+
   // Get data
   var dataCategories = JSON.parse($('#chart_pie').attr('data-categories'));
   var dataTabsLength = $('#chart_pie').attr('data-tabs-length');
 
   // Prepare data
+  //var Highcharts = Highcharts;
   var colors = Highcharts.getOptions().colors;
   var categoryNames = [];
   var score = [];
@@ -154,6 +157,7 @@ $(function () {
  * Removes duplicate items of an array and returns the new one.
  */
 function unique(a) {
+  'use strict';
   return $.grep(a, function (el, i) {
     return i === $.inArray(el, a);
   });

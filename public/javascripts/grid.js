@@ -1,4 +1,6 @@
 $(function () {
+  'use strict';
+
   // Duration of the messages before they disappear
   setTimeout(function () {
     $('.popclose').click();
@@ -6,9 +8,11 @@ $(function () {
 });
 
 $(document).ready(function () {
+  'use strict';
+
   // Gets messages
-  var success = $('[data-toggle=popover]').attr('data-success') == 'true' ? true : false;
-  var error = $('[data-toggle=popover]').attr('data-error') == 'true' ? true : false;
+  var success = $('[data-toggle=popover]').attr('data-success') === 'true' ? true : false;
+  var error = $('[data-toggle=popover]').attr('data-error') === 'true' ? true : false;
   var content = success ? 'fa-check-circle' : error ? 'fa-exclamation-circle' : 'fa-info-circle';
   var template = success ? 'alert-success' : error ? 'alert-danger' : 'alert-info';
 

@@ -1,4 +1,6 @@
 $(document).ready(function () {
+  'use strict';
+
   /** Generates e-mail address in menu */
   $('.email').hover(function () {
     var user = $(this).attr('data-user');
@@ -65,13 +67,13 @@ $(document).ready(function () {
 
   // smooth scrolling chapters and anchors
   $('a[href*=#]:not([href^=#collapse])').click(function () {
-    if (location.pathname.replace(/^\//, '') ==
-     this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
-      var target = $(this.hash);
-      target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
-      if (target.length) {
+    if (location.pathname.replace(/^\//, '') ===
+     this.pathname.replace(/^\//, '') && location.hostname === this.hostname) {
+      var $target = $(this.hash);
+      $target = $target.length ? $target : $('[name=' + this.hash.slice(1) + ']');
+      if ($target.length) {
         $('html,body').animate({
-          scrollTop: target.offset().top - 60,
+          scrollTop: $target.offset().top - 60,
         }, 1000);
         return false;
       }
@@ -81,6 +83,7 @@ $(document).ready(function () {
 
 /** Sets range value */
 function setRange(r) {
+  'use strict';
   if (localStorage.getItem(r.attr('type'))) {
     r.val(localStorage.getItem(r.attr('type')));
     $('.adj').find('#rangeFac').text(r.val());
