@@ -7,7 +7,7 @@
 [![Build Status](https://travis-ci.org/valenz/tabgrid.svg?branch=master)](https://travis-ci.org/valenz/tabgrid)
 
 ## Requirements
-You need default MongoDB service up and running, PhantomJS and the NodeJS engine (greater or equal 4.1).
+You need default MongoDB service up and running, PhantomJS and the NodeJS engine (greater or equal 4.0.0).
 
 
 ## Installation
