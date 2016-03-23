@@ -109,7 +109,7 @@ function detach(id, cat) {
   var data = cat;
   var list = cat.list;
   list = list.filter(function (e) {
-    return e._id !== id.toString();
+    return e._id.toString() !== id.toString();
   });
 
   data.list = list;
