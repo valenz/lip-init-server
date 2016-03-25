@@ -12,6 +12,7 @@ var Account = new Schema({
     type: String,
     trim: true,
   },
+  uid: String,
   role: Number,
   whoCreated: String,
   whoUpdated: String,

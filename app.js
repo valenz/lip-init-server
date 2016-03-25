@@ -3,6 +3,7 @@ var session = require('express-session');
 var mongoose = require('mongoose');
 var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
+var LdapAuth = require('passport-ldapauth');
 
 var favicon = require('serve-favicon');
 var flash = require('connect-flash');
@@ -14,6 +15,7 @@ var path = require('path');
 
 var config = require('./config');
 var pkg = require('./package');
+var Account = require('./models/account');
 
 // Logging
 winston.loggers.add('log', config.loggers.log);
@@ -27,16 +29,26 @@ app.set('port', process.env.PORT || config.app.set.port);
 app.set('address', process.env.ADDRESS || config.app.set.address);
 app.set('env', process.argv[2] || process.env.NODE_ENV || config.env);
 
-app.set('views', __dirname + config.app.set.views);
+app.set('views', path.join(__dirname, config.app.set.views));
 app.set('view engine', config.app.set.engine);
 app.set('view options', config.app.set.options);
 
-app.use(favicon(__dirname + config.app.set.favicon));
+app.use(favicon(path.join(__dirname, config.app.set.favicon)));
 
 // Request logger status codes
 morgan.token('locale', function () {
   'use strict';
   return new Date().toISOString().substr(0, 11) + new Date().toLocaleTimeString();
+});
+
+morgan.token('info', function () {
+  'use strict';
+  return '\x1b[32minfo\x1b[0m:';
+});
+
+morgan.token('package', function () {
+  'use strict';
+  return '[' + pkg.name + ']';
 });
 
 morgan.token('status', function (req, res) {
@@ -48,12 +60,7 @@ morgan.token('status', function (req, res) {
   else if (status >= 400) color = 33; // yellow
   else if (status >= 300) color = 36; // cyan
 
-  return '\x1b[' + color + 'm' + status;
-});
-
-morgan.token('package', function () {
-  'use strict';
-  return pkg.name;
+  return '\x1b[' + color + 'm' + status + '\x1b[0m';
 });
 
 app.use(morgan(config.app.set.morgan));
@@ -70,32 +77,51 @@ app.use(flash());
 
 app.use(express.static(path.join(__dirname, config.app.set.static)));
 
+// Configure passport-local to use account model for authentication
+if (config.auth.strategy === 'ldap') {
+  var getLDAPConfiguration = function (req, cb) {
+    'use strict';
+    process.nextTick(function () {
+      var opts = config.auth.ldap;
+      cb(null, opts);
+    });
+  };
+
+  passport.use(new LdapAuth(getLDAPConfiguration));
+  passport.serializeUser(function (user, done) {
+    'use strict';
+    done(null, user);
+  });
+
+  passport.deserializeUser(function (user, done) {
+    'use strict';
+    done(null, user);
+  });
+} else {
+  passport.use(Account.createStrategy());
+  passport.serializeUser(Account.serializeUser());
+  passport.deserializeUser(Account.deserializeUser());
+}
+
 // Configure passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Configure passport-local to use account model for authentication
-var Account = require('./models/account');
-passport.use(Account.createStrategy());
-
-passport.serializeUser(Account.serializeUser());
-passport.deserializeUser(Account.deserializeUser());
-
 // Connect mongoose
 var uri = process.env.DB_URI || config.db.uri;
-mongoose.connect(uri + config.db.name, function (err) {
+mongoose.connect(path.join(uri, config.db.name), function (err) {
   'use strict';
   if (err) {
     log.error('Could not connect to mongodb on %s.', uri);
-    log.warn('Ensure that you have mongodb running on %s and mongodb accepts ' +
-     'connections on standard ports!', uri);
+    log.warn('Ensure that you have mongodb running and mongodb accepts ' +
+     'connections on standard ports!');
   }
 });
 
+// Configure routes
 // Route dependencies
 var routes = require('./routes/routes');
 
-// Configure routes
 // Uncomment 'routes.ensureAuthenticated' to prevent user creation for everyone
 app.get('/', routes.index);
 app.get('/s?', routes.search);
@@ -106,10 +132,13 @@ app.get('/accounts/:username', routes.ensureAuthenticated, routes.accounts);
 app.get('/settings/account/create', /*routes.ensureAuthenticated,*/ routes.accountCreate);
 app.get('/settings/category/create', routes.ensureAuthenticated, routes.categoryCreate);
 app.get('/settings/tab/create', routes.ensureAuthenticated, routes.tabCreate);
-app.post('/signin', mltr.array(), passport.authenticate('local', {
-  failureRedirect: '/signin',
-  failureFlash: 'Invalid username or password.',
-}), routes.postSignin);
+
+app.post('/signin', mltr.array(), passport.authenticate(
+  config.auth.strategy === 'ldap' ? 'ldapauth' : 'local', {
+    failureRedirect: '/signin',
+    failureFlash: true,
+  }
+), routes.postSignin);
 app.post('/signout', mltr.array(), routes.ensureAuthenticated, routes.postSignout);
 app.post('/score', routes.postScore);
 app.post('/settings/account/create', mltr.array(), routes.postAccountCreate);

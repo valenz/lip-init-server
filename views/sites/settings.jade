@@ -57,8 +57,8 @@ block content
                     span.anchorjs-icon
                       i.fa.fa-link
               .panel-body.container-fluid
-                - var a = user.username.substr(0, 1).toUpperCase()
-                - var b = user.username.substr(1, user.username.length)
+                - var a = user.uid.substr(0, 1).toUpperCase()
+                - var b = user.uid.substr(1, user.uid.length)
                 - var usertabs = 0
                 - var unassigned = 0
                 each item in tabs
@@ -81,7 +81,7 @@ block content
                         input(type='hidden', name='id', value= item._id)
                         button.btn(class= item.check ? 'btn-warning' : !item.category ? 'btn-danger' : 'btn-primary', type='submit', data-toggle='tooltip', data-placement='top', title= item.check ? a+b+"'s Grid" : !item.category ? 'unassigned' : item.category, style='min-width: 120px;')
                           .breakall
-                            if user && user.username == item.whoCreated
+                            if user && user.uid == item.whoCreated
                               = item.name
                             else
                               = item.name
@@ -119,13 +119,13 @@ block content
                         input(type='hidden', name='id', value= item._id)
                         button.btn(class= !item.list.length ? 'btn-default' : odd%2 == 0 ? 'btn-info' : 'btn-primary', type='submit', data-toggle='tooltip', data-placement='top', title= item.list.length+' / '+tabs.length, style='min-width: 120px;')
                           .breakall
-                            if user && user.username == item.whoCreated
+                            if user && user.uid == item.whoCreated
                               = item.name
                             else
                               = item.name
                   if usertabs
                     .btn-group(style='padding: 5px;')
-                      a.btn.btn-warning(href='/accounts/'+user.username, data-toggle='tooltip', data-placement='top', title= usertabs+' / '+tabs.length, style='min-width: 120px;')
+                      a.btn.btn-warning(href='/accounts/'+user.uid, data-toggle='tooltip', data-placement='top', title= usertabs+' / '+tabs.length, style='min-width: 120px;')
                         | #{a+b}'s Grid
 
             .panel.panel-settings
@@ -151,7 +151,7 @@ block content
                       input(type='hidden', name='id', value= item._id)
                       button.btn(class= user && item._id == user.id ? 'btn-primary' : 'btn-default', type='submit', data-toggle='tooltip', data-placement='top', title= item.username, style='margin: 5px;')
                         if user && item._id == user.id
-                          u= user.username
+                          u= user.uid
                         else
                           = item.username
 

@@ -228,7 +228,7 @@ function accounts(req, res) {
       if (err) throw new Error(err);
       var ro = new RenderObject();
       ro.set({
-        title: req.user.username,
+        title: req.user.uid,
         grid: tab,
         list: category,
         user: req.user,
@@ -405,9 +405,9 @@ function tabCreate(req, res) {
 function postSignin(req, res) {
   'use strict';
   log.info('%s %s %d - Logged in %s - %s', req.method, req.path, res.statusCode,
-   req.user.username, req.headers['user-agent']);
+   req.user.uid, req.headers['user-agent']);
   req.flash('success', 'You are logged in.');
-  res.redirect('/accounts/' + req.user.username);
+  res.redirect('/accounts/' + req.user.uid);
 }
 
 /**
@@ -631,8 +631,9 @@ function postAccountCreate(req, res) {
     var ro = new RenderObject();
     ro.set({
       username: req.body.username,
+      uid: req.body.username,
       role: req.body.role,
-      whoCreated: req.user ? req.user.username : req.body.username,
+      whoCreated: req.user ? req.user.uid : req.body.username,
       whoUpdated: '',
       whenCreated: new Date().toISOString(),
       whenUpdated: '',
@@ -712,7 +713,7 @@ function postAccountUpdate(req, res) {
             }
 
             doc.role = req.body.role;
-            doc.whoUpdated = req.user.username;
+            doc.whoUpdated = req.user.uid;
             doc.whenUpdated = new Date().toISOString();
             doc.__v = doc.__v + 1;
 
@@ -862,7 +863,7 @@ function postCategoryCreate(req, res) {
         name: category,
         normalized: category.toLowerCase(),
         list: [],
-        whoCreated: req.user.username,
+        whoCreated: req.user.uid,
         whoUpdated: '',
         whenCreated: new Date().toISOString(),
         whenUpdated: '',
@@ -969,7 +970,7 @@ function postCategoryUpdate(req, res) {
           cat.name = catNew;
           cat.normalized = catNew.toLowerCase();
           cat.whoCreated = cat.whoCreated;
-          cat.whoUpdated = req.user.username;
+          cat.whoUpdated = req.user.uid;
           cat.whenCreated = cat.whenCreated;
           cat.whenUpdated = new Date().toISOString();
 
@@ -1122,7 +1123,7 @@ function postTabCreate(req, res) {
           category: req.body.category,
           check: req.body.check ? true : false,
           prefer: 0,
-          whoCreated: req.user.username,
+          whoCreated: req.user.uid,
           whoUpdated: '',
           whenCreated: new Date().toISOString(),
           whenUpdated: '',
@@ -1261,7 +1262,7 @@ function postTabUpdate(req, res) {
           tab.check = req.body.check ? true : false;
           tab.prefer = tab.prefer ? tab.prefer : 0;
           tab.whoCreated = tab.whoCreated;
-          tab.whoUpdated = req.user.username;
+          tab.whoUpdated = req.user.uid;
           tab.whenCreated = tab.whenCreated;
           tab.whenUpdated = new Date().toISOString();
           tab.__v = tab.__v + 1;
@@ -1313,7 +1314,7 @@ function postTabUpdate(req, res) {
                  req.path, res.statusCode, doc._id, doc.name, req.headers['user-agent']);
                 req.flash('success', 'Tab has been updated successfully.');
                 if (req.body.check) {
-                  res.redirect('/accounts/' + req.user.username);
+                  res.redirect('/accounts/' + req.user.uid);
                 } else {
                   res.redirect('/');
                 }
@@ -1409,7 +1410,7 @@ function postTabDelete(req, res) {
              res.statusCode, doc._id, doc.name, req.headers['user-agent']);
             req.flash('success', 'Tab has been deleted successfully.');
             if (doc.check) {
-              res.redirect('/accounts/' + req.user.username);
+              res.redirect('/accounts/' + req.user.uid);
             } else {
               res.redirect('/');
             }
@@ -1458,7 +1459,7 @@ function ensureAuthenticated(req, res, next) {
 function closeSession(req, res) {
   'use strict';
   log.info('%s %s %d - "Logged out %s" - %s', req.method, req.path,
-   res.statusCode, req.user.username, req.headers['user-agent']);
+   res.statusCode, req.user.uid, req.headers['user-agent']);
   req.flash('success', 'You are logged out.');
   req.logout();
 }

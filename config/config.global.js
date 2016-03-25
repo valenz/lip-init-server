@@ -7,13 +7,13 @@ var config = {
   app: {
     set: {
       // Sets address where server listen to
-      address: 'localhost',
+      address: '0.0.0.0',
 
       // Sets port where server listen to
       port: 9002,
 
       // Sets location of view pages
-      views: '/views',
+      views: 'views',
 
       // Sets view render engine
       engine: 'jade',
@@ -27,16 +27,16 @@ var config = {
       static: 'public',
 
       // Sets location of the favicon
-      favicon: '/public/images/favicon.ico',
+      favicon: 'public/images/favicon.ico',
 
       // Sets options for request logging
       morgan: ':locale - ' +
-        '\x1b[32minfo\x1b[0m: ' +
-        '[:package] ' +
+        ':info ' +
+        ':package ' +
         ':method ' +
         ':url ' +
         ':status ' +
-        '\x1b[0m:response-time ms | ' +
+        ':response-time ms | ' +
         ':res[content-length] | ' +
         ':remote-addr ' +
         ':remote-user ' +
@@ -81,7 +81,24 @@ var config = {
   // Database
   db: {
     uri: 'localhost',
-    name: '/tabgrid',
+    name: 'tabgrid',
+  },
+
+  // Passport authentication strategy
+  auth: {
+    strategy: 'internal', // ldap, internal
+    ldap: {
+      server: {
+        url: 'ldap://ldap.example.com:389',
+        bindDn: 'CN=admin,DC=example,DC=com',
+        bindCredentials: 'password',
+        searchBase: 'OU=people,DC=example,DC=com',
+        searchFilter: '(uid={{username}})',
+        searchAttributes: ['displayName', 'mail', 'uid'],
+      },
+      usernameField: 'username',
+      passwordField: 'password',
+    },
   },
 
   // Log levels [silly|debug|verbose|info|warn|error]
@@ -113,7 +130,7 @@ var config = {
         json: true,
 
         // The filename of the logfile to write output to
-        filename: 'logs/log.log',
+        filename: 'logs/tabgrid.log',
 
         // Max size in bytes of the logfile, if the size is exceeded then a
         // new file is created, a counter will become a suffix of the log file

@@ -66,23 +66,21 @@ nav.navbar.navbar-inverse.navbar-fixed-top
               i.fa.fa-envelope
 
         if user
-          - var a = user.username.substr(0, 1).toUpperCase()
-          - var b = user.username.substr(1, user.username.length)
-          li.dropdown(class= title == user.username || title == 'Logging' ? 'active' : '')
+          li.dropdown(class= title == user.uid || title == 'Logging' ? 'active' : '')
             a.dropdown-toggle(data-toggle='dropdown', href='/')
-              |  #{a+b}
+              = user.uid
               span.caret
             ul.dropdown-menu
               li
-                a(data-toggle='tooltip', data-placement='left', title= a+b+"'s Grid", href='/accounts/'+ user.username)
+                a(data-toggle='tooltip', data-placement='left', title= user.uid+"'s Grid", href='/accounts/'+ user.uid)
                   i.fa.fa-user
-                  |  #{a+b}'s Grid
+                  = " "+user.uid+"'s Grid"
               li
                 a(data-toggle='tooltip', data-placement='left', title='Log', href='/settings/logging#tail')
                   i.fa.fa-book
                   |  Log
               li.divider
-              li(data-toggle='tooltip', data-placement='left', title='Sign out '+user.username)
+              li(data-toggle='tooltip', data-placement='left', title='Sign out '+user.uid)
                 form.form(role='form', action='/signout', method='post', enctype='multipart/form-data')
                   button.btn.btn-link.navbar-btn.signout(type='submit')
                     i.fa.fa-sign-out
