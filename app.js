@@ -140,7 +140,7 @@ app.post('/signin', mltr.array(), passport.authenticate(
   }
 ), routes.postSignin);
 app.post('/signout', mltr.array(), routes.ensureAuthenticated, routes.postSignout);
-app.post('/score', routes.postScore);
+app.post('/score', mltr.array(), routes.postScore);
 app.post('/settings/account/create', mltr.array(), routes.postAccountCreate);
 app.post('/settings/account/update', mltr.array(), routes.postAccountUpdate);
 app.post('/settings/account/edit', mltr.array(), routes.ensureAuthenticated,
